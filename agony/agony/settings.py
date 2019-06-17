@@ -1,5 +1,5 @@
 import os
-from YamJam import yamjam, YAMLError
+from YamJam import yamjam
 from datetime import timedelta
 
 config = yamjam()['agony']
@@ -78,8 +78,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'
     }
 ]
-
-NO_UPDATE_LAST_LOGIN = True
 
 
 LANGUAGE_CODE = 'en-us'

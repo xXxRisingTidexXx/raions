@@ -1,0 +1,14 @@
+Django==2.2.2
+django-sendgrid-v5==0.8.0
+djangorestframework==3.9.4
+djangorestframework-gis==0.14
+djangorestframework-jwt==1.11.0
+future==0.17.1
+psycopg2==2.8.3
+PyJWT==1.7.1
+python-http-client==3.1.0
+pytz==2019.1
+PyYAML==5.1.1
+sendgrid==6.0.5
+sqlparse==0.3.0
+yamjam==0.1.7
