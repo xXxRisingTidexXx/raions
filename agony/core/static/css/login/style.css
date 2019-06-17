@@ -1,0 +1,139 @@
+.div_stack {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.div_user {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-areas: "image image" "loginP loginP" "login login" "passwordP passwordP" "password password_show" "submit submit";
+    justify-content: center;
+    align-content: center;
+    grid-gap: 5px;
+}
+
+.div_user > p {
+    z-index: 2;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 2px black;
+}
+
+.div_user > button {
+    z-index: 2;
+    transition: all 0.5s;
+    font-size: 16px;
+    height: 35px;
+    background-color: black;
+    color: white;
+    border: 3px solid black;
+    border-radius: 50px 1px;
+    outline: none;
+    font-weight: bold;
+    box-shadow: 0 0 10px black;
+}
+
+.div_user > button:hover {
+    border-color: orange;
+    border-radius: 1px 50px;
+    background-color: orange;
+    color: black;
+}
+
+.div_user > button:active {
+    border-color: orange;
+    transition: 0s;
+    background-color: black;
+    color: white;
+}
+
+.div_user > button:focus {
+    border-color: orange;
+
+    border-radius: 0 50px 0 50px;
+}
+
+.div_user > input {
+    box-shadow: 0 0 10px black;
+    z-index: 2;
+    transition: all 0.5s;
+    font-size: 16px;
+    padding: 5px 10px;
+    height: 20px;
+    background-color: black;
+    color: white;
+    border: 3px solid black;
+    border-radius: 20px;
+    outline: none;
+}
+
+.div_user > input:focus {
+    border-radius: 5px;
+    border-color: orange;
+}
+
+.div_user_img {
+    z-index: 2;
+    width: 75px;
+    height: 75px;
+    padding: 15px;
+    border-radius: 50%;
+    border: 5px solid black;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    background-image: var(--gradBR);
+    margin: 0 auto 30px;
+    box-shadow: 0 0 25px black;
+}
+
+.div_user_img > img {
+    z-index: 2;
+    width: 75px;
+}
+
+#button_show_password {
+    border-radius: 50%;
+}
+
+#button_show_password:focus {
+    border-radius: 10px;
+}
+
+#button_show_password:hover {
+    border-radius: 10px;
+}
+
+
+#alertBox {
+    transition: 0.5s;
+    width: 100vw;
+    z-index: 100;
+    position: fixed;
+    top: -120px;
+    left: 0;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
+#alertBox > p {
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    margin: 5px;
+    padding: 20px;
+    background: black;
+    border-radius: 10px;
+    border: 3px solid orange;
+    box-shadow: 0 0 25px black;
+}

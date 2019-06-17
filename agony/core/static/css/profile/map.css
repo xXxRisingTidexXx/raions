@@ -1,0 +1,42 @@
+.leaflet-control-layers {
+    border-radius: 20px 0 !important;
+    background: var(--icons_background) !important;
+    color: var(--object_p_color) !important;
+    border: none !important;
+    text-shadow: 0 0 5px black;
+}
+
+.leaflet-control-layers-toggle {
+    background-position: center center !important;
+    background-size: 25px 25px !important;
+    background-image: url(https://image.flaticon.com/icons/svg/149/149786.svg) !important;
+}
+
+.leaflet-control-layers-expanded {
+    transition: 0s;
+    padding: 10px !important;
+}
+
+.leaflet-control-layers-list > div > label > div > span {
+    font-size: 14px !important;
+}
+
+.leaflet-control-layers-selector {
+    width: 15px;
+    height: 15px;
+}
+
+.leaflet-control-layers-separator {
+    border-radius: 3px !important;
+    margin: 10px 10px !important;
+    border: 1px solid var(--background) !important;
+    background: var(--background);
+}
+
+.leaflet-marker-icon {
+    opacity: 0.8;
+}
+
+.leaflet-marker-icon:hover {
+    opacity: 1 !important;
+}

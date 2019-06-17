@@ -1,0 +1,9 @@
+{
+  "Тип дома": "building_type",
+  "Тип стен": "wall_type",
+  "Планировка": "planning",
+  "Отопление": "heating",
+  "Санузел": "bathrooms",
+  "Меблирование": "furniture",
+  "Ремонт": "state"
+}

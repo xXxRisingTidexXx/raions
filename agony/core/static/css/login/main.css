@@ -1,0 +1,26 @@
+* {
+  padding: 5px;
+  margin: 5px;
+  font-family: 'Raleway', sans-serif;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  background-color: black;
+  overflow: hidden;
+}
+
+:root {
+  --gradBR: linear-gradient(-35deg, red, yellow);
+}
+
+canvas {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding: 0;
+  margin: 0;
+}

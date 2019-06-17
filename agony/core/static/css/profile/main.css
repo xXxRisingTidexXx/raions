@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  font-family: 'Montserrat', monospace;
+}
+
+img {
+  user-select: none;
+}
+
+:root {
+  --background: #000000;
+  --object: rgba(255, 255, 255, 0.1);
+  --object_p_background: #000000;
+  --object_p_color: #ffffff;
+  --first: #ffa500;
+  --second: #9acd32;
+  --panels: #000000;
+  --object_full_background: #000000;
+  --options: #000000;
+  --box_shadow: #000;
+  --icons_background: linear-gradient(-45deg, var(--first), var(--second));
+  --statistics_path_hover: #ffffff;
+  --search_circle: #ffa500;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: black;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}

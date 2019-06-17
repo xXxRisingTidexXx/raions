@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>EI</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/index/main.css">
+    <link rel="stylesheet" href="../static/css/index/style.css">
+
+    <link rel="icon" href="../static/images/homeTab.png">
+
+    <script type="text/javascript" src="../static/js/lib/three.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/animations/city.js" charset="utf-8"></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<header>
+    <p class="p_name">Estate Insight</p>
+    <a id="href_login" href="login/">
+        <div class="login">
+            <img class="login_image" src="../static/images/avatar.png" alt="img_user">
+        </div>
+        <p class="p_login">Login</p>
+    </a>
+</header>
+
+<div class="moto">
+    <p id="moto">Everything<br> is countable</p>
+</div>
+
+<div class="overlapping_infobox">
+    <div class="infobox_img">
+        <img src="../static/images/building.png" alt="">
+    </div>
+    <p style="text-align: center;" class="p_text">Our data base store</p>
+    <b>
+        <p id="flats_count" style="text-align: center; font-size: calc(1.5vh + 25px);" class="p_text"></p>
+    </b>
+    <script>
+        fetch('/article/fetch/user.json')
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                document.getElementById("flats_count").innerText = data.flats_count;
+            })
+            .catch(err => {
+                console.log(err);
+                document.getElementById("flats_count").innerText = "10000";
+            });
+    </script>
+    <p style="text-align: center;" class="p_text">flats</p>
+</div>
+
+<div style="height: 150px; background: linear-gradient(to left, black, rgba(0,0,0,0.3), black)"></div>
+
+<div class="overlapping_infobox">
+    <p class="p_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+        fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+        anim id est laborum.</p>
+</div>
+
+<div style="height: 150px; background: linear-gradient(to left, black, rgba(0,0,0,0.3), black)"></div>
+
+<div class="overlapping_infobox">
+    <p class="p_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+        fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+        anim id est laborum.</p>
+</div>
+
+<div class="infobox logos">
+    <a href="http://veritexgroup.com.ua/uk-UA/" target="_blank">
+        <img class="contributors" src="http://veritexgroup.com.ua/images/veritexlogo.png" alt="img">
+    </a>
+</div>
+
+<footer>
+    <p> Copyright (c) 2018 Copyright Holder All Rights Reserved. </p>
+</footer>
+
+<script type="text/javascript" charset="utf-8">
+    setTimeout(function () {
+        document.getElementById("moto").style.color = "white"
+    });
+    setTimeout(function () {
+        document.getElementById("moto").style.textShadow = "2px 2px 5px black"
+    });
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        document.getElementById("href_login").style.visibility = "hidden";
+    }
+</script>
+</body>
+</html>
