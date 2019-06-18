@@ -28,8 +28,22 @@ def dbtest(main):
 
     async def runner(test, test_case):
         async with create_pool(TESTING_DSN) as pool:
-            await test(test_case, pool)
+            await __truncate_tables(pool)
+            try:
+                await test(test_case, pool)
+            finally:
+                await __truncate_tables(pool)
     return wrapper
+
+
+async def __truncate_tables(pool):
+    async with pool.acquire() as connection:
+        await connection.execute('TRUNCATE TABLE core_user_saved_flats CASCADE')
+        await connection.execute('TRUNCATE TABLE core_user CASCADE')
+        await connection.execute('TRUNCATE TABLE flats_details CASCADE')
+        await connection.execute('TRUNCATE TABLE details CASCADE')
+        await connection.execute('TRUNCATE TABLE flats CASCADE')
+        await connection.execute('TRUNCATE TABLE geolocations CASCADE')
 
 
 def processtest(main):
