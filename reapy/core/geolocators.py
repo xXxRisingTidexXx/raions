@@ -48,9 +48,10 @@ class Geolocator:
 
     _shaft_class = _Shaft
 
-    def __init__(self, crawler, executor):
+    def __init__(self, crawler, executor, scribbler):
         self._crawler = crawler
         self._executor = executor
+        self._scribbler = scribbler
         self._loop = get_event_loop()
         self._shaft = self._shaft_class()
         self._semaphore = Semaphore(self._limit)

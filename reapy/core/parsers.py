@@ -75,8 +75,9 @@ class Parser:
 
     _shaft_class = _Shaft
 
-    def __init__(self, executor):
+    def __init__(self, executor, scribbler):
         self._executor = executor
+        self._scribbler = scribbler
         self._loop = get_event_loop()
         self._shaft = self._shaft_class()
 

@@ -1,5 +1,6 @@
 from datetime import date
 from unittest import TestCase
+from asynctest import CoroutineMock
 from core.decorators import processtest
 from core.utils import decimalize, load
 from core.structs import Flat
@@ -9,14 +10,14 @@ from core.parsers import OlxFlatParser, DomRiaFlatParser
 class OlxFlatParserTestCase(TestCase):
     @processtest
     async def test_parse_stop(self, executor):
-        parser = OlxFlatParser(executor)
+        parser = OlxFlatParser(executor, CoroutineMock())
         self.assertEqual(await parser.parse_stop(await load('fixtures/test_parse_stop/olx_flat0.html')), 500)
         with self.assertRaises(TypeError):
             await parser.parse_stop(None)
 
     @processtest
     async def test_parse_pages(self, executor):
-        parser = OlxFlatParser(executor)
+        parser = OlxFlatParser(executor, CoroutineMock())
         pages = (
             await load('fixtures/test_parse_page/olx_flat0.html'),
             await load('fixtures/test_parse_page/olx_flat1.html')
@@ -358,7 +359,7 @@ class OlxFlatParserTestCase(TestCase):
 
     @processtest
     async def test_parse_offers(self, executor):
-        parser = OlxFlatParser(executor)
+        parser = OlxFlatParser(executor, CoroutineMock())
         offers = (
             {
                 'url': 'https://www.olx.ua/obyavlenie/prodam-2k-kvartiru-v-tsentre-1000-melochey-IDDqNsA.html',
@@ -490,7 +491,7 @@ class OlxFlatParserTestCase(TestCase):
 class DomRiaFlatParserTestCase(TestCase):
     @processtest
     async def test_parse_stop(self, executor):
-        parser = DomRiaFlatParser(executor)
+        parser = DomRiaFlatParser(executor, CoroutineMock())
         self.assertEqual(
             await parser.parse_stop(await load('fixtures/test_parse_stop/dom_ria_flat0.html')), 5664
         )
@@ -499,7 +500,7 @@ class DomRiaFlatParserTestCase(TestCase):
 
     @processtest
     async def test_parse_pages(self, executor):
-        parser = DomRiaFlatParser(executor)
+        parser = DomRiaFlatParser(executor, CoroutineMock())
         pages = (await load('fixtures/test_parse_page/dom_ria_flat0.html'),)
         offers = [
             {
@@ -667,7 +668,7 @@ class DomRiaFlatParserTestCase(TestCase):
 
     @processtest
     async def test_parse_offers(self, executor):
-        parser = DomRiaFlatParser(executor)
+        parser = DomRiaFlatParser(executor, CoroutineMock())
         offers = (
             {
                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
@@ -925,7 +926,7 @@ class DomRiaFlatParserTestCase(TestCase):
 
     @processtest
     async def test_parse_junks(self, executor):
-        parser = DomRiaFlatParser(executor)
+        parser = DomRiaFlatParser(executor, CoroutineMock())
         junks = (
             {
                 'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-kiev-goloseevskiy-15695319.html',

@@ -10,8 +10,9 @@ class Crawler:
     _limit = 100
     _timeout = 10
 
-    def __init__(self, session):
+    def __init__(self, session, scribbler):
         self._session = session
+        self._scribbler = scribbler
         self._semaphore = Semaphore(self._limit)
 
     async def get_json(self, url, **kwargs):

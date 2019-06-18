@@ -8,8 +8,9 @@ from .decorators import measurable
 class Repository:
     _portion = 400
 
-    def __init__(self, pool):
+    def __init__(self, pool, scribbler):
         self._pool = pool
+        self._scribbler = scribbler
 
     async def delete_all_expired(self, expiration):
         try:
@@ -78,6 +79,7 @@ class Repository:
             async with self._pool.acquire() as connection:
                 async with connection.transaction():
                     await self._create_record(connection, struct)
+                    await self._scribbler.write('inserted', 1)
         except UniqueViolationError:
             pass
         except PostgresError:

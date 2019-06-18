@@ -12,7 +12,7 @@ from core.utils import decimalize
 class FlatRepositoryTestCase(TestCase):
     @dbtest
     async def test_delete_all_expired(self, pool):
-        repository = FlatRepository(pool)
+        repository = FlatRepository(pool, CoroutineMock())
         async with pool.acquire() as connection:
             user = await connection.fetchrow('''
                 INSERT INTO core_user (password, email, is_active, is_staff)
@@ -70,7 +70,7 @@ class FlatRepositoryTestCase(TestCase):
 
     @dbtest
     async def test_delete_all_junks(self, pool):
-        repository = FlatRepository(pool)
+        repository = FlatRepository(pool, CoroutineMock())
         async with pool.acquire() as connection:
             user = await connection.fetchrow('''
                 INSERT INTO core_user (password, email, is_active, is_staff)
@@ -123,7 +123,7 @@ class FlatRepositoryTestCase(TestCase):
 
     @dbtest
     async def test_find_record(self, pool):
-        repository = FlatRepository(pool)
+        repository = FlatRepository(pool, CoroutineMock())
         async with pool.acquire() as connection:
             geolocations = await connection.fetch('''
                 INSERT INTO geolocations (point) VALUES 
@@ -193,7 +193,7 @@ class FlatRepositoryTestCase(TestCase):
 
     @dbtest
     async def test_update_record(self, pool):
-        repository = FlatRepository(pool)
+        repository = FlatRepository(pool, CoroutineMock())
         async with pool.acquire() as connection:
             geolocations = await connection.fetch('''
                 INSERT INTO geolocations (locality, point) VALUES 
@@ -266,7 +266,7 @@ class FlatRepositoryTestCase(TestCase):
 
     @dbtest
     async def test_distinct_all(self, pool):
-        repository = FlatRepository(pool)
+        repository = FlatRepository(pool, CoroutineMock())
         async with pool.acquire() as connection:
             geolocations = await connection.fetch('''
                 INSERT INTO geolocations (point) VALUES 
@@ -359,7 +359,8 @@ class FlatRepositoryTestCase(TestCase):
     @dbtest
     async def test_create_all(self, pool):
         logging.disable()
-        repository = FlatRepository(pool)
+        repository = FlatRepository(pool, CoroutineMock())
+        repository._scribbler.write = CoroutineMock()
         async with pool.acquire() as connection:
             geolocations = await connection.fetch('''
                 INSERT INTO geolocations (point) VALUES 

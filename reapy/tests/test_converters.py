@@ -12,7 +12,7 @@ class NBUConverterTestCase(TestCase):
         with mock.patch('core.converters.exist') as exist:
             with patch('core.converters.dump'):
                 exist.return_value = False
-                converter = NBUConverter(Crawler(session), executor)
+                converter = NBUConverter(Crawler(session, CoroutineMock()), executor)
                 converter._crawler.get_json = CoroutineMock(
                     return_value=[
                         {

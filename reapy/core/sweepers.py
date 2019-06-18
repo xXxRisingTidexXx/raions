@@ -1,4 +1,5 @@
 from datetime import timedelta
+from .scribblers import SweeperScribbler
 from .crawlers import OlxFlatCrawler, DomRiaFlatCrawler
 from .parsers import OlxFlatParser, DomRiaFlatParser
 from .repositories import FlatRepository
@@ -7,6 +8,7 @@ from .decorators import measurable
 
 
 class Sweeper(Worker):
+    _scribbler_class = SweeperScribbler
     _expiration = timedelta(days=210)
     _url_prefix = None
     _timeout = 3

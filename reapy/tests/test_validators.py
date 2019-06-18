@@ -1,5 +1,6 @@
 from datetime import date
 from unittest import TestCase
+from asynctest import CoroutineMock
 from core.decorators import processtest
 from core.structs import Flat
 from core.validators import FlatValidator
@@ -8,7 +9,7 @@ from core.validators import FlatValidator
 class FlatValidatorTestCase(TestCase):
     @processtest
     async def test_validate(self, executor):
-        validator = FlatValidator(executor)
+        validator = FlatValidator(executor, CoroutineMock())
         structs = (
             Flat(
                 url='x1', published=date.today(), area=45.8, rooms=2, floor=6, total_floor=9
