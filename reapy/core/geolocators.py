@@ -57,10 +57,13 @@ class Geolocator:
         self._semaphore = Semaphore(self._limit)
 
     async def locate(self, geodict):
-        return await self._loop.run_in_executor(
+        geolocation = await self._loop.run_in_executor(
             self._executor, self._shaft.parse,
             await self.__get_location(geodict)
         )
+        if geolocation is not None:
+            return geolocation
+        await self._scribbler.add('unlocated')
 
     async def __get_location(self, geodict):
         point = geodict.get('point')

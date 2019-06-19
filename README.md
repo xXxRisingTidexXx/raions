@@ -10,7 +10,6 @@ Questions
 
 Primary objectives
 ------------------
-* Add **CSV** *statistician* class;
 * Move ordering to the backend;
 * Enhance filtering (add new fields, like kitchen area, living area, etc.);
 * Configure **gunicorn**;
@@ -20,6 +19,7 @@ Primary objectives
 
 Secondary objectives
 --------------------
+* Enhance sweepers and organize their lifecycle;
 * Configure **Container** or **VM**;
 * Hide extra lookup button checking the number of the got items;
 * Block port **11211** programmatically;

@@ -27,6 +27,7 @@ class Validator:
         )
         if is_valid:
             return struct
+        await self._scribbler.add('invalidated')
 
 
 class FlatValidator(Validator):

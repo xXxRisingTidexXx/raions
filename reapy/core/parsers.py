@@ -45,6 +45,7 @@ class Parser:
         def _parse_page(self, soup):
             pass
 
+        # noinspection PyBroadException
         def parse_offer(self, offer):
             url = offer.pop('url')
             try:
@@ -53,7 +54,7 @@ class Parser:
                     return self._parse_offer(url, soup, **offer)
             except InvalidOperation:
                 pass
-            except (LookupError, TypeError, AttributeError, ValueError):
+            except Exception:
                 logging.exception(f'{url} parsing failed')
 
         def _check_offer(self, soup):
@@ -104,7 +105,10 @@ class Parser:
         return await map_filter(offers, self.__parse_offer)
 
     async def __parse_offer(self, offer):
-        return await self.__parse('parse_offer', offer)
+        struct = await self.__parse('parse_offer', offer)
+        if struct is not None:
+            return struct
+        await self._scribbler.add('unparsed')
 
     async def parse_junks(self, junks):
         return set(await map_filter(junks, self.__parse_junk))
@@ -328,7 +332,7 @@ class DomRiaEstateParser(EstateParser):
                         float(data['longitude']), float(data['latitude'])
                     )
                 }
-            except KeyError:
+            except (KeyError, ValueError):
                 return {'address': self._parse_address(data)}
 
         def _parse_address(self, data):

@@ -1,6 +1,5 @@
 from datetime import date
 from unittest import TestCase
-from asynctest import CoroutineMock
 from core.decorators import processtest
 from core.utils import decimalize, load
 from core.structs import Flat
@@ -9,15 +8,15 @@ from core.parsers import OlxFlatParser, DomRiaFlatParser
 
 class OlxFlatParserTestCase(TestCase):
     @processtest
-    async def test_parse_stop(self, executor):
-        parser = OlxFlatParser(executor, CoroutineMock())
+    async def test_parse_stop(self, executor, scribbler):
+        parser = OlxFlatParser(executor, scribbler)
         self.assertEqual(await parser.parse_stop(await load('fixtures/test_parse_stop/olx_flat0.html')), 500)
         with self.assertRaises(TypeError):
             await parser.parse_stop(None)
 
     @processtest
-    async def test_parse_pages(self, executor):
-        parser = OlxFlatParser(executor, CoroutineMock())
+    async def test_parse_pages(self, executor, scribbler):
+        parser = OlxFlatParser(executor, scribbler)
         pages = (
             await load('fixtures/test_parse_page/olx_flat0.html'),
             await load('fixtures/test_parse_page/olx_flat1.html')
@@ -358,8 +357,8 @@ class OlxFlatParserTestCase(TestCase):
         self.assertListEqual(list(await parser.parse_pages(pages)), offers)
 
     @processtest
-    async def test_parse_offers(self, executor):
-        parser = OlxFlatParser(executor, CoroutineMock())
+    async def test_parse_offers(self, executor, scribbler):
+        parser = OlxFlatParser(executor, scribbler)
         offers = (
             {
                 'url': 'https://www.olx.ua/obyavlenie/prodam-2k-kvartiru-v-tsentre-1000-melochey-IDDqNsA.html',
@@ -490,8 +489,8 @@ class OlxFlatParserTestCase(TestCase):
 
 class DomRiaFlatParserTestCase(TestCase):
     @processtest
-    async def test_parse_stop(self, executor):
-        parser = DomRiaFlatParser(executor, CoroutineMock())
+    async def test_parse_stop(self, executor, scribbler):
+        parser = DomRiaFlatParser(executor, scribbler)
         self.assertEqual(
             await parser.parse_stop(await load('fixtures/test_parse_stop/dom_ria_flat0.html')), 5664
         )
@@ -499,8 +498,8 @@ class DomRiaFlatParserTestCase(TestCase):
             await parser.parse_stop(None)
 
     @processtest
-    async def test_parse_pages(self, executor):
-        parser = DomRiaFlatParser(executor, CoroutineMock())
+    async def test_parse_pages(self, executor, scribbler):
+        parser = DomRiaFlatParser(executor, scribbler)
         pages = (await load('fixtures/test_parse_page/dom_ria_flat0.html'),)
         offers = [
             {
@@ -667,8 +666,8 @@ class DomRiaFlatParserTestCase(TestCase):
         self.assertListEqual(list(await parser.parse_pages(pages)), offers)
 
     @processtest
-    async def test_parse_offers(self, executor):
-        parser = DomRiaFlatParser(executor, CoroutineMock())
+    async def test_parse_offers(self, executor, scribbler):
+        parser = DomRiaFlatParser(executor, scribbler)
         offers = (
             {
                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
@@ -925,8 +924,8 @@ class DomRiaFlatParserTestCase(TestCase):
             self.assertAlmostEqual(shaft._ceiling_height(case[0]), case[1], 3)
 
     @processtest
-    async def test_parse_junks(self, executor):
-        parser = DomRiaFlatParser(executor, CoroutineMock())
+    async def test_parse_junks(self, executor, scribbler):
+        parser = DomRiaFlatParser(executor, scribbler)
         junks = (
             {
                 'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-kiev-goloseevskiy-15695319.html',

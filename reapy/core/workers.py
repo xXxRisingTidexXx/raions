@@ -30,6 +30,7 @@ class Worker:
         try:
             install()
             run(self.__run())
+            self._scribbler.scribble_row()
         except KeyboardInterrupt:
             logging.info(f'{self._name} was terminated')
         except Exception:
@@ -50,7 +51,7 @@ class Worker:
         self._scribbler = self._scribbler_class(
             join(BASE_DIR, f'scribbles/{self._name}.csv')
         )
-        self._scribbler.write_header()
+        self._scribbler.scribble_header()
 
     async def __run(self):
         async with create_pool(DEFAULT_DSN, max_size=self._max_pool_size) as pool:
@@ -58,7 +59,6 @@ class Worker:
                 with ProcessPoolExecutor() as executor:
                     await self._prepare(pool, session, executor)
                     await self._work()
-                    await self._scribbler.scribble()
 
     async def _prepare(self, pool, session, executor):
         self._repository = self._repository_class(pool, self._scribbler)

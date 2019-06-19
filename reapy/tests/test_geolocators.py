@@ -8,8 +8,8 @@ from core.decorators import webtest
 
 class NominatimGeolocatorTestCase(TestCase):
     @webtest
-    async def test_locate(self, session, executor):
-        geolocator = NominatimGeolocator(Crawler(session, CoroutineMock()), executor, CoroutineMock())
+    async def test_locate(self, session, executor, scribbler):
+        geolocator = NominatimGeolocator(Crawler(session, scribbler), executor, scribbler)
         geolocator._crawler.get_json = CoroutineMock(side_effect=(
             {
                 'place_id': 127512700,

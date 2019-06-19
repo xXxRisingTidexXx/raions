@@ -11,8 +11,8 @@ from core.utils import decimalize
 
 class FlatRepositoryTestCase(TestCase):
     @dbtest
-    async def test_delete_all_expired(self, pool):
-        repository = FlatRepository(pool, CoroutineMock())
+    async def test_delete_all_expired(self, pool, scribbler):
+        repository = FlatRepository(pool, scribbler)
         async with pool.acquire() as connection:
             user = await connection.fetchrow('''
                 INSERT INTO core_user (password, email, is_active, is_staff)
@@ -69,8 +69,8 @@ class FlatRepositoryTestCase(TestCase):
         self.assertEqual(deleted, [])
 
     @dbtest
-    async def test_delete_all_junks(self, pool):
-        repository = FlatRepository(pool, CoroutineMock())
+    async def test_delete_all_junks(self, pool, scribbler):
+        repository = FlatRepository(pool, scribbler)
         async with pool.acquire() as connection:
             user = await connection.fetchrow('''
                 INSERT INTO core_user (password, email, is_active, is_staff)
@@ -122,8 +122,8 @@ class FlatRepositoryTestCase(TestCase):
         self.assertEqual(deleted, [])
 
     @dbtest
-    async def test_find_record(self, pool):
-        repository = FlatRepository(pool, CoroutineMock())
+    async def test_find_record(self, pool, scribbler):
+        repository = FlatRepository(pool, scribbler)
         async with pool.acquire() as connection:
             geolocations = await connection.fetch('''
                 INSERT INTO geolocations (point) VALUES 
@@ -192,8 +192,8 @@ class FlatRepositoryTestCase(TestCase):
             self.assertEqual(case[0][0], (await repository._find_record(connection, case[1]))[0])
 
     @dbtest
-    async def test_update_record(self, pool):
-        repository = FlatRepository(pool, CoroutineMock())
+    async def test_update_record(self, pool, scribbler):
+        repository = FlatRepository(pool, scribbler)
         async with pool.acquire() as connection:
             geolocations = await connection.fetch('''
                 INSERT INTO geolocations (locality, point) VALUES 
@@ -265,8 +265,8 @@ class FlatRepositoryTestCase(TestCase):
         self.assertEqual(flats[1]['id'], new['id'])
 
     @dbtest
-    async def test_distinct_all(self, pool):
-        repository = FlatRepository(pool, CoroutineMock())
+    async def test_distinct_all(self, pool, scribbler):
+        repository = FlatRepository(pool, scribbler)
         async with pool.acquire() as connection:
             geolocations = await connection.fetch('''
                 INSERT INTO geolocations (point) VALUES 
@@ -357,10 +357,10 @@ class FlatRepositoryTestCase(TestCase):
         self.assertEqual(flats[1]['id'], new['id'])
 
     @dbtest
-    async def test_create_all(self, pool):
+    async def test_create_all(self, pool, scribbler):
         logging.disable()
-        repository = FlatRepository(pool, CoroutineMock())
-        repository._scribbler.write = CoroutineMock()
+        repository = FlatRepository(pool, scribbler)
+        repository._scribbler.add = CoroutineMock()
         async with pool.acquire() as connection:
             geolocations = await connection.fetch('''
                 INSERT INTO geolocations (point) VALUES 

@@ -58,6 +58,8 @@ class Crawler:
 
     async def __get_offer(self, offer, **kwargs):
         offer['markup'] = await self.get_text(offer['url'], **kwargs)
+        if offer['markup'] is None:
+            await self._scribbler.add('unresponded')
         return offer
 
 
