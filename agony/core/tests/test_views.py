@@ -359,8 +359,8 @@ class LookupViewTestCase(AuthorizedView):
                         'total_floor': 16,
                         'ceiling_height': None,
                         'details': [
-                            {'feature': 'bathrooms', 'value': 'separate bathrooms', 'group': 'supplies'},
-                            {'feature': 'wall_type', 'value': 'inkerman stone', 'group': 'building'}
+                            {'feature': 'wall_type', 'value': 'inkerman stone', 'group': 'building'},
+                            {'feature': 'bathrooms', 'value': 'separate bathrooms', 'group': 'supplies'}
                         ]
                     }
                 ]
@@ -402,14 +402,14 @@ class LookupViewTestCase(AuthorizedView):
                                 'group': 'building'
                             },
                             {
-                                'feature': 'bathrooms',
-                                'value': 'adjacent bathrooms',
-                                'group': 'supplies'
-                            },
-                            {
                                 'feature': 'window_type',
                                 'value': 'metal-plastic windows',
                                 'group': 'interior'
+                            },
+                            {
+                                'feature': 'bathrooms',
+                                'value': 'adjacent bathrooms',
+                                'group': 'supplies'
                             },
                             {
                                 'feature': 'passenger_elevators',
@@ -478,14 +478,14 @@ class LookupViewTestCase(AuthorizedView):
                                 'group': 'building'
                             },
                             {
-                                'feature': 'bathrooms',
-                                'value': 'adjacent bathrooms',
-                                'group': 'supplies'
-                            },
-                            {
                                 'feature': 'window_type',
                                 'value': 'metal-plastic windows',
                                 'group': 'interior'
+                            },
+                            {
+                                'feature': 'bathrooms',
+                                'value': 'adjacent bathrooms',
+                                'group': 'supplies'
                             },
                             {
                                 'feature': 'passenger_elevators',
@@ -516,8 +516,8 @@ class LookupViewTestCase(AuthorizedView):
                         'total_floor': 16,
                         'ceiling_height': None,
                         'details': [
-                            {'feature': 'bathrooms', 'value': 'separate bathrooms', 'group': 'supplies'},
-                            {'feature': 'wall_type', 'value': 'inkerman stone', 'group': 'building'}
+                            {'feature': 'wall_type', 'value': 'inkerman stone', 'group': 'building'},
+                            {'feature': 'bathrooms', 'value': 'separate bathrooms', 'group': 'supplies'}
                         ]
                     },
                     {
@@ -678,14 +678,14 @@ class LookupViewTestCase(AuthorizedView):
                                 'group': 'building'
                             },
                             {
-                                'feature': 'bathrooms',
-                                'value': 'adjacent bathrooms',
-                                'group': 'supplies'
-                            },
-                            {
                                 'feature': 'window_type',
                                 'value': 'metal-plastic windows',
                                 'group': 'interior'
+                            },
+                            {
+                                'feature': 'bathrooms',
+                                'value': 'adjacent bathrooms',
+                                'group': 'supplies'
                             },
                             {
                                 'feature': 'passenger_elevators',

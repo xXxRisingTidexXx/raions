@@ -6,10 +6,11 @@ from .decorators import measurable
 
 
 class Repository:
-    _portion = 400
+    _portion = 200
 
-    def __init__(self, pool):
+    def __init__(self, pool, scribbler):
         self._pool = pool
+        self._scribbler = scribbler
 
     async def delete_all_expired(self, expiration):
         try:
@@ -59,7 +60,7 @@ class Repository:
                         return struct
                     await self._update_record(connection, record, struct)
         except UniqueViolationError:
-            pass
+            await self._scribbler.add('duplicated')
         except PostgresError:
             logging.exception(f'couldn\'t distinct struct: {struct.url}')
 
@@ -78,8 +79,9 @@ class Repository:
             async with self._pool.acquire() as connection:
                 async with connection.transaction():
                     await self._create_record(connection, struct)
+                    await self._scribbler.add('inserted')
         except UniqueViolationError:
-            pass
+            await self._scribbler.add('duplicated')
         except PostgresError:
             logging.exception(f'{struct.url} storing failed')
 
@@ -94,6 +96,7 @@ class EstateRepository(Repository):
             async with connection.transaction():
                 await self._delete_estates_details(connection, ids)
                 await self._delete_estates(connection, ids)
+            await self._scribbler.add('deleted', len(ids))
         except PostgresError:
             logging.exception('records\' deletion failed')
 
@@ -224,6 +227,9 @@ class FlatRepository(EstateRepository):
             await self.__delete_flat_details(connection, flat)
             await self._set_estate_details(connection, flat, struct.details)
             await self.__update_flat(connection, flat, struct)
+            await self._scribbler.add('updated')
+        else:
+            await self._scribbler.add('duplicated')
 
     @staticmethod
     async def __delete_flat_details(connection, flat):

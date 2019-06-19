@@ -1,0 +1,67 @@
+{
+  "Тип дома": {
+    "Царский дом": "the tsar project",
+    "Сталинка": "the Stalin project",
+    "Хрущевка": "the Khrushev project",
+    "Чешка": "the Czech project",
+    "Гостинка": "gostinka",
+    "Совмин": "sovmyn",
+    "Общежитие": "dormitory",
+    "Жилой фонд 80-90-е": "the housing stock of 80th-90th",
+    "Жилой фонд 91-2000-е": "the housing stock of 1991-2000",
+    "Жилой фонд 2001-2010-е": "the housing stock of 2001-2010",
+    "Жилой фонд от 2011 г.": "the housing stock since 2011",
+    "На этапе строительства": "under construction"
+  },
+  "Планировка": {
+    "Раздельная": "separate planning",
+    "Смежная, проходная": "adjacent through planning",
+    "Свободная планировка": "free layout",
+    "Смарт-квартира": "smart apartment",
+    "Малосемейка, гостинка": "flat for a little family",
+    "Студия": "studio",
+    "Многоуровневая": "multi-level planning",
+    "Двухсторонняя": "double-sided planning",
+    "Пентхаус": "penthouse"
+  },
+  "Ремонт": {
+    "Евроремонт": "euro-standard design",
+    "После строителей": "after construction",
+    "Под чистовую отделку": "clean finishing",
+    "Косметический ремонт": "redecoration",
+    "Авторский проект": "authorial project",
+    "Жилое состояние": "residential state",
+    "Аварийное состояние": "hazardous state"
+  },
+  "Тип стен": {
+    "Монолитный": "monolith",
+    "Кирпичный": "brick",
+    "Панельный": "panel",
+    "Газоблок": "aerocrete",
+    "Другое": "another wall type",
+    "Шлакоблочный": "cinder block",
+    "Деревянный": "wood",
+    "СИП панель": "sandwich-structured composite"
+  },
+  "Отопление": {
+    "Собственная котельная": "own boiler room",
+    "Индивидуальное газовое": "individual gas heating",
+    "Централизованное": "centralized heating",
+    "Индивидуальное электро": "individual electro-heating",
+    "Другое": "another heating",
+    "Твердотоплевное": "solid fuel heating",
+    "Комбинированное": "combined heating",
+    "Тепловой насос": "heat pump"
+  },
+  "Меблирование": {
+    "Нет": "no furniture",
+    "Да": "furniture is present"
+  },
+  "Санузел": {
+    "Раздельный": "separate bathrooms",
+    "2": "2 bathrooms",
+    "Смежный": "adjacent bathrooms",
+    "2 и более": "2 and more bathrooms",
+    "Санузел отсутствует": "bathrooms are absent"
+  }
+}

@@ -45,6 +45,7 @@ class Parser:
         def _parse_page(self, soup):
             pass
 
+        # noinspection PyBroadException
         def parse_offer(self, offer):
             url = offer.pop('url')
             try:
@@ -53,7 +54,7 @@ class Parser:
                     return self._parse_offer(url, soup, **offer)
             except InvalidOperation:
                 pass
-            except (LookupError, TypeError, AttributeError):
+            except Exception:
                 logging.exception(f'{url} parsing failed')
 
         def _check_offer(self, soup):
@@ -75,8 +76,9 @@ class Parser:
 
     _shaft_class = _Shaft
 
-    def __init__(self, executor):
+    def __init__(self, executor, scribbler):
         self._executor = executor
+        self._scribbler = scribbler
         self._loop = get_event_loop()
         self._shaft = self._shaft_class()
 
@@ -103,7 +105,10 @@ class Parser:
         return await map_filter(offers, self.__parse_offer)
 
     async def __parse_offer(self, offer):
-        return await self.__parse('parse_offer', offer)
+        struct = await self.__parse('parse_offer', offer)
+        if struct is not None:
+            return struct
+        await self._scribbler.add('unparsed')
 
     async def parse_junks(self, junks):
         return set(await map_filter(junks, self.__parse_junk))
@@ -116,8 +121,7 @@ class EstateParser(Parser):
     class _Shaft(Parser._Shaft):
         _float_pattern = compile(r'^\s*([\d.]+)')
         _int_pattern = compile(r'^\s*(\d+)')
-        _features = None
-        _values = None
+        _details = None
 
         def _float(self, f):
             try:
@@ -135,17 +139,10 @@ class EstateParser(Parser):
 
         def _parse_details(self, pairs):
             return [
-                self.__parse_detail(p)
+                self._details[p[0]][p[1]]
                 for p in pairs.items()
-                if p[0] in self._features
+                if p[0] in self._details
             ]
-
-        def __parse_detail(self, pair):
-            try:
-                return self._values[self._features[pair[0]]]['values'][pair[1]]
-            except KeyError:
-                logging.exception(f'a new detail appeared: {pair}')
-                raise
 
     _shaft_class = _Shaft
 
@@ -243,8 +240,7 @@ class OlxEstateParser(EstateParser):
 
 class OlxFlatParser(OlxEstateParser):
     class _Shaft(OlxEstateParser._Shaft):
-        _features = json('resources/olx/flat/features.json')
-        _values = json('resources/olx/flat/values.json')
+        _details = json('resources/olx/flat/details.json')
 
         def _parse_offer(self, url, soup, **kwargs):
             shapes = self._parse_shapes(soup)
@@ -336,7 +332,7 @@ class DomRiaEstateParser(EstateParser):
                         float(data['longitude']), float(data['latitude'])
                     )
                 }
-            except KeyError:
+            except (KeyError, ValueError):
                 return {'address': self._parse_address(data)}
 
         def _parse_address(self, data):
@@ -393,8 +389,7 @@ class DomRiaEstateParser(EstateParser):
 class DomRiaFlatParser(DomRiaEstateParser):
     class _Shaft(DomRiaEstateParser._Shaft):
         _offer_strainer = SoupStrainer('section')
-        _features = json('resources/dom_ria/flat/features.json')
-        _values = json('resources/dom_ria/flat/values.json')
+        _details = json('resources/dom_ria/flat/details.json')
         __area_pattern = compile(r'Площа (\S+)/(\S+)/(\S+)')
 
         def _parse_page(self, soup):

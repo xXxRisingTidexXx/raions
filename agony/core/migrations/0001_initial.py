@@ -1,3 +1,4 @@
+from django.contrib.postgres.operations import CreateExtension
 import django.contrib.gis.db.models.fields
 from django.db import migrations, models
 import django.db.models.deletion
@@ -11,26 +12,13 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='User',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('email', models.EmailField(db_index=True, max_length=254, unique=True)),
-                ('is_active', models.BooleanField(default=True)),
-                ('is_staff', models.BooleanField(default=False)),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
+        CreateExtension('postgis'),
         migrations.CreateModel(
             name='Detail',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('feature', models.CharField(max_length=30)),
-                ('value', models.CharField(max_length=60)),
+                ('value', models.CharField(max_length=60, unique=True)),
                 ('group', models.CharField(max_length=20)),
             ],
             options={
@@ -77,14 +65,20 @@ class Migration(migrations.Migration):
                 'ordering': ['-published'],
             },
         ),
-        migrations.AddConstraint(
-            model_name='detail',
-            constraint=models.UniqueConstraint(fields=('feature', 'value'), name='detail_feature_value_key'),
-        ),
-        migrations.AddField(
-            model_name='user',
-            name='saved_flats',
-            field=models.ManyToManyField(to='core.Flat'),
+        migrations.CreateModel(
+            name='User',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
+                ('email', models.EmailField(db_index=True, max_length=254, unique=True)),
+                ('is_active', models.BooleanField(default=True)),
+                ('is_staff', models.BooleanField(default=False)),
+                ('saved_flats', models.ManyToManyField(to='core.Flat')),
+            ],
+            options={
+                'abstract': False,
+            },
         ),
         migrations.AddConstraint(
             model_name='flat',

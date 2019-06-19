@@ -11,8 +11,9 @@ class Validator:
 
     _shaft_class = _Shaft
 
-    def __init__(self, executor):
+    def __init__(self, executor, scribbler):
         self._executor = executor
+        self._scribbler = scribbler
         self._loop = get_event_loop()
         self._shaft = self._shaft_class()
 
@@ -26,6 +27,7 @@ class Validator:
         )
         if is_valid:
             return struct
+        await self._scribbler.add('invalidated')
 
 
 class FlatValidator(Validator):

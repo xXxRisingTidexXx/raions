@@ -1,4 +1,5 @@
 from asyncio import gather
+from .scribblers import ReaperScribbler
 from .repositories import FlatRepository
 from .workers import Worker
 from .converters import NBUConverter
@@ -12,12 +13,13 @@ from .validators import Validator, FlatValidator
 
 
 class Reaper(Worker):
+    _scribbler_class = ReaperScribbler
     _validator_class = Validator
     _ranger_class = Ranger
 
     async def _prepare(self, pool, session, executor):
         await super()._prepare(pool, session, executor)
-        self._validator = self._validator_class(executor)
+        self._validator = self._validator_class(executor, self._scribbler)
         self._ranger = self._ranger_class(self._crawler, self._parser)
 
     @measurable('reap')
@@ -48,7 +50,9 @@ class EstateReaper(Reaper):
         await super()._prepare(pool, session, executor)
         self._converter = self._converter_class(self._crawler, executor)
         await self._converter.prepare()
-        self._geolocator = self._geolocator_class(self._crawler, executor)
+        self._geolocator = self._geolocator_class(
+            self._crawler, executor, self._scribbler
+        )
 
     @measurable('conversion')
     async def _convert_all(self, structs):

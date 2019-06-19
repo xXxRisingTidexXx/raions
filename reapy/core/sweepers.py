@@ -1,4 +1,5 @@
 from datetime import timedelta
+from .scribblers import SweeperScribbler
 from .crawlers import OlxFlatCrawler, DomRiaFlatCrawler
 from .parsers import OlxFlatParser, DomRiaFlatParser
 from .repositories import FlatRepository
@@ -7,9 +8,10 @@ from .decorators import measurable
 
 
 class Sweeper(Worker):
+    _scribbler_class = SweeperScribbler
     _expiration = timedelta(days=210)
     _url_prefix = None
-    _timeout = 3
+    _timeout = 10
 
     @measurable('sweep')
     async def _work(self):
@@ -38,4 +40,4 @@ class DomRiaFlatSweeper(Sweeper):
     _crawler_class = DomRiaFlatCrawler
     _parser_class = DomRiaFlatParser
     _url_prefix = '^https://dom.ria.com/uk/'
-    _timeout = 4
+    _timeout = 14

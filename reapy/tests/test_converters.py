@@ -8,11 +8,11 @@ from core.utils import decimalize
 
 class NBUConverterTestCase(TestCase):
     @webtest
-    async def test_convert(self, session, executor):
+    async def test_convert(self, session, executor, scribbler):
         with mock.patch('core.converters.exist') as exist:
             with patch('core.converters.dump'):
                 exist.return_value = False
-                converter = NBUConverter(Crawler(session), executor)
+                converter = NBUConverter(Crawler(session, scribbler), executor)
                 converter._crawler.get_json = CoroutineMock(
                     return_value=[
                         {
