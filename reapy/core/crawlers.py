@@ -1,6 +1,6 @@
 import logging
 from asyncio import Semaphore, TimeoutError, gather
-from aiohttp import ContentTypeError, ClientError
+from aiohttp import ContentTypeError, ClientError, ClientPayloadError
 from aiohttp.client import TooManyRedirects
 from .decorators import measurable
 
@@ -24,7 +24,7 @@ class Crawler:
             async with kwargs.pop('semaphore', self._semaphore):
                 async with self._session.get(url, **kwargs) as response:
                     return await getattr(response, content_type)()
-        except (TimeoutError, TooManyRedirects):
+        except (TimeoutError, TooManyRedirects, ClientPayloadError):
             pass
         except ContentTypeError:
             logging.warning(
