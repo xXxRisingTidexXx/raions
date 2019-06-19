@@ -1,6 +1,6 @@
 * {
-  transition: 0.5s;
-  font-family: 'Raleway', sans-serif;
+  transition: color 0.5s, background 0.5s;
+  font-family: 'Montserrat', monospace;
   margin: 0;
   padding: 0;
 }

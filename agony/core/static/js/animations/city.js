@@ -78,7 +78,7 @@ function Setup() {
         camera.position.set(0, scroll / 5 - 100, camera.position.z);
         camera.rotation.y = scroll / 2000;
 
-        buildingsScaleX += buildingsScaleX < 1 ? 0.03 : 0;
+        buildingsScaleX += buildingsScaleX < 1 ? 0.005 : 0;
 
         for (let x = 0; x < buildingCount; x++) {
             for (let y = 0; y < buildingCount; y++) {
@@ -87,9 +87,7 @@ function Setup() {
                     const bMesh = b.mesh.scale;
                     const bPosition = b.mesh.position;
 
-                    bMesh.x = buildingsScaleX;
                     bMesh.y = buildingsScaleX;
-                    bMesh.z = buildingsScaleX;
 
                     bPosition.z += 1;
                     if (bPosition.z > buildingCount * (buildingSize + buildingOff) / 2 + buildingsOffsetZ) {
