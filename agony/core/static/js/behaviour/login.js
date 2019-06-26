@@ -7,7 +7,7 @@ document.getElementById("button_submit").onclick = function () {
 	if (emailNode.value.length > 0 && passwordNode.value.length > 0) {
 		let options = {
 			method: "POST",
-			header: {
+			headers: {
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({

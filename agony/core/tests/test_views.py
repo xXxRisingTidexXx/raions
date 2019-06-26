@@ -194,7 +194,7 @@ class DetailAutocompleteViewTestCase(AuthorizedView):
                 {'value': 'fooo'}, set()
             ),
             (
-                {'value': '7 bedrooms'}, set()
+                {'value': '15 bedrooms'}, set()
             ),
             (
                 {'value': '1'}, {'1 passenger elevator', '1 bedroom'}
