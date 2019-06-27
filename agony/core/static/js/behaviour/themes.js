@@ -125,37 +125,37 @@ class Theme {
     }
 
     static LoadColors() {
-        if (!localStorage.getItem("--search_circle"))
+        if (!localStorage.getItem("--search_circle") !== "null")
             Theme.SetRootColor("--search_circle", localStorage.getItem("--search_circle"));
 
-        if (!localStorage.getItem("--background"))
+        if (localStorage.getItem("--background") !== "null")
             Theme.SetRootColor("--background", localStorage.getItem("--background"));
 
-        if (!localStorage.getItem("--object_p_background"))
+        if (localStorage.getItem("--object_p_background"))
             Theme.SetRootColor("--object_p_background", localStorage.getItem("--object_p_background"));
 
-        if (!localStorage.getItem("--object_p_color"))
+        if (localStorage.getItem("--object_p_color") !== "null")
             Theme.SetRootColor("--object_p_color", localStorage.getItem("--object_p_color"));
 
-        if (!localStorage.getItem("--first"))
+        if (localStorage.getItem("--first") !== "null")
             Theme.SetRootColor("--first", localStorage.getItem("--first"));
 
-        if (!localStorage.getItem("--second"))
+        if (localStorage.getItem("--second") !== "null")
             Theme.SetRootColor("--second", localStorage.getItem("--second"));
 
-        if (!localStorage.getItem("--panels"))
+        if (localStorage.getItem("--panels") !== "null")
             Theme.SetRootColor("--panels", localStorage.getItem("--panels"));
 
-        if (!localStorage.getItem("--object_full_background"))
+        if (localStorage.getItem("--object_full_background") !== "null")
             Theme.SetRootColor("--object_full_background", localStorage.getItem("--object_full_background"));
 
-        if (!localStorage.getItem("--options"))
+        if (localStorage.getItem("--options") !== "null")
             Theme.SetRootColor("--options", localStorage.getItem("--options"));
 
-        if (!localStorage.getItem("--statistics_path_hover"))
+        if (localStorage.getItem("--statistics_path_hover"))
             Theme.SetRootColor("--statistics_path_hover", localStorage.getItem("--statistics_path_hover"));
 
-        if (!localStorage.getItem("--object"))
+        if (localStorage.getItem("--object") !== "null")
             Theme.SetRootColor("--object", localStorage.getItem("--object"));
     }
 
