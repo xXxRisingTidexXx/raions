@@ -125,13 +125,13 @@ class Theme {
     }
 
     static LoadColors() {
-        if (!localStorage.getItem("--search_circle") !== "null")
+        if (localStorage.getItem("--search_circle") !== "null")
             Theme.SetRootColor("--search_circle", localStorage.getItem("--search_circle"));
 
         if (localStorage.getItem("--background") !== "null")
             Theme.SetRootColor("--background", localStorage.getItem("--background"));
 
-        if (localStorage.getItem("--object_p_background"))
+        if (localStorage.getItem("--object_p_background") !== "null")
             Theme.SetRootColor("--object_p_background", localStorage.getItem("--object_p_background"));
 
         if (localStorage.getItem("--object_p_color") !== "null")
@@ -152,7 +152,7 @@ class Theme {
         if (localStorage.getItem("--options") !== "null")
             Theme.SetRootColor("--options", localStorage.getItem("--options"));
 
-        if (localStorage.getItem("--statistics_path_hover"))
+        if (localStorage.getItem("--statistics_path_hover") !== "null")
             Theme.SetRootColor("--statistics_path_hover", localStorage.getItem("--statistics_path_hover"));
 
         if (localStorage.getItem("--object") !== "null")
