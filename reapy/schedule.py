@@ -1,13 +1,13 @@
 #!/bin/env python3
 from crontab import CronTab
-from core import USER, BASE_DIR
+from core import USER, BASE_DIR, INTERPRETER_PATH
 from os.path import join
 
 CRON = CronTab(user=USER)
 
 
 def run_worker(worker, **kwargs):
-    job = CRON.new(f'python {join(BASE_DIR, "manage.py")} {worker}')
+    job = CRON.new(f'{INTERPRETER_PATH} {join(BASE_DIR, "manage.py")} {worker}')
     job.minute.on(*kwargs['minutes'])
     job.hour.on(*kwargs['hours'])
     return job

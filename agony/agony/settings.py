@@ -91,14 +91,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-def make_dir(rel_path):
-    abs_path = os.path.join(BASE_DIR, rel_path)
-    if not os.path.exists(abs_path):
-        os.mkdir(abs_path)
-    return abs_path
-
-
-STATIC_ROOT = make_dir('static/')
+STATIC_ROOT = config['static-root']
 
 STATIC_URL = '/static/'
 
@@ -144,28 +137,4 @@ SENDGRID_API_KEY = config['sendgrid']['api-key']
 SENDGRID_SANDBOX_MODE_IN_DEBUG = config['sendgrid']['sandbox-mode-in-debug']
 
 
-def make_log():
-    make_dir('logs/')
-    abs_path = os.path.join(BASE_DIR, 'logs/access.log')
-    open(abs_path, 'a+').close()
-    return abs_path
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': make_log(),
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-    },
-}
+LOGGING = config['logging']

@@ -1,9 +1,11 @@
+import YamJam
 from os.path import abspath, dirname
-from YamJam import yamjam
 
-config = yamjam()['reapy']
+config = YamJam.yamjam()['reapy']
 
 BASE_DIR = dirname(dirname(abspath(__file__)))
+
+INTERPRETER_PATH = config['interpreter-path']
 
 USER = config['user']
 

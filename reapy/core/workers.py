@@ -33,6 +33,8 @@ class Worker:
             self._scribbler.scribble_row()
         except KeyboardInterrupt:
             logging.info(f'{self._name} was terminated')
+        except RuntimeError:
+            logging.error('no rates were got')
         except Exception:
             logging.exception('fatal error occurred')
 

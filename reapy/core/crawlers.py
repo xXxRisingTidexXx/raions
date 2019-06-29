@@ -24,7 +24,9 @@ class Crawler:
             async with kwargs.pop('semaphore', self._semaphore):
                 async with self._session.get(url, **kwargs) as response:
                     return await getattr(response, content_type)()
-        except (TimeoutError, TooManyRedirects, ClientPayloadError):
+        except (
+            TimeoutError, TooManyRedirects, ClientPayloadError, ConnectionResetError
+        ):
             pass
         except ContentTypeError:
             logging.warning(
