@@ -3,28 +3,24 @@ Ideas
 
 Questions
 ---------
-* Get know about search circle; 
+* Get know about search circles; 
 * Get know about notifications concernedly expired flats;
-* Get know about index data to display;
 
 Primary objectives
 ------------------
-* Move ordering to the backend;
 * Enhance filtering (add new fields, like kitchen area, living area, etc.);
-* Configure **gunicorn**;
-* Configure CI/CD;
-* Add districts' insight;
+* Add index data: total flat count;
+* Move ordering to the backend;
 * Add rate zones' insight;
 
 Secondary objectives
 --------------------
-* Enhance sweepers and organize their lifecycle;
-* Configure **Container** or **VM**;
 * Configure reap without conversion rates;
-* Hide extra lookup button checking the number of the got items;
-* Block port **11211** programmatically;
+* Add index data: top flats' sales in regions and cities;
+* Enhance sweepers and organize their lifecycle;
+* Configure **Docker**;
+* Configure *CI/CD*;
 * Add smart lookups - via house names, neighbourhoods, keywords;
-* Add *SSL*;
-* Add asynchronous logging for *reapy*;
-* Add geolocation autocomplete caching;
+* Configure *HTTPS*;
 * Try **pypy** interpreter;
+* Block port *11211* programmatically;
