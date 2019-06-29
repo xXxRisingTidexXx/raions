@@ -91,7 +91,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = config['static-root']
 
 STATIC_URL = '/static/'
 
@@ -135,3 +135,6 @@ DEFAULT_FROM_MAIL = EMAIL_HOST_USER
 SENDGRID_API_KEY = config['sendgrid']['api-key']
 
 SENDGRID_SANDBOX_MODE_IN_DEBUG = config['sendgrid']['sandbox-mode-in-debug']
+
+
+LOGGING = config['logging']

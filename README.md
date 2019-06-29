@@ -4,7 +4,6 @@ Ideas
 Questions
 ---------
 * Get know about search circle; 
-* Get know about validation ranges;
 * Get know about notifications concernedly expired flats;
 * Get know about index data to display;
 
@@ -21,6 +20,7 @@ Secondary objectives
 --------------------
 * Enhance sweepers and organize their lifecycle;
 * Configure **Container** or **VM**;
+* Configure reap without conversion rates;
 * Hide extra lookup button checking the number of the got items;
 * Block port **11211** programmatically;
 * Add smart lookups - via house names, neighbourhoods, keywords;

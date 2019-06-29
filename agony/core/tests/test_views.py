@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 from decimal import Decimal
 from django.contrib.gis.geos import Point
@@ -14,6 +15,7 @@ class AuthorizedView(APITestCase):
             '/auth/', {'email': 'estimo@gmail.com', 'password': 'EstimoTop2019'}
         ).data['token']
         self.client.credentials(HTTP_AUTHORIZATION=f'JWT {jwt}')
+        logging.disable(logging.CRITICAL)
 
 
 class SavedViewTestCase(AuthorizedView):
@@ -194,7 +196,7 @@ class DetailAutocompleteViewTestCase(AuthorizedView):
                 {'value': 'fooo'}, set()
             ),
             (
-                {'value': '7 bedrooms'}, set()
+                {'value': '15 bedrooms'}, set()
             ),
             (
                 {'value': '1'}, {'1 passenger elevator', '1 bedroom'}

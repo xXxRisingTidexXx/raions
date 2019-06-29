@@ -125,17 +125,38 @@ class Theme {
     }
 
     static LoadColors() {
-        Theme.SetRootColor("--search_circle", localStorage.getItem("--search_circle"));
-        Theme.SetRootColor("--background", localStorage.getItem("--background"));
-        Theme.SetRootColor("--object_p_background", localStorage.getItem("--object_p_background"));
-        Theme.SetRootColor("--object_p_color", localStorage.getItem("--object_p_color"));
-        Theme.SetRootColor("--first", localStorage.getItem("--first"));
-        Theme.SetRootColor("--second", localStorage.getItem("--second"));
-        Theme.SetRootColor("--panels", localStorage.getItem("--panels"));
-        Theme.SetRootColor("--object_full_background", localStorage.getItem("--object_full_background"));
-        Theme.SetRootColor("--options", localStorage.getItem("--options"));
-        Theme.SetRootColor("--statistics_path_hover", localStorage.getItem("--statistics_path_hover"));
-        Theme.SetRootColor("--object", localStorage.getItem("--object"));
+        if (!localStorage.getItem("--search_circle"))
+            Theme.SetRootColor("--search_circle", localStorage.getItem("--search_circle"));
+
+        if (!localStorage.getItem("--background"))
+            Theme.SetRootColor("--background", localStorage.getItem("--background"));
+
+        if (!localStorage.getItem("--object_p_background"))
+            Theme.SetRootColor("--object_p_background", localStorage.getItem("--object_p_background"));
+
+        if (!localStorage.getItem("--object_p_color"))
+            Theme.SetRootColor("--object_p_color", localStorage.getItem("--object_p_color"));
+
+        if (!localStorage.getItem("--first"))
+            Theme.SetRootColor("--first", localStorage.getItem("--first"));
+
+        if (!localStorage.getItem("--second"))
+            Theme.SetRootColor("--second", localStorage.getItem("--second"));
+
+        if (!localStorage.getItem("--panels"))
+            Theme.SetRootColor("--panels", localStorage.getItem("--panels"));
+
+        if (!localStorage.getItem("--object_full_background"))
+            Theme.SetRootColor("--object_full_background", localStorage.getItem("--object_full_background"));
+
+        if (!localStorage.getItem("--options"))
+            Theme.SetRootColor("--options", localStorage.getItem("--options"));
+
+        if (!localStorage.getItem("--statistics_path_hover"))
+            Theme.SetRootColor("--statistics_path_hover", localStorage.getItem("--statistics_path_hover"));
+
+        if (!localStorage.getItem("--object"))
+            Theme.SetRootColor("--object", localStorage.getItem("--object"));
     }
 
     static SetMapTheme(value) {

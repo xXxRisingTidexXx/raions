@@ -109,6 +109,7 @@
     "каркасно-каменная": "frame-stone",
     "інкерманський камінь": "inkerman stone",
     "армированная 3D Панель": "reinforced 3D panel",
+    "армована 3D панель": "reinforced 3D panel",
     "сборный железобетон": "precast concrete",
     "збірний залізобетон": "precast concrete",
     "керамический кирпич": "ceramic brick",
@@ -160,6 +161,7 @@
     "4": "4 bedrooms",
     "5": "5 bedrooms",
     "6": "6 bedrooms",
+    "7": "7 bedrooms",
     "3": "3 bedrooms"
   },
   "пасажирські ліфти": {
