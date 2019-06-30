@@ -2,13 +2,14 @@ class Filters {
     constructor() {
         this.detailsCount = 0;
         this.detailNodes = new Set();
+        this.orderingValue = "";
 
         this.node = {
             filterObjects: document.getElementById("div_panel_filters_objects"),
             state: document.getElementById("filters_select_state"),
             locality: document.getElementById("filters_select_locality"),
             county: document.getElementById("filters_select_county"),
-            sorting:{
+            sorting: {
                 orderBy: document.getElementById("sorting_order_by"),
                 ordering: document.getElementById("sorting_ordering"),
             },
@@ -41,6 +42,16 @@ class Filters {
                     from: document.getElementById("filter_celling_height_from"),
                     to: document.getElementById("filter_celling_height_to")
                 }
+            }
+        };
+
+        this.node.sorting.ordering.onclick = () => {
+            if (this.orderingValue === "") {
+                this.node.sorting.ordering.innerText = "⬊";
+                this.orderingValue = "-";
+            } else {
+                this.node.sorting.ordering.innerText = "⬈";
+                this.orderingValue = "";
             }
         };
 
@@ -129,8 +140,8 @@ class Filters {
             dict["ceiling_height_to"] = +this.node.numeric.ceilingHeight.to.value;
         }
 
-        if (this.node.sorting.orderBy.value !== "null"){
-            dict["order_by"] = this.node.sorting.ordering.value + this.node.sorting.orderBy.value;
+        if (this.node.sorting.orderBy.value !== "null") {
+            dict["order_by"] = this.orderingValue + this.node.sorting.orderBy.value;
         }
 
         dict["details"] = [];

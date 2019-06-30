@@ -104,10 +104,10 @@ class Windows {
 			this.settings.style.display = "none";
 		}
 
-		if (window_name === "statistics") {
-			this.statistics.style.display = null;
-		} else {
-			this.statistics.style.display = "none";
-		}
+		// if (window_name === "statistics") {
+		// 	this.statistics.style.display = null;
+		// } else {
+		// 	this.statistics.style.display = "none";
+		// }
 	}
 }

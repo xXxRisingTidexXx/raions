@@ -57,18 +57,6 @@ document
 };
 
 document
-    .getElementById("btn_sort_price")
-    .onclick = () => SEARCH_HOLDER.SortBy("price");
-
-document
-    .getElementById("btn_sort_area")
-    .onclick = () => SEARCH_HOLDER.SortBy("area");
-
-document
-    .getElementById("btn_sort_rooms")
-    .onclick = () => SEARCH_HOLDER.SortBy("rooms");
-
-document
     .getElementById("filters_select_state")
     .oninput = () => {
     let val = document.getElementById("filters_select_state").value;

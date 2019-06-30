@@ -236,6 +236,27 @@
     padding: 0;
 }
 
+.div_panel_filters_objects > div > div > button {
+    transition: background-color 0.5s, color 0.5s;
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 1px 5px;
+    background-color: var(--object);
+    color: var(--object_p_color);
+}
+
+.div_panel_filters_objects > div > div > button:hover {
+    background-color: transparent;
+}
+
+.div_panel_filters_objects > div > div > button:hover {
+    transition: 0s;
+    background-color: var(--object);
+}
+
 .div_panel_filters_objects > div > div > select {
     outline: none;
     border-radius: 5px;
@@ -243,7 +264,6 @@
     font-size: 16px;
     font-weight: bold;
     padding: 1px 5px;
-    width: 200px;
     background-color: var(--object);
     color: var(--object_p_color);
     -webkit-appearance: none;
@@ -254,7 +274,8 @@ select::-ms-expand {
 }
 
 option {
-    background-color: var(--background);
+    color: black;
+    background: white;
 }
 
 .div_panel_filters_objects > div > div > input {

@@ -171,15 +171,18 @@
             <p>Sort by</p>
             <div>
                 <select id="sorting_order_by" style="width: 150px; color: var(--second);">
-                    <option value="null">-</option>
+                    <option value="null"></option>
                     <option value="area">Area</option>
-                    <option value="room">Room</option>
+                    <option value="rooms">Rooms</option>
                     <option value="price">Price</option>
                 </select>
-                <select id="sorting_ordering" style="width: 40px; margin: 0 10px 0 10px;">
-                    <option value="" selected="selected">1 - 9</option>
-                    <option value="-">9 - 1</option>
-                </select>
+                <button id="sorting_ordering" style="width: 30px; margin: 0 10px 0 10px;">
+                    ⬈
+                </button>
+                <!-- <select id="sorting_ordering" style="width: 40px; margin: 0 10px 0 10px;">-->
+                <!--     <option value="" selected="selected">1 - 9</option>-->
+                <!--     <option value="-">9 - 1</option>-->
+                <!-- </select>-->
             </div>
         </div>
         <hr>
@@ -202,34 +205,31 @@
     </div>
 </div>
 <div id="window_search" class="div_window div_main_window_objects">
-    <div class="div_main_objects_sort" style="grid-area:sort">
-        <button id="btn_sort_price" class="button_main_selector" type="button">Price</button>
-        <button id="btn_sort_area" class="button_main_selector" type="button">Area</button>
-        <button id="btn_sort_rooms" class="button_main_selector" type="button">Rooms</button>
-    </div>
     <div class="div_main_objects_sort" style="grid-area:selector">
-        <button id="btn_show_items" class="button_main_selector_reversed" type="button">Items</button>
-        <button id="btn_show_map" class="button_main_selector_reversed" type="button">Map</button>
+        <button id="btn_show_items" class="button_main_selector" type="button">Items</button>
+        <button id="btn_show_map" class="button_main_selector" type="button">Map</button>
+        <!-- to avoid map and item moving-->
+        <button class="button_main_selector" style="visibility: hidden"></button>
     </div>
     <div id="gradient_overlay_left" class="div_main_objects_border_left" style="grid-area:objects"></div>
     <div id="gradient_overlay_right" class="div_main_objects_border_right" style="grid-area:objects"></div>
     <div id="div_main_objects_search" class="div_main_objects_objects" style="grid-area:objects"></div>
     <div id="div_main_objects_search_map" class="div_main_objects_objects_map" style="grid-area:objects"></div>
 </div>
-<div id="window_statistics" class="div_window div_main_window_home">
-    <div class="userInfo" style="grid-area: userInfo">
-        <div class="div_user_img">
-            <img src="../static/images/circular-chart.png" alt="img">
-        </div>
-    </div>
-    <div class="search_statistics">
-        <div>
-            <p><b>Statistics over the</b></p>
-            <input type="text">
-            <button id="btn_get_statistics" type="button">Get</button>
-        </div>
-    </div>
-</div>
+<!--<div id="window_statistics" class="div_window div_main_window_home">-->
+<!--    <div class="userInfo" style="grid-area: userInfo">-->
+<!--        <div class="div_user_img">-->
+<!--            <img src="../static/images/circular-chart.png" alt="img">-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="search_statistics">-->
+<!--        <div>-->
+<!--            <p><b>Statistics over the</b></p>-->
+<!--            <input type="text">-->
+<!--            <button id="btn_get_statistics" type="button">Get</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 <div id="window_settings" class="div_window div_main_window_settings">
     <div style="grid-area: contacts;" class="content contacts">
         <p class="head">Contact us</p>

@@ -48,14 +48,12 @@ class ItemsHolder {
     AddPaginationButton(action) {
         this.RemovePaginationButton();
 
-        let pagButton = document.createElement("button");
-        pagButton.setAttribute("class", "paginationButton");
-        pagButton.innerHTML = "►";
+        this.paginationButton = document.createElement("button");
+        this.paginationButton.setAttribute("class", "paginationButton");
+        this.paginationButton.innerHTML = "►";
 
-        pagButton.onclick = () => action();
-
-        this.paginationButton = pagButton;
-        this.holderNode.appendChild(pagButton);
+        this.paginationButton.onclick = () => action();
+        this.holderNode.appendChild(this.paginationButton);
     }
 
     RemovePaginationButton() {
@@ -69,29 +67,5 @@ class ItemsHolder {
         for (let i = 0; i < length; i++) {
             this.holderNode.removeChild(this.holderNode.children[0]);
         }
-    }
-
-    SortBy(sortName) {
-        let elements = this.holderNode.getElementsByClassName(sortName);
-        let paginationButton = this.holderNode.getElementsByClassName("paginationButton")[0];
-        let elementsPrice = [];
-
-        for (let i = 0; i < elements.length; i++) {
-            elementsPrice[i] = {};
-
-            let number = elements[i].innerHTML.split(".")[0].match(/\d/g).join("");
-
-            elementsPrice[i].price = +number;
-            elementsPrice[i].parrentNode = elements[i].parentElement;
-        }
-
-        this.Clear();
-
-        elementsPrice.sort((a, b) => b.price - a.price);
-
-        elementsPrice.forEach(v => this.holderNode.appendChild(v.parrentNode));
-
-        if (!!paginationButton)
-            this.AddItem(paginationButton);
     }
 }

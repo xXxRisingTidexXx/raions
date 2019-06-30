@@ -60,7 +60,7 @@
             <p id="flats_count" style="text-align: center; font-size: calc(1.5vh + 25px);" class="p_text"></p>
         </b>
         <script>
-            fetch('/article/fetch/user.json')
+            fetch('/summary/', {method: "GET"})
                 .then(res => {
                     return res.json();
                 })
