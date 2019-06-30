@@ -8,6 +8,10 @@ class Filters {
             state: document.getElementById("filters_select_state"),
             locality: document.getElementById("filters_select_locality"),
             county: document.getElementById("filters_select_county"),
+            sorting:{
+                orderBy: document.getElementById("sorting_order_by"),
+                ordering: document.getElementById("sorting_ordering"),
+            },
             numeric: {
                 area: {
                     from: document.getElementById("filters_area_from"),
@@ -125,13 +129,17 @@ class Filters {
             dict["ceiling_height_to"] = +this.node.numeric.ceilingHeight.to.value;
         }
 
+        if (this.node.sorting.orderBy.value !== "null"){
+            dict["order_by"] = this.node.sorting.ordering.value + this.node.sorting.orderBy.value;
+        }
+
         dict["details"] = [];
         this.detailNodes.forEach(v => {
             if (v.children[0].value !== "")
                 dict["details"].push(v.children[0].value);
         });
 
-        console.table(dict);
+        // console.table(dict);
         return dict;
     }
 
