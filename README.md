@@ -8,8 +8,6 @@ Questions
 
 Primary objectives
 ------------------
-
-* Add index data: total flat count;
 * Deploy the service;
 * Add rate zones' insight;
 
@@ -18,6 +16,7 @@ Secondary objectives
 * Configure reap without conversion rates;
 * Add index data: top flats' sales in regions and cities;
 * Enhance sweepers and organize their lifecycle;
+* Add documentation;
 * Configure **Docker**;
 * Configure *CI/CD*;
 * Add smart lookups - via house names, neighbourhoods, keywords;
