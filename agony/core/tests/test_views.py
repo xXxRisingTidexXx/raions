@@ -741,6 +741,368 @@ class LookupViewTestCase(AuthorizedView):
                         ]
                     }
                 ]
+            ),
+            (
+                {'living_area_to': 35, 'kitchen_area_from': 12},
+                [
+                    {
+                        'id': flats[4].id,
+                        'url': 'url5',
+                        'avatar': None,
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [44.223, 48.216]},
+                            'properties': {
+                                'state': None, 'locality': 'Пиздоград', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '31200.00',
+                        'rate': '600.00',
+                        'area': 52,
+                        'living_area': 33,
+                        'kitchen_area': 13.3,
+                        'rooms': 2,
+                        'floor': 12,
+                        'total_floor': 21,
+                        'ceiling_height': None,
+                        'details': [
+                            {
+                                'feature': 'planning',
+                                'value': 'adjacent planning',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'wall_type',
+                                'value': 'inkerman stone',
+                                'group': 'building'
+                            },
+                            {
+                                'feature': 'door_type',
+                                'value': 'metal door',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'window_type',
+                                'value': 'metal-plastic windows',
+                                'group': 'interior'
+                            }
+                        ]
+                    }
+                ]
+            ),
+            (
+                {'kitchen_area_to': 17, 'details': ['internal insulation']},
+                [
+                    {
+                        'id': flats[2].id,
+                        'url': 'url3',
+                        'avatar': None,
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [35.089, 49.13021]},
+                            'properties': {
+                                'state': None, 'locality': 'Козятин', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '20000.00',
+                        'rate': '500.00',
+                        'area': 40,
+                        'living_area': 25.8,
+                        'kitchen_area': 5,
+                        'rooms': 1,
+                        'floor': 2,
+                        'total_floor': 5,
+                        'ceiling_height': 2.7,
+                        'details': [
+                            {'feature': 'warming', 'value': 'internal insulation', 'group': 'supplies'},
+                            {'feature': 'door_type', 'value': 'metal-plastic door', 'group': 'interior'},
+                            {'feature': 'bedrooms', 'value': '2 bedrooms', 'group': 'interior'}
+                        ]
+                    }
+                ]
+            ),
+            (
+                {'total_floor_from': 18, 'order_by': 'area'},
+                [
+                    {
+                        'id': flats[4].id,
+                        'url': 'url5',
+                        'avatar': None,
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [44.223, 48.216]},
+                            'properties': {
+                                'state': None, 'locality': 'Пиздоград', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '31200.00',
+                        'rate': '600.00',
+                        'area': 52,
+                        'living_area': 33,
+                        'kitchen_area': 13.3,
+                        'rooms': 2,
+                        'floor': 12,
+                        'total_floor': 21,
+                        'ceiling_height': None,
+                        'details': [
+                            {
+                                'feature': 'planning',
+                                'value': 'adjacent planning',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'wall_type',
+                                'value': 'inkerman stone',
+                                'group': 'building'
+                            },
+                            {
+                                'feature': 'door_type',
+                                'value': 'metal door',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'window_type',
+                                'value': 'metal-plastic windows',
+                                'group': 'interior'
+                            }
+                        ]
+                    },
+                    {
+                        'id': flats[3].id,
+                        'url': 'url4',
+                        'avatar': None,
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [44.223, 48.216]},
+                            'properties': {
+                                'state': None, 'locality': 'Пиздоград', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '33000.00',
+                        'rate': '600.00',
+                        'area': 55,
+                        'living_area': 39,
+                        'kitchen_area': 14,
+                        'rooms': 2,
+                        'floor': 15,
+                        'total_floor': 21,
+                        'ceiling_height': None,
+                        'details': []
+                    }
+                ]
+            ),
+            (
+                {'rooms_from': 2, 'order_by': '-price'},
+                [
+                    {
+                        'id': flats[0].id,
+                        'url': 'url1',
+                        'avatar': 'ava1',
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [34.086782, 52.6523401]},
+                            'properties': {
+                                'state': None, 'locality': 'Хуйомайо', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '45000.00',
+                        'rate': '900.00',
+                        'area': 50,
+                        'living_area': None,
+                        'kitchen_area': None,
+                        'rooms': 2,
+                        'floor': 5,
+                        'total_floor': 9,
+                        'ceiling_height': None,
+                        'details': [
+                            {
+                                'feature': 'wall_type',
+                                'value': 'brick',
+                                'group': 'building'
+                            },
+                            {
+                                'feature': 'window_type',
+                                'value': 'metal-plastic windows',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'bathrooms',
+                                'value': 'adjacent bathrooms',
+                                'group': 'supplies'
+                            },
+                            {
+                                'feature': 'passenger_elevators',
+                                'value': '1 passenger elevator',
+                                'group': 'building'
+                            }
+                        ]
+                    },
+                    {
+                        'id': flats[3].id,
+                        'url': 'url4',
+                        'avatar': None,
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [44.223, 48.216]},
+                            'properties': {
+                                'state': None, 'locality': 'Пиздоград', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '33000.00',
+                        'rate': '600.00',
+                        'area': 55,
+                        'living_area': 39,
+                        'kitchen_area': 14,
+                        'rooms': 2,
+                        'floor': 15,
+                        'total_floor': 21,
+                        'ceiling_height': None,
+                        'details': []
+                    },
+                    {
+                        'id': flats[4].id,
+                        'url': 'url5',
+                        'avatar': None,
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [44.223, 48.216]},
+                            'properties': {
+                                'state': None, 'locality': 'Пиздоград', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '31200.00',
+                        'rate': '600.00',
+                        'area': 52,
+                        'living_area': 33,
+                        'kitchen_area': 13.3,
+                        'rooms': 2,
+                        'floor': 12,
+                        'total_floor': 21,
+                        'ceiling_height': None,
+                        'details': [
+                            {
+                                'feature': 'planning',
+                                'value': 'adjacent planning',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'wall_type',
+                                'value': 'inkerman stone',
+                                'group': 'building'
+                            },
+                            {
+                                'feature': 'door_type',
+                                'value': 'metal door',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'window_type',
+                                'value': 'metal-plastic windows',
+                                'group': 'interior'
+                            }
+                        ]
+                    }
+                ]
+            ),
+            (
+                {'details': ['metal-plastic windows'], 'order_by': 'fucking shit'},
+                [
+                    {
+                        'id': flats[0].id,
+                        'url': 'url1',
+                        'avatar': 'ava1',
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [34.086782, 52.6523401]},
+                            'properties': {
+                                'state': None, 'locality': 'Хуйомайо', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '45000.00',
+                        'rate': '900.00',
+                        'area': 50,
+                        'living_area': None,
+                        'kitchen_area': None,
+                        'rooms': 2,
+                        'floor': 5,
+                        'total_floor': 9,
+                        'ceiling_height': None,
+                        'details': [
+                            {
+                                'feature': 'wall_type',
+                                'value': 'brick',
+                                'group': 'building'
+                            },
+                            {
+                                'feature': 'window_type',
+                                'value': 'metal-plastic windows',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'bathrooms',
+                                'value': 'adjacent bathrooms',
+                                'group': 'supplies'
+                            },
+                            {
+                                'feature': 'passenger_elevators',
+                                'value': '1 passenger elevator',
+                                'group': 'building'
+                            }
+                        ]
+                    },
+                    {
+                        'id': flats[4].id,
+                        'url': 'url5',
+                        'avatar': None,
+                        'geolocation': {
+                            'type': 'Feature',
+                            'geometry': {'type': 'Point', 'coordinates': [44.223, 48.216]},
+                            'properties': {
+                                'state': None, 'locality': 'Пиздоград', 'county': None,
+                                'neighbourhood': None, 'road': None, 'house_number': None
+                            }
+                        },
+                        'price': '31200.00',
+                        'rate': '600.00',
+                        'area': 52,
+                        'living_area': 33,
+                        'kitchen_area': 13.3,
+                        'rooms': 2,
+                        'floor': 12,
+                        'total_floor': 21,
+                        'ceiling_height': None,
+                        'details': [
+                            {
+                                'feature': 'planning',
+                                'value': 'adjacent planning',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'wall_type',
+                                'value': 'inkerman stone',
+                                'group': 'building'
+                            },
+                            {
+                                'feature': 'door_type',
+                                'value': 'metal door',
+                                'group': 'interior'
+                            },
+                            {
+                                'feature': 'window_type',
+                                'value': 'metal-plastic windows',
+                                'group': 'interior'
+                            }
+                        ]
+                    }
+                ]
             )
         )
         self.assertEqual(self.client.post('/lookup/').status_code, 404)

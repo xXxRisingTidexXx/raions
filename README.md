@@ -8,9 +8,9 @@ Questions
 
 Primary objectives
 ------------------
-* Enhance filtering (add new fields, like kitchen area, living area, etc.);
+
 * Add index data: total flat count;
-* Move ordering to the backend;
+* Deploy the service;
 * Add rate zones' insight;
 
 Secondary objectives

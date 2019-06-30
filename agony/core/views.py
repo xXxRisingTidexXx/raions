@@ -109,17 +109,19 @@ class LookupView(MapReduceView):
         bundle = self._bundles.get(kind)
         if bundle is None:
             return Response(status=HTTP_404_NOT_FOUND)
-        return Response(
-            bundle[1](self.__get_models(request.data, bundle[0]), many=True).data
-        )
+        return Response(bundle[1](
+            self.__get_models(request.data, bundle[0]), many=True
+        ).data)
 
     def __get_models(self, data, model):
-        number = int(data.get('number', 0))
+        field, number = data.get('order_by'), int(data.get('number', 0))
         return reduce(
             lambda qs, d: qs.filter(details__value=d),
             data.get('details', []),
             model.objects.filter(self._reduce_query(data, model.lookups))
-        )[self._chunk_size * number:self._chunk_size * (number + 1)]
+        ).order_by(field if field in model.order_by else '-published')[
+            self._chunk_size * number:self._chunk_size * (number + 1)
+        ]
 
     def _map_queries(self, *args):
         return (
