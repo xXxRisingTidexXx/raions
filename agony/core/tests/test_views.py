@@ -6,6 +6,35 @@ from rest_framework.test import APITestCase
 from core.models import User, Flat, Geolocation, Detail
 
 
+class SummaryViewTestCase(APITestCase):
+    def setUp(self) -> None:
+        logging.disable(logging.CRITICAL)
+
+    def test_get(self):
+        flats = (
+            Flat.objects.create(
+                url='url1', avatar='ava1', published=date(2019, 4, 15),
+                geolocation=Geolocation.objects.create(point=Point(34.086782, 52.6523401), locality='Ass'),
+                price=Decimal(45000), rate=Decimal(900), area=50, rooms=2, floor=5, total_floor=9
+            ),
+            Flat.objects.create(
+                url='url2', avatar='ava2', published=date(2019, 2, 5), geolocation=Geolocation.objects.create(
+                    point=Point(31.0876, 45.209872), locality='New-York City', state='New-York'
+                ), price=Decimal(66000), rate=Decimal(2000), area=33, rooms=1, floor=15, total_floor=16
+            ),
+            Flat.objects.create(
+                url='url3', published=date(2019, 5, 7),
+                geolocation=Geolocation.objects.create(point=Point(35.089, 49.13021), locality='Pussy'),
+                price=Decimal(20000), rate=Decimal(500), area=40, living_area=25.8, kitchen_area=5,
+                rooms=1, floor=2, total_floor=5, ceiling_height=2.7
+            )
+        )
+        flats[1].details.add(Detail.objects.filter(value='1 bedroom')[0])
+        self.assertEqual(self.client.get('/summary/porn/').status_code, 404)
+        self.assertEqual(self.client.get('/sumary/').status_code, 404)
+        self.assertEqual(self.client.get('/summary/').data, {'total_flats': 3})
+
+
 class AuthorizedView(APITestCase):
     def setUp(self):
         self._user = User.objects.create(email='estimo@gmail.com')

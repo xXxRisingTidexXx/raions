@@ -24,6 +24,14 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
 
+class SummaryView(APIView):
+    permission_classes = (AllowAny,)
+
+    @staticmethod
+    def get(request):
+        return Response({'total_flats': Flat.objects.count()})
+
+
 class LoginView(TemplateView):
     template_name = 'login.html'
 

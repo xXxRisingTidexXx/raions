@@ -1,11 +1,12 @@
 from django.urls import path
 from .views import (
-    IndexView, LoginView, AuthenticationView, ProfileView, SavedView, LookupView,
-    GeolocationAutocompleteView, DetailAutocompleteView
+    IndexView, SummaryView, LoginView, AuthenticationView, ProfileView, SavedView,
+    LookupView, GeolocationAutocompleteView, DetailAutocompleteView
 )
 
 urlpatterns = [
     path('', IndexView.as_view()),
+    path('summary/', SummaryView.as_view()),
     path('login/', LoginView.as_view()),
     path('auth/', AuthenticationView.as_view()),
     path('profile/', ProfileView.as_view()),
