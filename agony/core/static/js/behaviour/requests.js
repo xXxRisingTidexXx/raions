@@ -73,7 +73,7 @@ class Requests {
 			})
 			.then(data => {
 				SEARCH_HOLDER.RemoveAlerts();
-
+				console.log(data.length);
 				if (data.length > 0) {
 					data.forEach(v => {
 						if (!SEARCH_HOLDER.HasUniqueItem(v.id)) {
@@ -81,7 +81,7 @@ class Requests {
 							SEARCH_HOLDER.AddItem(new Item(v, "search"));
 						}
 					});
-					if (data.length === 30) {
+					if (data.length === 20) {
 						SEARCH_HOLDER.AddPaginationButton(Requests.GetFiltersPage);
 					}
 				} else if (Requests.page === 0) {

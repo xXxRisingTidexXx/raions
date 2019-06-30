@@ -11,8 +11,8 @@ class Item {
 
         if (action === "save") {
             this.marker = MAP.AddMarkerToLayer(
-                json.geolocation.geometry.coordinates[1],
-                json.geolocation.geometry.coordinates[0],
+                json.geolocation.geometry["coordinates"][1],
+                json.geolocation.geometry["coordinates"][0],
                 markerTitle,
                 MAP.savesLayer,
                 "https://image.flaticon.com/icons/svg/138/138945.svg"
@@ -32,8 +32,8 @@ class Item {
             });
         } else {
             this.marker = MAP.AddMarkerToLayer(
-                json.geolocation.geometry.coordinates[1],
-                json.geolocation.geometry.coordinates[0],
+                json.geolocation.geometry["coordinates"][1],
+                json.geolocation.geometry["coordinates"][0],
                 markerTitle,
                 MAP.searchLayer,
                 "https://image.flaticon.com/icons/svg/684/684908.svg"
@@ -141,8 +141,8 @@ class Item {
     NewItemExampleImage() {
         let image = document.createElement("img");
         image.setAttribute("class", "image");
-        if (!!this.json.avatar) {
-            image.src = this.json.avatar;
+        if (!!this.json["avatar"]) {
+            image.src = this.json["avatar"];
         } else {
             image.src = "../static/images/home.png";
             image.style.width = "200px";
@@ -203,7 +203,7 @@ class Item {
 
         button.onclick = (e) => {
             if (e.ctrlKey) {
-                let url = `http://www.google.com/maps/place/${this.json.geolocation.geometry.coordinates[1]},${this.json.geolocation.geometry.coordinates[0]}`;
+                let url = `http://www.google.com/maps/place/${this.json.geolocation.geometry["coordinates"][1]},${this.json.geolocation.geometry["coordinates"][0]}`;
                 window.open(url, '_blank');
                 window.focus();
             } else {
@@ -212,6 +212,7 @@ class Item {
                 }
                 WINDOWS.TargetSearchTypeWindow("map");
                 MAP.myMap.setView(this.marker.getLatLng(), 20);
+                console.log(this.marker.getLatLng());
                 if (this.action === "save") {
                     if (!MAP.itemsLayers._layerControlInputs[2].checked) {
                         MAP.itemsLayers._layerControlInputs[2].click();
@@ -268,7 +269,7 @@ class Item {
                 url: this.json.url,
             },
             map: {
-                url: `http://www.google.com/maps/place/${this.json.geolocation.geometry.coordinates[1]},${this.json.geolocation.geometry.coordinates[0]}`,
+                url: `http://www.google.com/maps/place/${this.json.geolocation.geometry["coordinates"][1]},${this.json.geolocation.geometry["coordinates"][0]}`,
             }
         };
         this.FullSetButtonsAction(buttonsParams);
@@ -276,12 +277,12 @@ class Item {
         let geo = [];
         let geoAdd = (p) => {if (!!p) geo.push(p)};
 
-        geoAdd(this.json.geolocation.properties.state);
-        geoAdd(this.json.geolocation.properties.locality);
-        geoAdd(this.json.geolocation.properties.county);
-        geoAdd(this.json.geolocation.properties.neighbourhood);
-        geoAdd(this.json.geolocation.properties.road);
-        geoAdd(this.json.geolocation.properties.house_number);
+        geoAdd(this.json.geolocation.properties["state"]);
+        geoAdd(this.json.geolocation.properties["locality"]);
+        geoAdd(this.json.geolocation.properties["county"]);
+        geoAdd(this.json.geolocation.properties["neighbourhood"]);
+        geoAdd(this.json.geolocation.properties["road"]);
+        geoAdd(this.json.geolocation.properties["house_number"]);
 
         let mainParams = [["geolocation", "", geo.join(", ")]];
 
@@ -295,69 +296,69 @@ class Item {
 
         let params = [];
 
-        if (!!this.json.area) {
+        if (!!this.json["area"]) {
             params.push([
                 "../static/images/area-measure.png",
                 LANGUAGE.item.area + " : ",
-                this.json.area + " m<sup>2</sup>"
+                this.json["area"] + " m<sup>2</sup>"
             ]);
         }
 
-        if (!!this.json.living_area) {
+        if (!!this.json["living_area"]) {
             params.push([
                 "../static/images/armchair.png",
                 LANGUAGE.item.livingArea + " : ",
-                this.json.living_area + " m<sup>2</sup>"
+                this.json["living_area"] + " m<sup>2</sup>"
             ]);
         }
 
-        if (!!this.json.kitchen_area) {
+        if (!!this.json["kitchen_area"]) {
             params.push([
                 "../static/images/cooking_pot.png",
                 LANGUAGE.item.kitchenArea + " : ",
-                this.json.kitchen_area + " m<sup>2</sup>"
+                this.json["kitchen_area"] + " m<sup>2</sup>"
             ]);
         }
 
-        if (!!this.json.rooms) {
+        if (!!this.json["rooms"]) {
             params.push([
                 "../static/images/cube.png",
                 LANGUAGE.item.rooms + " : ",
-                this.json.rooms
+                this.json["rooms"]
             ]);
         }
 
-        if (!!this.json.floor) {
+        if (!!this.json["floor"]) {
             params.push([
                 "../static/images/balcony.png",
                 LANGUAGE.item.floor + " : ",
-                this.json.floor
+                this.json["floor"]
             ]);
         }
 
-        if (!!this.json.total_floor) {
+        if (!!this.json["total_floor"]) {
             params.push([
                 "../static/images/roof.png",
                 LANGUAGE.item.totalFloor + " : ",
-                this.json.total_floor
+                this.json["total_floor"]
             ]);
         }
 
-        if (!!this.json.ceiling_height) {
+        if (!!this.json["ceiling_height"]) {
             params.push([
                 "../static/images/ceiling-height.png ",
                 LANGUAGE.item.ceilingHeight + " : ",
-                this.json.ceiling_height
+                this.json["ceiling_height"]
             ]);
         }
 
         Item.FullAddParameters(params);
 
         let details = [];
-        for (let i = 0; i < this.json.details.length; i++) {
+        for (let i = 0; i < this.json["details"].length; i++) {
             let param = [];
-            param.push(LANGUAGE.alternativeName[this.json.details[i].feature] + " : ");
-            param.push(this.json.details[i].value);
+            param.push(LANGUAGE.alternativeName[this.json.details[i]["feature"]] + " : ");
+            param.push(this.json["details"][i]["value"]);
 
             details.push(param);
         }
@@ -392,8 +393,8 @@ class Item {
         let container = document.getElementById("flat_image");
 
         let image = document.createElement("img");
-        if (!!this.json.avatar) {
-            image.src = this.json.avatar;
+        if (!!this.json["avatar"]) {
+            image.src = this.json["avatar"];
         } else {
             image.src = "../static/images/home.png";
         }

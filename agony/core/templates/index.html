@@ -65,7 +65,7 @@
                     return res.json();
                 })
                 .then(data => {
-                    document.getElementById("flats_count").innerText = data.flats_count;
+                    document.getElementById("flats_count").innerText = data["flats_count"];
                 })
                 .catch(err => {
                     console.log(err);
