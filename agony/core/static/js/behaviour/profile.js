@@ -2,7 +2,7 @@ const AJAX = new Requests();
 const WINDOWS = new Windows();
 const FILTERS = new Filters();
 const LANGUAGE = new Language();
-const STATISTICS = new Statistics();
+// const STATISTICS = new Statistics();
 const MAP = new Map();
 
 const SAVES_HOLDER = new ItemsHolder(
@@ -24,16 +24,16 @@ document
     .getElementById("btn_view_settings")
     .onclick = () => WINDOWS.Toggle("settings");
 
-document
-    .getElementById("btn_view_statistics")
-    .onclick = () => WINDOWS.Toggle("statistics");
-
-document
-    .getElementById("btn_window_full_statistics_close")
-    .onclick = () => {
-    STATISTICS.ClearStatistics();
-    WINDOWS.StatisticsToggle(false)
-};
+// document
+//     .getElementById("btn_view_statistics")
+//     .onclick = () => WINDOWS.Toggle("statistics");
+//
+// document
+//     .getElementById("btn_window_full_statistics_close")
+//     .onclick = () => {
+//     STATISTICS.ClearStatistics();
+//     WINDOWS.StatisticsToggle(false)
+// };
 
 document
     .getElementById("btn_full_object_exit")
@@ -148,7 +148,7 @@ document.addEventListener('keyup', e => {
 
 Requests.GetSaves();
 WINDOWS.Toggle("saves");
-WINDOWS.StatisticsToggle(false);
+// WINDOWS.StatisticsToggle(false);
 WINDOWS.FullItemToggle(false);
 WINDOWS.AlertBoxHide();
 WINDOWS.TargetSearchTypeWindow("items");

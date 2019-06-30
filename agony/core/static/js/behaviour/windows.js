@@ -47,13 +47,13 @@ class Windows {
 		}
 	}
 
-	StatisticsToggle(state) {
-		if (state) {
-			this.fullStatistics.style.visibility = null;
-		} else {
-			this.fullStatistics.style.visibility = "hidden";
-		}
-	}
+	// StatisticsToggle(state) {
+	// 	if (state) {
+	// 		this.fullStatistics.style.visibility = null;
+	// 	} else {
+	// 		this.fullStatistics.style.visibility = "hidden";
+	// 	}
+	// }
 
 	FullItemToggle(state) {
 		if (state) {
