@@ -1,9 +1,8 @@
 .leaflet-control-layers {
     border-radius: 20px 0 !important;
-    background: var(--icons_background) !important;
     color: var(--object_p_color) !important;
     border: none !important;
-    text-shadow: 0 0 5px black;
+    background: var(--icons_background) !important;
 }
 
 .leaflet-control-layers-toggle {
@@ -13,24 +12,42 @@
 }
 
 .leaflet-control-layers-expanded {
-    transition: 0s;
+    transition: padding 0.3s;
     padding: 10px !important;
+    background: var(--background) !important;
 }
 
-.leaflet-control-layers-list > div > label > div > span {
+.leaflet-control-layers-selector ~ span {
     font-size: 14px !important;
+    font-style: italic;
+}
+
+.leaflet-control-layers-selector ~ span:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.leaflet-control-layers-selector:checked ~ span {
+    color: var(--second);
+    font-style: unset;
+    font-weight: bold;
+}
+
+.leaflet-control-layers-list > div > label > div {
+    display: grid;
+    justify-content: center;
+    align-content: center;
 }
 
 .leaflet-control-layers-selector {
-    width: 15px;
-    height: 15px;
+    display: none;
 }
 
 .leaflet-control-layers-separator {
     border-radius: 3px !important;
     margin: 10px 10px !important;
-    border: 1px solid var(--background) !important;
-    background: var(--background);
+    border: 1px solid var(--object) !important;
+    background: var(--object);
 }
 
 .leaflet-marker-icon {

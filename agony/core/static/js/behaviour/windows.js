@@ -47,13 +47,13 @@ class Windows {
 		}
 	}
 
-	StatisticsToggle(state) {
-		if (state) {
-			this.fullStatistics.style.visibility = null;
-		} else {
-			this.fullStatistics.style.visibility = "hidden";
-		}
-	}
+	// StatisticsToggle(state) {
+	// 	if (state) {
+	// 		this.fullStatistics.style.visibility = null;
+	// 	} else {
+	// 		this.fullStatistics.style.visibility = "hidden";
+	// 	}
+	// }
 
 	FullItemToggle(state) {
 		if (state) {
@@ -104,10 +104,10 @@ class Windows {
 			this.settings.style.display = "none";
 		}
 
-		if (window_name === "statistics") {
-			this.statistics.style.display = null;
-		} else {
-			this.statistics.style.display = "none";
-		}
+		// if (window_name === "statistics") {
+		// 	this.statistics.style.display = null;
+		// } else {
+		// 	this.statistics.style.display = "none";
+		// }
 	}
 }

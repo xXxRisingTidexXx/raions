@@ -18,6 +18,9 @@ class Geolocation(Model):
     class Meta:
         db_table = 'geolocations'
 
+    def __str__(self):
+        return f'{self.state}, {self.locality}, {self.county}'
+
 
 class Detail(Model):
     feature = CharField(max_length=30)
@@ -40,6 +43,9 @@ class Estate(Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return f'[{self.url}, {self.area}, {self.rate}]'
+
 
 class Flat(Estate):
     living_area = FloatField(null=True)
@@ -56,6 +62,10 @@ class Flat(Estate):
         'county': 'geolocation__county',
         'area_from': 'area__gte',
         'area_to': 'area__lte',
+        'living_area_from': 'living_area__gte',
+        'living_area_to': 'living_area__lte',
+        'kitchen_area_from': 'kitchen_area__gte',
+        'kitchen_area_to': 'kitchen_area__lte',
         'rooms_from': 'rooms__gte',
         'rooms_to': 'rooms__lte',
         'floor_from': 'floor__gte',
@@ -65,10 +75,10 @@ class Flat(Estate):
         'ceiling_height_from': 'ceiling_height__gte',
         'ceiling_height_to': 'ceiling_height__lte'
     }
+    order_by = {'area', '-area', 'rooms', '-rooms', 'price', '-price'}
 
     class Meta:
         db_table = 'flats'
-        ordering = ['-published']
         constraints = [
             UniqueConstraint(
                 fields=['geolocation_id', 'rooms', 'floor', 'total_floor'],
