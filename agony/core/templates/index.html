@@ -55,7 +55,7 @@
         <div class="infobox_img">
             <img src="../static/images/building.png" alt="">
         </div>
-        <p style="text-align: center;" class="p_text">Our data base store</p>
+        <p style="text-align: center;" class="p_text">We take into account</p>
         <b>
             <p id="flats_count" style="text-align: center; font-size: calc(1.5vh + 25px);" class="p_text"></p>
         </b>
@@ -65,7 +65,7 @@
                     return res.json();
                 })
                 .then(data => {
-                    document.getElementById("flats_count").innerText = data["flats_count"];
+                    document.getElementById("flats_count").innerText = data["total_flats"];
                 })
                 .catch(err => {
                     console.log(err);
