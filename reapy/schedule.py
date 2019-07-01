@@ -13,6 +13,13 @@ CRON = CronTab(user=USER)
 
 
 def __run_worker(worker, **kwargs):
+    """
+    Runs the worker via cron's job
+
+    :param worker: *reapy*'s working unit
+    :param kwargs: job's timings
+    :return: configured job
+    """
     job = CRON.new(f'{INTERPRETER_PATH} {join(BASE_DIR, "manage.py")} {worker}')
     job.minute.on(*kwargs['minutes'])
     job.hour.on(*kwargs['hours'])
