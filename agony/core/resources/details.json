@@ -120,6 +120,7 @@
       "another wall type",
       "cinder block",
       "wood",
+      "facing brick",
       "sandwich-structured composite"
     ],
     "group": "building"

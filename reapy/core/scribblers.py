@@ -1,10 +1,10 @@
 """
-This module describes *scribblers* - vigilant *reapy*'s statisticians
+This module describes scribblers - vigilant *reapy*'s statisticians
 
 Generally, each worker needs an auxiliary entity whose main purpose is to
 write all worker's numeric achievements. :class:`core.scribblers.Scribbler`
-and its successors are *.csv* file writers. This text format is very simple
-and suitable for table comprehensions, that's why *scribblers* dump all their
+and its successors are .csv file writers. This text format is very simple
+and suitable for table comprehensions, that's why scribblers dump all their
 reports into comma-separated-values files.
 """
 from datetime import datetime
@@ -23,6 +23,15 @@ class Scribbler:
     tact requires worker to dump its results, that's why each tact
     produces 1 row in the 'scribble' file. Basically, any scribble's line
     contains a few numeric params and the record's date&time.
+
+    Class properties:
+        _fields (iterable[str]): a sequence of .csv column names; .csv header
+        _defaults (iterable[Any]): a sequence of a row default values
+
+    Instance properties:
+        _scribble_path (str): absolute target file's path
+        _row (dict[str, Any]): another data record to be rewritten
+        _lock (Lock): synchronisation primitive
     """
     _fields = None
     _defaults = None

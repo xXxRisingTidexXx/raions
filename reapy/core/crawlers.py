@@ -1,6 +1,6 @@
 import logging
 from asyncio import Semaphore, TimeoutError, gather
-from aiohttp import ContentTypeError, ClientError, ClientPayloadError
+from aiohttp import ContentTypeError, ClientError, ClientPayloadError, ClientConnectorError
 from aiohttp.client import TooManyRedirects
 from .decorators import measurable
 
@@ -25,7 +25,8 @@ class Crawler:
                 async with self._session.get(url, **kwargs) as response:
                     return await getattr(response, content_type)()
         except (
-            TimeoutError, TooManyRedirects, ClientPayloadError, ConnectionResetError
+            TimeoutError, TooManyRedirects,
+            ClientPayloadError, ClientConnectorError
         ):
             pass
         except ContentTypeError:

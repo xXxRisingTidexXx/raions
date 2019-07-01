@@ -1,3 +1,6 @@
+"""
+*reapy*'s decorator collection for all occasions
+"""
 import logging
 from asyncio import run
 from concurrent.futures import ProcessPoolExecutor
@@ -10,6 +13,11 @@ from . import TESTING_DSN
 
 
 def measurable(name):
+    """
+    Measures and logs approximate coroutine's working time
+
+    :param name: stage's name
+    """
     def decorator_wrapper(coroutine):
         async def coroutine_wrapper(*args, **kwargs):
             logging.info(f'{name} has been started')
@@ -23,6 +31,12 @@ def measurable(name):
 
 
 def dbtest(main):
+    """
+    Asynchronous database testing decorator
+
+    :param main: testing coroutine
+    :return: testing wrapper
+    """
     def wrapper(test_case):
         install()
         run(runner(main, test_case))
@@ -40,6 +54,11 @@ def dbtest(main):
 
 
 async def __truncate_tables(pool):
+    """
+    Clears up the testing database's tables
+
+    :param pool: database connection pool
+    """
     async with pool.acquire() as connection:
         await connection.execute('TRUNCATE TABLE core_user_saved_flats CASCADE')
         await connection.execute('TRUNCATE TABLE core_user CASCADE')
@@ -50,6 +69,12 @@ async def __truncate_tables(pool):
 
 
 def processtest(main):
+    """
+    Asynchronous CPU bound problems' calculator testing decorator
+
+    :param main: testing coroutine
+    :return: testing wrapper
+    """
     def wrapper(test_case):
         install()
         run(runner(main, test_case))
@@ -63,6 +88,12 @@ def processtest(main):
 
 
 def webtest(main):
+    """
+    Asynchronous web client&processor testing decorator
+
+    :param main: testing coroutine
+    :return: testing wrapper
+    """
     def wrapper(test_case):
         install()
         run(runner(main, test_case))
