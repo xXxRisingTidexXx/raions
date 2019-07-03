@@ -68,9 +68,10 @@ class Geolocator:
     async def __get_location(self, geodict):
         point = geodict.get('point')
         if point is None:
-            return next(iter(await self.__get_json(
+            json = await self.__get_json(
                 self._geocoding_url.format(geodict.get('address'))
-            )), None)
+            )
+            return None if json is None or len(json) == 0 else json[0]
         return await self.__get_json(
             self._reversing_url.format(point[1], point[0])
         )

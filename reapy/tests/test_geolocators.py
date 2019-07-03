@@ -327,7 +327,8 @@ class NominatimGeolocatorTestCase(TestCase):
             ],
             [],
             {'error': 'Unable to geocode'},
-            []
+            [],
+            None
         ))
         cases = (
             (
@@ -467,6 +468,9 @@ class NominatimGeolocatorTestCase(TestCase):
             ),
             (
                 {'address': 'wefweKBJybwjybfwkLJNK8o23hkjwf, 82nkwekjfkj, 1'}, None
+            ),
+            (
+                {'address': 'Київ, Майдан Незалежності'}, None
             )
         )
         await gather(*(self.__locate(geolocator, c) for c in cases))
