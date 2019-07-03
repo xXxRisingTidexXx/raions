@@ -71,7 +71,8 @@
     "отличное": "excellent state",
     "без оздоблювальних робіт": "without finishing work",
     "чорнові роботи/ будівельна обробка": "drilling/construction work",
-    "потребує ремонту/ без ремонту/ ремонт не завершений": "repair required"
+    "потребує ремонту/ без ремонту/ ремонт не завершений": "repair required",
+    "аварійний": "hazardous state"
   },
   "Тип стін": {
     "моноліт": "monolith",
