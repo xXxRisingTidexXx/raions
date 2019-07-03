@@ -7,7 +7,7 @@ from .decorators import measurable
 
 class Crawler:
     _page_url = None
-    _limit = 100
+    _limit = 80
     _timeout = 10
 
     def __init__(self, session, scribbler):
