@@ -212,7 +212,6 @@ class Item {
                 }
                 WINDOWS.TargetSearchTypeWindow("map");
                 MAP.myMap.setView(this.marker.getLatLng(), 20);
-                console.log(this.marker.getLatLng());
                 if (this.action === "save") {
                     if (!MAP.itemsLayers._layerControlInputs[2].checked) {
                         MAP.itemsLayers._layerControlInputs[2].click();
