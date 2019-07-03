@@ -111,7 +111,6 @@ let appActions = (key, altKey) => {
     if (altKey) {
         if (WINDOWS.isToggledFullItem){
             WINDOWS.FullItemToggle(false);
-            console.log("a");
         }
     } else if (key === "z" || key === "Z" ||
         key === "я" || key === "Я") {

@@ -24,10 +24,9 @@ body, html {
 
 .div_error {
   margin: auto;
-  width: 30%;
   position: relative;
-  left: calc(-11vw - 7vh);
-  top: 4vw;
+  left: -150px;
+  top: 75px;
   transform: rotate(-30deg) skew(25deg);
 }
 
@@ -38,7 +37,10 @@ body, html {
   border: 5px solid orange;
   position: absolute;
   border-radius: 10px;
-  font-size: calc(4vh + 12px);
+  font-size: 32px;
+  width: 200px;
+  text-align: center;
+
 }
 
 .div_error>p:nth-child(4) {
