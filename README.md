@@ -1,23 +1,25 @@
-raions
-======
-[*raions*](http://raions.veritexgroup.com.ua/) - it's a simple Ukrainian realty estimation service.
-It's main purpose is to aggregate real estate data and provide informative insights with the help of
-machine learning.
+Ideas
+=====
 
-Previews
---------
-![preview0](previews/preview0.png)
+Questions
+---------
+* Get know about search circles; 
+* Get know about notifications concernedly expired flats;
 
-![preview1](previews/preview1.png)
+Primary objectives
+------------------
+* Deploy the service;
+* Add rate zones' insight;
 
-![preview2](previews/preview2.png)
-
-![preview3](previews/preview3.png)
-
-![preview4](previews/preview4.png)
-
-![preview5](previews/preview5.png)
-
-License
--------
-This software is published under the [GNU GPL v3](LICENSE).
+Secondary objectives
+--------------------
+* Configure reap without conversion rates;
+* Add index data: top flats' sales in regions and cities;
+* Enhance sweepers and organize their lifecycle;
+* Add documentation;
+* Configure **Docker**;
+* Configure *CI/CD*;
+* Add smart lookups - via house names, neighbourhoods, keywords;
+* Configure *HTTPS*;
+* Try **pypy** interpreter;
+* Block port *11211* programmatically;
