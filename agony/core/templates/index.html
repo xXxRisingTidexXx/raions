@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Description" content="Property estimation program">
+
+    <title>Raions</title>
+    <link href="https://fonts.googleapis.com/css?family=Libre+Barcode+39|Montserrat" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/index/main.css">
+    <link rel="stylesheet" href="../static/css/index/style.css">
+
+    <link rel="icon" href="../static/images/homeTab.png">
+
+    <script type="text/javascript" src="../static/js/lib/three.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/animations/city.js" charset="utf-8"></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<header>
+    <nav>
+        <h1 class="p_name">Raions</h1>
+    </nav>
+
+    <a id="href_login" href="login/">
+        <div class="login">
+            <img class="login_image" src="../static/images/avatar.png" alt="img_user">
+        </div>
+        <p class="p_login">Login</p>
+    </a>
+</header>
+
+<script type="text/javascript" charset="utf-8">
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        document.getElementById("href_login").style.display = "none";
+    }
+</script>
+
+<div class="moto">
+    <p id="moto">Everything<br> is countable</p>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    setTimeout(function () {
+        document.getElementById("moto").style.color = "white"
+    });
+    setTimeout(function () {
+        document.getElementById("moto").style.textShadow = "2px 2px 5px black"
+    });
+</script>
+
+<main>
+    <section class="overlapping_infobox">
+        <div class="infobox_img">
+            <img src="../static/images/building.png" alt="">
+        </div>
+        <p style="text-align: center;" class="p_text">We take into account</p>
+        <b>
+            <p id="flats_count" style="text-align: center; font-size: calc(1.5vh + 25px);" class="p_text"></p>
+        </b>
+        <script>
+            fetch('/summary/', {method: "GET"})
+                .then(res => {
+                    return res.json();
+                })
+                .then(data => {
+                    document.getElementById("flats_count").innerText = data["total_flats"];
+                })
+                .catch(err => {
+                    console.log(err);
+                    document.getElementById("flats_count").innerText = "10000";
+                });
+        </script>
+        <p style="text-align: center;" class="p_text">flats</p>
+    </section>
+
+    <!--    <div class="city_overlap"></div>-->
+
+    <!--    <section class="overlapping_infobox">-->
+    <!--        <p class="p_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut-->
+    <!--            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut-->
+    <!--            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum-->
+    <!--            dolore eu-->
+    <!--            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt-->
+    <!--            mollit-->
+    <!--            anim id est laborum.</p>-->
+    <!--    </section>-->
+
+    <!--    <div class="city_overlap"></div>-->
+
+    <!--    <section class="overlapping_infobox">-->
+    <!--        <p class="p_text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut-->
+    <!--            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut-->
+    <!--            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum-->
+    <!--            dolore eu-->
+    <!--            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt-->
+    <!--            mollit-->
+    <!--            anim id est laborum.</p>-->
+    <!--    </section>-->
+
+    <aside class="infobox logos city_overlap">
+        <a href="http://veritexgroup.com.ua/uk-UA/" target="_blank">
+            <img class="contributors" src="http://veritexgroup.com.ua/images/veritexlogo.png" alt="img">
+        </a>
+    </aside>
+</main>
+
+<footer>
+    <p> Copyright (c) 2019 Copyright Holder All Rights Reserved. </p>
+</footer>
+</body>
+</html>

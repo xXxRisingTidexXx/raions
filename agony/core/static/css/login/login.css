@@ -1,0 +1,133 @@
+* {
+  padding: 5px;
+  margin: 5px;
+  font-family: 'Raleway', sans-serif;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  background-color: black;
+  overflow: hidden;
+}
+
+:root {
+  --gradBR: linear-gradient(to bottom right, orange, yellowGreen);
+}
+
+canvas {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.div_stack {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.div_user {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-areas:
+    "image image"
+    "loginP loginP"
+    "login login"
+    "passwordP passwordP"
+    "password password_show"
+    "submit submit";
+  justify-content: center;
+  align-content: center;
+  grid-gap: 5px;
+}
+
+.div_user>p {
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px 2px black;
+}
+
+.div_user>button {
+  z-index: 2;
+  transition: all 0.5s;
+  font-size: 16px;
+  height: 35px;
+  background-color: black;
+  color: white;
+  border: 3px solid orange;
+  border-radius: 50px 1px;
+  outline: none;
+  font-weight: bold;
+}
+
+.div_user>button:hover {
+  border-radius: 1px 50px;
+  background-color: orange;
+  color: black;
+}
+
+.div_user>button:active {
+  transition: 0s;
+  background-color: black;
+  color: white;
+}
+
+.div_user>button:focus {
+  transform: translateX(10px);
+  border-radius: 0 50px 0 50px;
+}
+
+.div_user>input {
+  z-index: 2;
+  transition: all 0.5s;
+  font-size: 16px;
+  padding: 5px 10px;
+  height: 20px;
+  background-color: black;
+  color: white;
+  border: 3px solid orange;
+  border-radius: 20px;
+  outline: none;
+}
+
+.div_user>input:focus {
+  border-radius: 5px;
+  transform: translateX(10px);
+}
+
+.div_user_img {
+  z-index: 2;
+  width: 75px;
+  height: 75px;
+  padding: 15px;
+  border-radius: 50%;
+  border: 4px solid black;
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  background-image: var(--gradBR);
+  margin: 0 auto 30px;
+}
+
+.div_user_img>img {
+  z-index: 2;
+  width: 75px;
+}
+
+#button_show_password {
+  border-radius: 50%;
+}

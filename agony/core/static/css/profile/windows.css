@@ -1,0 +1,519 @@
+.div_window {
+    height: 100%;
+    background: var(--background);
+    margin: 0 0 0 10px;
+}
+
+.div_main_window_home {
+    display: grid;
+    grid-template-areas: "userInfo" "userSaves";
+    grid-template-rows: auto 1fr;
+}
+
+.userInfo {
+    margin: 20px;
+    display: grid;
+    justify-content: center;
+}
+
+.div_user_img {
+    width: 50px;
+    height: 50px;
+    padding: 15px;
+    margin: auto;
+    border-radius: 50%;
+    border: 5px solid var(--object_p_color);
+    display: grid;
+    background: var(--icons_background);
+    box-shadow: 0 0 15px var(--object_p_color);
+}
+
+.div_user_img > img {
+    width: 40px;
+    margin: auto;
+}
+
+.div_main_window_objects {
+    height: 100%;
+    background: var(--background);
+    margin-right: 10px;
+    display: grid;
+    grid-gap: 3px;
+    grid-template-areas: "selector" "objects";
+    grid-template-rows: auto 1fr;
+}
+
+.div_main_objects {
+    display: grid;
+    grid-template-rows: 30px 1fr;
+    background: var(--background);
+}
+
+.button_main_selector {
+    transition: background-color 0.5s, color 0.5s, height 0.5s, margin-bottom 0.5s;
+
+    height: 25px;
+    background-color: var(--options);
+    border: 3px solid var(--first);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    margin: 0 10px 15px;
+    padding: 0 20px;
+    outline: 0;
+    color: var(--first);
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 0 5px var(--box_shadow);
+}
+
+.button_main_selector_reversed {
+    transition: background-color 0.5s, color 0.5s, height 0.5s, margin-top 0.5s;
+
+    height: 25px;
+    background-color: var(--options);
+    margin: 15px 10px 0;
+    padding: 0 20px;
+    outline: 0;
+    color: var(--first);
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 0 5px var(--box_shadow);
+    border-radius: 10px 10px 0 0;
+    border: 3px solid var(--first);
+    border-bottom-style: none;
+}
+
+.button_main_selector:hover {
+    background-color: var(--first) !important;
+    color: var(--options) !important;
+    cursor: pointer;
+    height: 40px;
+    margin-bottom: 0;
+}
+
+.button_main_selector:active {
+    transition: 0s;
+    background: var(--background) !important;
+    color: var(--first) !important;
+}
+
+.button_main_selector_reversed:hover {
+    background-color: var(--first) !important;
+    color: var(--options) !important;
+    cursor: pointer;
+    height: 40px;
+    margin-top: 0;
+}
+
+.button_main_selector_reversed:active {
+    transition: 0s;
+    background: var(--background) !important;
+    color: var(--first) !important;
+}
+
+.div_main_objects_sort {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.div_main_selector {
+    background-color: var(--background);
+}
+
+.div_main_objects_objects {
+    transition: 0s;
+    display: flex;
+    margin: 10px 30px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    background: var(--background);
+}
+
+.div_main_objects_objects::-webkit-scrollbar {
+    height: 5px;
+    background-color: var(--background);
+}
+
+.div_main_objects_objects::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background-color: var(--background);
+}
+
+.div_main_objects_objects::-webkit-scrollbar-thumb {
+    transition: background 0.5s;
+    background: var(--second);
+    height: 70px;
+    min-width: 100px;
+    border-radius: 5px;
+}
+
+.div_main_objects_objects::-webkit-scrollbar-thumb:hover {
+    height: 70px;
+    background: var(--object_p_color);
+}
+
+.div_main_objects_objects::after {
+    content: "";
+    min-width: 70px;
+}
+
+.div_main_objects_objects::before {
+    content: "";
+    min-width: 70px;
+}
+
+.div_main_objects_objects > .message {
+    margin: auto;
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--object_p_color);
+    background: var(--object);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.div_main_objects_objects > button {
+    transition: background 0.5s, color 0.5s;
+    margin: auto 30px;
+    height: 100px;
+    border-radius: 10px;
+    padding: 5px;
+    border: 3px solid var(--first);
+    background: var(--background);
+    color: var(--first);
+    text-align: center;
+    outline: none;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 2px 2px 10px black;
+}
+
+.div_main_objects_objects > button:hover {
+    background: var(--first);
+    color: var(--background);
+}
+
+.div_main_objects_objects > button:active {
+    transition: 0s;
+    background: var(--background);
+    color: var(--first);
+}
+
+.div_main_objects_objects_map {
+    background: var(--background) !important;
+    transition: 0s;
+    z-index: 1;
+    margin: 20px 30px;
+    border-radius: 10px;
+}
+
+.div_main_objects_objects_map > * {
+    transition: 0s;
+}
+
+.div_main_objects_border_left {
+    transition: 0s;
+    z-index: 3;
+    position: relative;
+    margin-left: 30px;
+    height: 100%;
+    width: 40px;
+    background: linear-gradient(90deg, var(--background) 10%, transparent);
+}
+
+.div_main_objects_border_right {
+    transition: 0s;
+    z-index: 3;
+    position: relative;
+    margin-left: auto;
+    margin-right: 30px;
+    height: 100%;
+    width: 40px;
+    background: linear-gradient(90deg, transparent, var(--background));
+}
+
+.div_main_window_settings {
+    display: grid;
+    grid-template-areas: "contacts themes";
+    grid-template-columns: auto 1fr;
+    padding: 10px 30px;
+    height: calc(100% - 20px);
+}
+
+.div_main_window_settings > p {
+    color: var(--first);
+    font-size: 24px;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+}
+
+.div_main_window_settings > .content {
+    margin: 5px;
+    padding: 10px;
+    background: var(--object);
+    border-radius: 10px;
+    color: var(--object_p_color);
+    overflow-y: scroll;
+}
+
+.div_main_window_settings > .content::-webkit-scrollbar {
+    width: 5px;
+    background-color: var(--background);
+}
+
+.div_main_window_settings > .content::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background-color: var(--background);
+}
+
+.div_main_window_settings > .content::-webkit-scrollbar-thumb {
+    transition: background 0.5s;
+    background: var(--second);
+    height: 70px;
+    border-radius: 5px;
+}
+
+.div_main_window_settings > .content::-webkit-scrollbar-thumb:hover {
+    height: 70px;
+    background: var(--object_p_color);
+}
+
+.div_main_window_settings > .contacts {
+    width: 300px;
+}
+
+.div_main_window_settings > .colors {
+    width: auto;
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.div_main_window_settings > .content > .head {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    padding: 5px 0 15px 0;
+}
+
+.div_main_window_settings > .content > div {
+    background-color: var(--object);
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px var(--box_shadow);
+}
+
+.div_main_window_settings > .content > hr {
+    width: 60%;
+    border: 2px solid var(--object_p_color);
+    background-color: var(--object_p_color);
+    border-radius: 10px;
+    margin: 10px auto;
+}
+
+.div_main_window_settings > .content > div > button {
+    height: 50px;
+    border-radius: 10px;
+    border-width: 0;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 5px;
+    padding: 0 10px;
+    outline: none;
+}
+
+.div_main_window_settings > .content > div > button:hover {
+    cursor: pointer;
+}
+
+.div_main_window_settings > .content > div > .theme_white {
+    transition: color 0.5s, background 0.5s;
+    color: black;
+}
+
+.div_main_window_settings > .content > div > .theme_white:hover {
+    background: black;
+    color: white;
+}
+
+.div_main_window_settings > .content > div > .theme_white:active {
+    transition: 0s;
+    background: white;
+    color: black;
+}
+
+.div_main_window_settings > .content > div > .theme_dark {
+    transition: color 0.5s, background 0.5s;
+    color: white;
+}
+
+.div_main_window_settings > .content > div > .theme_dark:hover {
+    background: white;
+    color: black;
+}
+
+.div_main_window_settings > .content > div > .theme_dark:active {
+    transition: 0s;
+    background: black;
+    color: white;
+}
+
+.div_main_window_settings > .content > div > .color_select {
+    float: left;
+    margin: 10px;
+    padding: 5px;
+    width: 100px;
+    height: 100px;
+    background-color: var(--object);
+    border-radius: 10px;
+    display: grid;
+    justify-content: space-between;
+    align-content: space-between;
+    box-shadow: 2px 2px 10px var(--box_shadow);
+}
+
+.div_main_window_settings > .content > div > .color_select > p {
+    text-align: center;
+}
+
+.div_main_window_settings > .content > div > .color_select > input[type="color"] {
+    padding: 0;
+    width: auto;
+    height: 30px;
+    border-radius: 10px;
+    outline: none;
+    margin: 3px;
+    border: none;
+}
+
+.div_main_window_settings > .content > div > .color_select > input[type="color"]:hover {
+    cursor: pointer;
+}
+
+.div_main_window_settings > .content > div > .color_select > input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 10px;
+    border: none;
+}
+
+.div_main_window_settings > .content > div > .color_select > input[type="color"]::-webkit-color-swatch {
+    border-radius: 10px;
+    border: none;
+}
+
+.div_main_window_settings > .content > .person > p {
+    margin: 0;
+    padding: 5px;
+}
+
+.div_main_window_settings > .content > .person > .name {
+    color: var(--second);
+}
+
+.div_main_window_settings > .content > .container_colors {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-content: center;
+}
+
+.div_main_window_settings > .content > .container_colors > p {
+    margin: auto 0;
+}
+
+.alert_box {
+    transition: 0.5s;
+    z-index: 3;
+    position: fixed;
+    width: 200px;
+    height: 100px;
+    top: calc(50% - 53px);
+    right: 450px;
+    background: var(--panels);
+    border: 3px solid var(--second);
+    border-radius: 10px;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    box-shadow: 0 0 10px black;
+}
+
+.alert_box > p {
+    transition: 0s;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: var(--object_p_color);
+    text-align: center;
+}
+
+.search_statistics {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
+.search_statistics > div {
+    padding: 5px;
+    border-radius: 10px;
+    background: var(--object);
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-template-columns: auto auto auto;
+}
+
+.search_statistics > div > p {
+    margin: auto;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;
+    color: var(--second);
+}
+
+.search_statistics > div > input {
+    width: 250px;
+    margin: 3px;
+    padding: 5px;
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: var(--object);
+    color: var(--object_p_color);
+}
+
+.search_statistics > div > button {
+    transition: border-radius 0.5s, background 0.5s, color 0.5s;
+
+    margin: 3px 3px 3px 10px;
+    padding: 3px 30px;
+    outline: none;
+    border-radius: 50px 0;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: var(--background);
+    color: var(--object_p_color);
+    border: 3px solid var(--second);
+}
+
+.search_statistics > div > button:hover {
+    border-radius: 0 50px;
+    background: var(--second);
+    color: var(--object_p_background);
+}
+
+.search_statistics > div > button:active {
+    transition: 0s;
+    background-color: var(--background);
+    color: var(--object_p_color);
+}
+
+.search_statistics > div > button:focus {
+    border-radius: 0 50px;
+    background: var(--panels);
+    color: var(--object_p_color);
+}

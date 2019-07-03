@@ -1,0 +1,255 @@
+[
+  {
+    "feature": "construction_years",
+    "values": [
+      "built before 1917",
+      "built in 1917-1942",
+      "built in 1944-1959",
+      "built in 1960-1969",
+      "built in 1970-1979",
+      "built in 1980-1989",
+      "built in 1990-2000",
+      "built in 2001-2005",
+      "built in 2006",
+      "built in 2007",
+      "built in 2008",
+      "built in 2009",
+      "built in 2010",
+      "built in 2011",
+      "built in 2012",
+      "built in 2013",
+      "built in 2014",
+      "built in 2015",
+      "built in 2015, Q1",
+      "built in 2015, Q2",
+      "built in 2015, Q3",
+      "built in 2015, Q4",
+      "commissioning in 2015",
+      "built in 2016",
+      "built in 2016, Q1",
+      "built in 2016, Q2",
+      "built in 2016, Q3",
+      "built in 2016, Q4",
+      "commissioning in 2016",
+      "built in 2017",
+      "built in 2017, Q1",
+      "built in 2017, Q2",
+      "built in 2017, Q3",
+      "built in 2017, Q4",
+      "commissioning in 2017",
+      "built in 2018",
+      "built in 2018, Q1",
+      "built in 2018, Q2",
+      "built in 2018, Q3",
+      "built in 2018, Q4",
+      "commissioning in 2018",
+      "built in 2019",
+      "built in 2019, Q1",
+      "built in 2019, Q2",
+      "built in 2019, Q3",
+      "built in 2019, Q4",
+      "commissioning in 2019",
+      "commissioning in 2020"
+    ],
+    "group": "building"
+  },
+  {
+    "feature": "planning",
+    "values": [
+      "separate planning",
+      "adjacent-separate planning",
+      "adjacent planning",
+      "adjacent through planning",
+      "free layout",
+      "smart apartment",
+      "flat for a little family",
+      "studio",
+      "multi-level planning",
+      "double-sided planning",
+      "penthouse"
+    ],
+    "group": "interior"
+  },
+  {
+    "feature": "state",
+    "values": [
+      "euro-standard design",
+      "redecoration",
+      "authorial project",
+      "good state",
+      "satisfactory state",
+      "excellent state",
+      "without finishing work",
+      "drilling/construction work",
+      "repair required",
+      "after construction",
+      "clean finishing",
+      "residential state",
+      "hazardous state"
+    ],
+    "group": "interior"
+  },
+  {
+    "feature": "wall_type",
+    "values": [
+      "monolith",
+      "panel",
+      "aerocrete",
+      "aerated concrete",
+      "claydite",
+      "monolithic reinforced concrete",
+      "reinforced concrete",
+      "monolithic block",
+      "monolithic frame",
+      "monolithic brick",
+      "block brick",
+      "shell rock",
+      "rubble stone",
+      "brick",
+      "silicate brick",
+      "precast-monolith",
+      "SIP",
+      "ceramic block",
+      "wood and brick",
+      "foam block",
+      "frame-stone",
+      "inkerman stone",
+      "reinforced 3D panel",
+      "precast concrete",
+      "ceramic brick",
+      "another wall type",
+      "cinder block",
+      "wood",
+      "facing brick",
+      "sandwich-structured composite"
+    ],
+    "group": "building"
+  },
+  {
+    "feature": "heating",
+    "values": [
+      "individual heating",
+      "centralized heating",
+      "without heating",
+      "own boiler room",
+      "individual gas heating",
+      "individual electro-heating",
+      "another heating",
+      "solid fuel heating",
+      "combined heating",
+      "heat pump"
+    ],
+    "group": "supplies"
+  },
+  {
+    "feature": "warming",
+    "values": [
+      "external insulation",
+      "internal insulation",
+      "external and internal insulation"
+    ],
+    "group": "supplies"
+  },
+  {
+    "feature": "gas",
+    "values": [
+      "gas is present",
+      "gas is absent"
+    ],
+    "group": "supplies"
+  },
+  {
+    "feature": "door_type",
+    "values": [
+      "armored door",
+      "wooden door",
+      "wooden double door",
+      "wooden and metal door",
+      "metal double door",
+      "metal-plastic door",
+      "metal door"
+    ],
+    "group": "interior"
+  },
+  {
+    "feature": "window_type",
+    "values": [
+      "metal-plastic windows",
+      "wooden and metal-plastic windows",
+      "wooden with double-glazed windows",
+      "wooden windows"
+    ],
+    "group": "interior"
+  },
+  {
+    "feature": "bathrooms",
+    "values": [
+      "separate bathrooms",
+      "2 bathrooms",
+      "3 bathrooms",
+      "adjacent bathrooms",
+      "3 and more bathrooms",
+      "2 and more bathrooms",
+      "bathrooms are absent"
+    ],
+    "group": "supplies"
+  },
+  {
+    "feature": "bedrooms",
+    "values": [
+      "1 bedroom",
+      "2 bedrooms",
+      "4 bedrooms",
+      "5 bedrooms",
+      "6 bedrooms",
+      "7 bedrooms",
+      "3 bedrooms"
+    ],
+    "group": "interior"
+  },
+  {
+    "feature": "passenger_elevators",
+    "values": [
+      "1 passenger elevator",
+      "3 passenger elevators",
+      "2 passenger elevators",
+      "3 and more passenger elevators",
+      "without passenger elevators"
+    ],
+    "group": "building"
+  },
+  {
+    "feature": "housing",
+    "values": [
+      "secondary housing",
+      "primary housing"
+    ],
+    "group": "building"
+  },
+  {
+    "feature": "building_type",
+    "values": [
+      "the tsar project",
+      "the Stalin project",
+      "the Khrushev project",
+      "the Czech project",
+      "gostinka",
+      "sovmyn",
+      "dormitory",
+      "the housing stock of 80th-90th",
+      "the housing stock of 1991-2000",
+      "the housing stock of 2001-2010",
+      "the housing stock since 2011",
+      "under construction"
+    ],
+    "group": "building"
+  },
+  {
+    "feature": "furniture",
+    "values": [
+      "no furniture",
+      "furniture is present"
+    ],
+    "group": "interior"
+  }
+]

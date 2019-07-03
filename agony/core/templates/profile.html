@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <script type="text/javascript" src="../static/js/behaviour/token_verification.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/lib/ajax.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="../static/js/behaviour/language.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/behaviour/windows.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/behaviour/requests.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/behaviour/filters.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/behaviour/items_holder.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/behaviour/item.js" charset="utf-8"></script>
+    <!--    <script type="text/javascript" src="../static/js/behaviour/statistics.js" charset="utf-8"></script>-->
+
+    <meta charset="utf-8">
+    <title>Profile</title>
+    <link href="https://fonts.googleapis.com/css?family=Libre+Barcode+39|Montserrat" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/profile/main.css">
+    <link rel="stylesheet" href="../static/css/profile/map.css">
+    <link rel="stylesheet" href="../static/css/profile/panels.css">
+    <link rel="stylesheet" href="../static/css/profile/windows.css">
+    <link rel="stylesheet" href="../static/css/profile/objects.css">
+    <link rel="stylesheet" href="../static/css/profile/statistics.css">
+
+    <link rel="icon" href="../static/images/homeTab.png">
+
+    <!--Map API-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+<!-- PANELS -->
+<div class="div_panel_menus">
+    <div class="div_panel_objects">
+        <div id="btn_view_saves" style="margin-top:20px;" class="div_panel_button">
+            <img src="../static/images/book-with-bookmark.png" alt="img">
+        </div>
+        <hr>
+        <div id="btn_view_search" class="div_panel_button">
+            <img src="../static/images/search.png" alt="img">
+        </div>
+        <hr style="visibility: hidden;">
+        <div style="visibility: hidden;" id="btn_view_statistics" class="div_panel_button">
+            <img src="../static/images/statistics.png" alt="img">
+        </div>
+        <p></p>
+        <div id="btn_view_settings" style="margin-bottom:20px;" class="div_panel_button div_button_panel_down">
+            <img src="../static/images/gear.png" alt="img">
+        </div>
+    </div>
+    <div class="div_button">
+        <div class="div_line line1"></div>
+        <div class="div_line line2"></div>
+        <div class="line3"></div>
+    </div>
+</div>
+<button id="panel_filters_toggle_button" class="panel_filters_toggle_button" type="button">F</button>
+<div id="panel_filters" class="div_panel_filters">
+    <div id="div_panel_filters_objects" class="div_panel_filters_objects">
+        <p>Filters</p>
+        <div>
+            <p>Placement</p>
+            <div>
+                <pre>State:     </pre>
+                <input id="filters_select_state" type="text" list="filters_select_state_details">
+                <datalist id="filters_select_state_details">
+                    <!-- <option value="asd">asd</option> -->
+                </datalist>
+            </div>
+
+            <div>
+                <pre>Locality:</pre>
+                <input id="filters_select_locality" type="text" list="filters_select_locality_details">
+                <datalist id="filters_select_locality_details"></datalist>
+            </div>
+            <div>
+                <pre>County: </pre>
+                <input id="filters_select_county" type="text" list="filters_select_county_details">
+                <datalist id="filters_select_county_details"></datalist>
+            </div>
+        </div>
+        <hr>
+        <div>
+            <p>Area</p>
+            <div>
+                <pre>From:         </pre>
+                <input id="filters_area_from" style="width: 100px;" class="input" type="number">
+            </div>
+            <div>
+                <pre>To:               </pre>
+                <input id="filters_area_to" style="width: 100px;" class="input" type="number">
+            </div>
+        </div>
+        <hr>
+        <div>
+            <p>Kitchen area</p>
+            <div>
+                <pre>From:         </pre>
+                <input id="filters_kitchen_area_from" style="width: 100px;" class="input" type="number">
+            </div>
+            <div>
+                <pre>To:               </pre>
+                <input id="filters_kitchen_area_to" style="width: 100px;" class="input" type="number">
+            </div>
+        </div>
+        <hr>
+        <div>
+            <p>Living area</p>
+            <div>
+                <pre>From:         </pre>
+                <input id="filters_living_area_from" style="width: 100px;" class="input" type="number">
+            </div>
+            <div>
+                <pre>To:               </pre>
+                <input id="filters_living_area_to" style="width: 100px;" class="input" type="number">
+            </div>
+        </div>
+        <hr>
+        <div>
+            <p>Rooms</p>
+            <div>
+                <pre>From:         </pre>
+                <input id="filters_rooms_from" style="width: 100px;" type="number">
+            </div>
+            <div>
+                <pre>To:               </pre>
+                <input id="filters_rooms_to" style="width: 100px;" type="number">
+            </div>
+        </div>
+        <hr>
+        <div>
+            <p>Floor</p>
+            <div>
+                <pre>From:         </pre>
+                <input id="filters_floor_from" style="width: 100px;" type="number">
+            </div>
+            <div>
+                <pre>To:               </pre>
+                <input id="filters_floor_to" style="width: 100px;" type="number">
+            </div>
+        </div>
+        <hr>
+        <div>
+            <p>Total floor</p>
+            <div>
+                <pre>From:         </pre>
+                <input id="filters_total_floor_from" style="width: 100px;" type="number">
+            </div>
+            <div>
+                <pre>To:               </pre>
+                <input id="filters_total_floor_to" style="width: 100px;" type="number">
+            </div>
+        </div>
+        <hr>
+        <div>
+            <p>Celling height</p>
+            <div>
+                <pre>From:         </pre>
+                <input id="filter_celling_height_from" style="width: 100px;" type="number">
+            </div>
+            <div>
+                <pre>To:               </pre>
+                <input id="filter_celling_height_to" style="width: 100px;" type="number">
+            </div>
+        </div>
+        <hr>
+        <div>
+            <p>Sort by</p>
+            <div>
+                <select id="sorting_order_by" style="width: 150px; color: var(--second);">
+                    <option value="null">--</option>
+                    <option value="area">Area</option>
+                    <option value="rooms">Rooms</option>
+                    <option value="price">Price</option>
+                </select>
+                <button id="sorting_ordering" style="width: 30px; margin: 0 10px 0 10px;">
+                    ⬈
+                </button>
+                <!-- <select id="sorting_ordering" style="width: 40px; margin: 0 10px 0 10px;">-->
+                <!--     <option value="" selected="selected">1 - 9</option>-->
+                <!--     <option value="-">9 - 1</option>-->
+                <!-- </select>-->
+            </div>
+        </div>
+        <hr>
+        <button id="btn_add_detail" class="btn_add_detail">Add detail</button>
+        <hr>
+    </div>
+    <button id="btn_search" type="button" class="div_filters_search">Search</button>
+</div>
+
+<!-- MAIN DIVS -->
+<div id="window_home" class="div_window div_main_window_home">
+    <div class="userInfo" style="grid-area: userInfo">
+        <div class="div_user_img">
+            <img src="../static/images/bookmark.png" alt="img">
+        </div>
+    </div>
+    <div class="div_main_objects_border_left" style="grid-area:userSaves"></div>
+    <div class="div_main_objects_border_right" style="grid-area:userSaves"></div>
+    <div id="div_main_objects_saved" class="div_main_objects_objects" style="grid-area: userSaves">
+    </div>
+</div>
+<div id="window_search" class="div_window div_main_window_objects">
+    <div class="div_main_objects_sort" style="grid-area:selector">
+        <button id="btn_show_items" class="button_main_selector" type="button">Items</button>
+        <button id="btn_show_map" class="button_main_selector" type="button">Map</button>
+        <!-- to avoid map and item moving-->
+        <button class="button_main_selector" style="visibility: hidden"></button>
+    </div>
+    <div id="gradient_overlay_left" class="div_main_objects_border_left" style="grid-area:objects"></div>
+    <div id="gradient_overlay_right" class="div_main_objects_border_right" style="grid-area:objects"></div>
+    <div id="div_main_objects_search" class="div_main_objects_objects" style="grid-area:objects"></div>
+    <div id="div_main_objects_search_map" class="div_main_objects_objects_map" style="grid-area:objects"></div>
+</div>
+<!--<div id="window_statistics" class="div_window div_main_window_home">-->
+<!--    <div class="userInfo" style="grid-area: userInfo">-->
+<!--        <div class="div_user_img">-->
+<!--            <img src="../static/images/circular-chart.png" alt="img">-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="search_statistics">-->
+<!--        <div>-->
+<!--            <p><b>Statistics over the</b></p>-->
+<!--            <input type="text">-->
+<!--            <button id="btn_get_statistics" type="button">Get</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<div id="window_settings" class="div_window div_main_window_settings">
+    <div style="grid-area: contacts;" class="content contacts">
+        <p class="head">Contact us</p>
+        <div class="person">
+            <p class="name">Danylo Petrakivskyi</p>
+            <p class="email">bos.estimo@gmail.com</p>
+        </div>
+        <hr>
+        <div class="person">
+            <p class="name">Andrey Kovyarov</p>
+            <p class="email">andrey.kovyarov@gmail.com</p>
+        </div>
+    </div>
+    <div style="grid-area: themes;" class="content">
+        <p class="head">Themes</p>
+        <div>
+            <button id="btn_theme_white_domria" class="theme_white" style="background: white" type="button">WHITE
+            </button>
+            <button id="btn_theme_dark" class="theme_dark" style="background: black" type="button">DARK</button>
+            <button id="btn_theme_neon" class="theme_dark"
+                    style="background: linear-gradient(to left, #ff88f9, rgb(60,203,219));" type="button">NEON
+            </button>
+        </div>
+        <hr>
+        <div>
+            <div class="color_select">
+                <p>Background color</p>
+                <input id="color_background" type="color">
+            </div>
+            <div class="color_select">
+                <p>Objects text background color</p>
+                <input id="color_object_p_background" type="color">
+            </div>
+            <div class="color_select">
+                <p>Objects text color</p>
+                <input id="color_object_p_color" type="color">
+            </div>
+            <div class="color_select">
+                <p>First main color</p>
+                <input id="color_first" type="color">
+            </div>
+            <div class="color_select">
+                <p>Second main color</p>
+                <input id="color_second" type="color">
+            </div>
+            <div class="color_select">
+                <p>Panels color</p>
+                <input id="color_panels" type="color">
+            </div>
+            <div class="color_select">
+                <p>Object full background color</p>
+                <input id="color_object_full_background" type="color">
+            </div>
+            <div class="color_select">
+                <p>Sorting tabs color</p>
+                <input id="color_options" type="color">
+            </div>
+            <div class="color_select">
+                <p>Search circle color</p>
+                <input id="color_search_circle" type="color">
+            </div>
+            <div style="visibility: hidden;" class="color_select">
+                <p>Statistics map color hover</p>
+                <input id="color_statistics_hover" type="color">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FUll item -->
+<div id="window_full_object" class="window_full_object">
+    <div id="flat_image" class="flat_image"></div>
+
+    <div id="flat_main_params" class="flat_main_params"></div>
+
+    <div class="flat_buttons">
+        <div id="btn_full_object_exit" class="exit">
+            <div class="div_obj_full_line1"></div>
+            <div class="div_obj_full_line2"></div>
+        </div>
+        <div id="btn_full_object_open_map">
+            <img src="../static/images/mapPointer.png" alt="">
+        </div>
+        <div id="btn_full_object_open_source">
+            <img src="../static/images/global.png" alt="">
+        </div>
+    </div>
+
+    <div class="flat_params">
+        <div id="flat_params_optional" class="flat_params_optional"></div>
+        <div id="flat_params_details" class="flat_params_details"></div>
+    </div>
+</div>
+
+<!-- Statistics -->
+<!--<div id="window_full_statistics" class="window_statistics">-->
+<!--    <div class="map_container">-->
+<!--        <div class="map_container_color_grad">-->
+<!--            <div>-->
+<!--                <p id="price_low" style="grid-area: low" class="a_rate_low">13`000 $</p>-->
+<!--                <p></p>-->
+<!--                <p id="price_high" style="grid-area: hight" class="a_rate_high">42`000 $</p>-->
+<!--                <div style="grid-area: grad" class="a_rate_color_grad"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div id="map_container_districts">-->
+<!--            <svg id="map_container_districts_svg" class="statistics_svg" version="1.0"-->
+<!--                 xmlns="http://www.w3.org/2000/svg" width="1000px" height="1000px" viewBox="0 0 1000 1000"-->
+<!--                 preserveAspectRatio="xMidYMid meet">-->
+
+<!--            </svg>-->
+<!--            <svg id="map_container_mid_rate_svg" class="statistics_svg" version="1.0" xmlns="http://www.w3.org/2000/svg"-->
+<!--                 width="1000px" height="1000px" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7180 8972 c0 -42 -9 -67 -51 -144 -28 -51 -51 -102 -52 -113 -2 -22-->
+<!--11 -168 18 -201 3 -12 53 -63 112 -115 60 -51 110 -97 113 -100 3 -4 62 -24-->
+<!--132 -44 l126 -38 274 253 c150 139 279 259 287 266 12 11 12 19 -4 56 -11 24-->
+<!-- -20 44 -21 46 -1 2 -16 -4 -33 -13 -21 -11 -31 -23 -31 -39 0 -32 -16 -43 -80-->
+<!-- -51 -30 -3 -63 -9 -72 -11 -12 -4 -27 15 -60 75 -48 90 -43 88 -153 67 l-69-->
+<!-- -14 -206 80 c-113 44 -211 82 -217 85 -10 4 -13 -9 -13 -45z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M2430 8798 l0 -135 -37 -7 c-21 -3 -141 -6 -266 -6 -177 0 -259 -5-->
+<!-- -365 -20 -182 -27 -182 -27 -182 -49 0 -16 18 -25 93 -48 88 -27 92 -30 95-->
+<!-- -59 5 -50 54 -87 150 -114 l82 -23 -6 -36 c-4 -20 -7 -37 -8 -38 -2 -2 -33 1-->
+<!-- -70 5 -37 5 -69 5 -71 1 -3 -4 19 -20 47 -36 140 -79 819 -435 822 -432 17 20-->
+<!--706 1102 706 1109 0 6 -123 10 -337 10 -186 0 -409 3 -495 7 l-158 6 0 -135z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3508 8853 c-8 -21 -21 -60 -29 -88 l-13 -50 -16 68 -16 67 -338-->
+<!-- -527 c-186 -289 -340 -531 -341 -537 -3 -10 129 -121 657 -550 l110 -90 106-->
+<!--18 c107 18 107 18 195 85 48 36 90 75 93 87 3 12 4 122 2 245 l-4 224 -187-->
+<!--540 c-103 296 -187 540 -187 542 0 2 -4 3 -9 3 -5 0 -15 -17 -23 -37z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M8100 8647 c-36 -34 -160 -150 -276 -258 l-211 -196 234 -287 c129-->
+<!-- -157 238 -286 244 -286 24 0 449 185 497 216 l23 15 -21 26 c-35 45 -52 120-->
+<!-- -57 269 l-6 140 -28 16 c-35 21 -46 60 -30 112 7 23 15 55 18 72 5 30 4 31-->
+<!-- -61 48 -80 22 -139 59 -202 125 -27 28 -51 51 -54 51 -3 0 -34 -28 -70 -63z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3729 8621 l-56 -6 137 -400 137 -400 124 -28 c68 -15 175 -36 237-->
+<!-- -47 l112 -19 53 24 c98 46 112 32 109 -106 -3 -104 8 -130 28 -61 19 65 23-->
+<!--156 10 196 -26 80 -102 139 -225 175 -111 32 -212 108 -287 215 -65 94 -90-->
+<!--175 -90 294 l1 92 -42 1 c-67 2 -92 12 -90 37 2 16 -5 25 -23 32 -26 10 -42-->
+<!--10 -135 1z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7100 8383 c0 -27 -6 -57 -12 -66 -8 -9 -48 -23 -100 -34 -79 -16-->
+<!-- -89 -16 -103 -2 -14 14 -14 20 0 58 8 24 15 47 15 52 0 42 -232 -53 -407 -167-->
+<!-- -68 -44 -83 -58 -83 -79 0 -36 -21 -83 -93 -208 -61 -108 -62 -109 -94 -104-->
+<!--l-33 6 34 -62 c18 -34 75 -139 125 -233 l91 -171 223 43 c122 24 261 51 309-->
+<!--60 l87 16 15 51 c8 29 56 204 107 390 l92 339 -59 60 c-32 33 -71 68 -86 79-->
+<!--l-28 20 0 -48z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M1490 8235 c-41 -21 -47 -22 -63 -8 -14 14 -21 14 -45 3 l-27 -12 78-->
+<!-- -73 79 -72 -27 -19 c-25 -19 -27 -28 -38 -139 l-12 -120 -65 -10 -64 -10 -11-->
+<!-- -58 c-5 -32 -16 -61 -23 -66 -8 -5 17 -17 69 -34 l81 -26 602 60 c598 60 601-->
+<!--61 629 87 15 14 24 29 20 33 -5 3 -163 89 -353 189 -190 100 -374 198 -409-->
+<!--218 -53 29 -62 32 -58 16 8 -25 -13 -51 -43 -56 -21 -2 -26 -9 -28 -40 -2 -21-->
+<!-- -6 -38 -9 -38 -3 0 -53 42 -112 93 -58 51 -110 96 -116 99 -5 3 -30 -4 -55-->
+<!-- -17z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7301 8226 c-13 -40 -201 -732 -201 -738 0 -4 321 -289 412 -366 14-->
+<!-- -11 23 -12 53 -2 36 12 36 12 33 63 -3 48 -1 52 30 73 19 13 53 26 78 30 24 3-->
+<!--44 8 44 10 0 2 -18 31 -39 64 -44 67 -59 116 -42 133 15 15 68 -11 119 -58 22-->
+<!-- -19 43 -35 47 -35 4 0 5 26 3 57 l-3 57 103 40 c56 23 101 46 100 52 -7 25-->
+<!-- -455 563 -478 573 -14 6 -75 26 -137 45 l-112 33 -10 -31z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4960 7886 c0 -21 8 -26 68 -41 37 -9 75 -24 85 -32 44 -41 45 -162-->
+<!--2 -206 -22 -21 -23 -28 -15 -58 6 -19 10 -44 10 -57 0 -35 -49 -78 -98 -87-->
+<!-- -56 -9 -88 12 -115 75 -22 52 -38 60 -116 60 -65 0 -78 -9 -100 -63 -35 -88-->
+<!-- -46 -162 -42 -294 1 -62 -33 -52 321 -93 l255 -29 76 31 76 31 102 365 c57-->
+<!--201 105 371 107 377 3 8 -81 16 -273 28 -358 22 -343 23 -343 -7z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5614 7856 c-3 -7 -52 -180 -109 -382 l-104 -369 27 -26 c114 -110-->
+<!--364 -339 370 -339 9 0 538 460 580 505 21 23 32 45 32 64 0 18 -50 123 -132-->
+<!--277 -72 137 -132 250 -132 251 -2 2 -464 33 -500 33 -15 0 -29 -6 -32 -14z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3950 7609 c0 -80 3 -180 6 -221 l7 -75 250 -154 c138 -85 269 -165-->
+<!--290 -178 l40 -24 -27 49 c-35 63 -55 86 -88 101 -46 20 -82 86 -86 157 -4 55-->
+<!-- -1 65 22 93 14 17 38 36 53 42 l28 11 -3 113 c-4 174 18 156 -257 198 l-235-->
+<!--35 0 -147z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M2685 7720 c-25 -26 -33 -51 -65 -208 l-37 -178 161 -320 161 -319-->
+<!--110 -22 c61 -12 110 -21 111 -20 1 1 83 107 184 235 103 132 179 237 173 240-->
+<!-- -6 4 -178 144 -382 312 -204 168 -375 306 -379 308 -5 1 -21 -11 -37 -28z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M2018 7611 c-295 -31 -539 -59 -542 -62 -4 -4 445 -533 502 -592 17-->
+<!-- -16 31 -8 282 169 146 102 269 189 274 194 8 8 76 310 76 338 0 16 25 18 -592-->
+<!-- -47z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M1188 7584 c-15 -33 -53 -52 -120 -60 -71 -8 -137 -55 -178 -126 -29-->
+<!-- -52 -39 -101 -21 -113 5 -3 12 -18 16 -34 6 -29 44 -70 82 -90 16 -8 22 -22-->
+<!--25 -62 3 -48 0 -55 -34 -94 -31 -35 -38 -51 -38 -85 0 -23 -8 -55 -17 -71 -16-->
+<!-- -26 -31 -36 -100 -65 -20 -8 9 -34 278 -252 292 -237 300 -243 347 -244 33 -1-->
+<!--102 16 237 60 l190 62 59 244 c58 243 58 246 40 270 -11 13 -137 161 -282 329-->
+<!--l-264 304 -88 26 c-110 33 -118 33 -132 1z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M6760 7397 c-168 -32 -306 -60 -307 -61 -2 -1 -6 -22 -9 -47 -6 -44-->
+<!-- -5 -46 168 -299 l173 -255 55 -14 55 -14 265 98 c146 54 276 102 289 107 l24-->
+<!--9 -21 20 c-12 11 -22 27 -22 37 0 32 22 97 36 108 11 9 -23 44 -178 180 -105-->
+<!--93 -199 174 -207 180 -12 8 -92 -4 -321 -49z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M2290 7099 c-140 -99 -260 -185 -267 -192 -7 -7 -39 -121 -71 -255-->
+<!--l-59 -243 220 -110 220 -110 31 29 c17 16 136 124 264 241 127 117 232 217-->
+<!--232 222 0 19 -295 599 -305 599 -5 -1 -125 -82 -265 -181z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3858 7227 c-37 -29 -69 -62 -72 -74 -7 -25 69 -552 81 -563 10 -10-->
+<!--474 -230 484 -230 4 0 10 21 14 46 6 42 4 49 -21 75 -25 26 -31 28 -83 23 -73-->
+<!-- -7 -127 18 -123 56 1 14 3 53 4 88 l2 62 35 9 c20 5 81 6 136 2 55 -4 101 -7-->
+<!--102 -7 1 1 11 55 22 121 16 95 18 122 8 131 -19 18 -505 314 -514 314 -4 -1-->
+<!-- -38 -24 -75 -53z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M6109 6954 l-292 -256 2 -61 c1 -34 8 -138 15 -232 l13 -170 83 -152-->
+<!--c49 -91 88 -150 94 -146 6 3 85 52 176 109 l166 103 193 282 193 282 -153 226-->
+<!--c-185 273 -182 270 -191 271 -4 0 -138 -115 -299 -256z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3618 7125 c-37 -8 -74 -17 -82 -22 -9 -5 -99 -115 -202 -246 l-186-->
+<!-- -238 88 -117 c48 -64 88 -119 90 -121 4 -4 494 210 494 216 0 9 -71 491 -76-->
+<!--516 -6 32 -20 33 -126 12z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4650 7075 c0 -30 48 -165 69 -191 11 -15 21 -32 21 -39 0 -6 16 -30-->
+<!--36 -53 32 -38 35 -46 26 -71 l-10 -28 122 -17 c66 -10 132 -19 146 -22 25 -4-->
+<!--26 -2 72 178 26 100 46 184 44 185 -2 2 -108 17 -237 33 -129 16 -246 32 -261-->
+<!--35 -20 3 -28 0 -28 -10z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5290 7050 c-36 -16 -68 -34 -72 -42 -5 -7 -31 -105 -59 -218 -46-->
+<!-- -186 -50 -211 -43 -277 4 -43 10 -70 16 -67 6 4 20 1 31 -5 20 -10 640 -201-->
+<!--643 -197 3 3 -26 403 -31 432 -4 25 -46 69 -205 218 -109 102 -202 186 -207-->
+<!--185 -4 0 -37 -13 -73 -29z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4477 6837 c-9 -56 -17 -108 -17 -114 0 -9 21 -13 74 -13 80 0 136-->
+<!--14 136 35 0 14 -7 17 -65 30 -48 11 -58 24 -40 51 14 22 14 27 0 54 -8 16 -28-->
+<!--36 -43 44 l-28 14 -17 -101z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7225 6788 c-149 -55 -274 -103 -279 -108 -5 -5 49 -119 123 -262-->
+<!--160 -306 175 -323 319 -357 112 -26 144 -26 167 -1 18 20 18 21 -23 63 -23 24-->
+<!-- -42 45 -42 49 0 3 34 18 75 33 67 24 74 29 64 46 -5 11 -11 61 -12 112 -2 70-->
+<!-- -7 98 -21 120 -10 15 -15 27 -11 27 4 0 -5 16 -20 35 l-26 36 17 52 c23 70 22-->
+<!--69 52 53 24 -12 31 -12 64 5 21 11 38 25 38 31 0 6 -11 31 -25 55 l-26 43 -40-->
+<!-- -21 c-23 -11 -43 -18 -46 -16 -2 3 -7 27 -11 53 -7 45 -9 49 -37 50 -17 1-->
+<!-- -152 -43 -300 -98z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M740 6748 c0 -2 -9 -52 -20 -113 -20 -118 -18 -128 28 -140 40 -10-->
+<!--72 -44 72 -77 0 -21 -19 -49 -81 -116 -96 -103 -136 -158 -161 -224 -24 -64-->
+<!-- -23 -74 10 -90 23 -12 27 -19 24 -52 -2 -27 2 -45 16 -60 48 -52 52 -84 17-->
+<!-- -117 -13 -13 -25 -33 -25 -44 0 -11 -14 -38 -30 -59 -26 -35 -41 -86 -24 -86-->
+<!--7 0 78 39 351 192 164 93 212 124 215 141 2 18 9 22 35 21 21 -1 57 12 105 40-->
+<!--l73 41 18 109 c10 60 16 115 14 121 -5 11 -622 515 -632 515 -3 0 -5 -1 -5 -2z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M6795 6682 c-13 -2 -81 -93 -205 -274 -102 -149 -186 -274 -188 -277-->
+<!-- -1 -3 19 -19 45 -35 l48 -28 175 27 c96 14 244 39 327 53 l153 27 -129 243-->
+<!--c-71 134 -132 246 -134 249 -9 8 -71 19 -92 15z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M2633 6410 l-269 -246 33 -70 33 -70 454 46 c250 25 457 48 461 52 4-->
+<!--3 -1 52 -11 107 l-17 100 -99 133 c-55 73 -102 138 -106 145 -4 6 -53 20 -109-->
+<!--30 l-101 20 -269 -247z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4742 6583 c-72 -143 -112 -256 -112 -315 0 -56 19 -98 46 -98 7 0-->
+<!--107 57 220 127 l206 127 -7 91 c-4 49 -8 91 -10 93 -1 2 -61 12 -131 23 -71-->
+<!--10 -139 21 -151 24 -20 5 -28 -5 -61 -72z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3594 6452 c-131 -58 -240 -107 -242 -107 -1 -1 7 -53 19 -116 15-->
+<!-- -78 36 -146 67 -216 l45 -103 227 0 c125 0 289 3 364 7 l138 6 96 114 95 115-->
+<!-- -22 76 c-12 43 -30 81 -39 87 -19 11 -353 171 -448 214 l-60 28 -240 -105z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4931 6273 l-203 -126 45 -17 c25 -10 71 -37 104 -62 111 -84 185-->
+<!-- -124 243 -131 30 -4 226 -27 435 -52 l380 -46 22 28 c13 16 23 31 23 36 0 10-->
+<!-- -151 286 -160 292 -9 6 -669 205 -678 205 -4 0 -99 -57 -211 -127z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M1638 6301 c-115 -37 -210 -70 -212 -72 -10 -9 -35 -195 -30 -216 3-->
+<!-- -11 1 -24 -5 -27 -16 -10 -13 -46 7 -85 16 -33 21 -35 137 -62 102 -24 125-->
+<!-- -27 155 -17 19 6 50 11 68 9 17 -1 42 4 55 11 12 7 69 28 127 48 76 26 106 40-->
+<!--108 53 2 11 -3 20 -15 23 -10 3 -35 32 -57 64 -32 50 -54 70 -137 122 -54 35-->
+<!-- -99 68 -99 74 0 5 6 19 14 29 14 19 15 19 35 1 16 -14 31 -18 66 -14 l45 6 0-->
+<!-- -33 c0 -48 52 -115 90 -115 23 0 35 -8 55 -37 14 -21 25 -48 25 -60 0 -14 10-->
+<!-- -27 27 -35 18 -9 30 -23 33 -43 4 -24 12 -31 42 -38 l36 -9 7 -76 c3 -42 8-->
+<!-- -83 10 -90 5 -13 34 3 133 70 l42 29 0 93 c0 88 -2 97 -37 167 l-38 74 -220-->
+<!--112 c-121 62 -229 112 -240 112 -11 -1 -113 -31 -227 -68z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4445 6130 c-28 -11 -68 -68 -62 -88 4 -16 533 -769 564 -804 13 -14-->
+<!--32 -18 86 -18 l70 0 -8 103 c-14 210 -52 348 -128 464 -46 71 -152 174 -232-->
+<!--225 -66 43 -168 98 -180 98 -3 0 -10 -11 -15 -25 -14 -38 -30 -30 -30 15 0 35-->
+<!-- -3 40 -22 39 -13 0 -32 -4 -43 -9z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M6846 6086 l-298 -52 172 -104 c95 -58 177 -107 182 -108 4 -2 84 54-->
+<!--176 124 l169 127 -37 33 c-21 19 -44 34 -51 33 -8 -1 -148 -24 -313 -53z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M6203 5997 c-123 -77 -159 -104 -150 -113 6 -6 118 -73 247 -149 129-->
+<!-- -76 267 -158 307 -181 l72 -43 130 95 c72 53 131 101 131 107 -1 28 -61 74-->
+<!-- -245 186 -109 67 -202 121 -208 121 -5 0 -15 6 -21 14 -6 7 -31 25 -56 39-->
+<!--l-45 26 -162 -102z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M2910 6034 c-228 -23 -428 -43 -443 -43 l-29 -1 8 -92 c8 -108 -13-->
+<!-- -74 264 -431 193 -249 171 -232 305 -241 l70 -4 183 322 c100 177 182 328 182-->
+<!--334 0 6 -19 54 -42 107 -34 76 -47 95 -63 94 -11 -1 -207 -21 -435 -45z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7582 6027 c-20 -21 -22 -45 -41 -342 -12 -176 -23 -336 -25 -356-->
+<!--l-4 -35 160 -44 c95 -26 162 -40 167 -34 9 9 171 440 171 453 0 3 -17 17 -36-->
+<!--29 -36 24 -36 25 -30 76 l6 52 -103 48 c-85 38 -115 59 -168 112 -35 35 -66-->
+<!--64 -69 64 -4 0 -16 -10 -28 -23z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7120 5928 c-80 -60 -153 -116 -164 -123 -18 -13 -17 -16 15 -57 31-->
+<!-- -39 165 -186 365 -401 l73 -77 35 17 c28 13 36 23 36 42 0 14 9 171 21 349 12-->
+<!--178 19 326 15 329 -10 10 -148 32 -201 32 -48 0 -55 -4 -195 -111z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4280 5945 l-62 -76 -19 -267 c-10 -147 -15 -270 -11 -273 20 -19-->
+<!--343 -239 350 -239 10 0 374 109 378 113 2 2 -166 243 -561 800 -11 16 -18 10-->
+<!-- -75 -58z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5114 5874 c24 -100 146 -280 236 -348 63 -48 96 -95 120 -173 21-->
+<!-- -67 9 -65 167 -32 l101 21 36 87 c46 113 136 355 136 367 0 5 -168 29 -372 53-->
+<!-- -205 24 -386 46 -402 49 -28 5 -29 4 -22 -24z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3685 5872 l-190 -3 -182 -323 c-101 -178 -183 -328 -183 -333 0 -5-->
+<!--179 -17 401 -26 l401 -17 101 82 c56 45 104 83 106 85 4 2 39 461 41 526 0 19-->
+<!--24 18 -495 9z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5990 5832 l-22 -27 333 -329 c367 -362 318 -324 591 -444 l136 -60-->
+<!-- -76 106 c-42 58 -124 170 -182 250 l-105 145 -280 166 c-154 92 -301 179 -327-->
+<!--194 l-47 27 -21 -28z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M843 5674 l-273 -155 25 -49 c20 -40 30 -50 50 -50 38 0 94 27 101-->
+<!--47 14 46 61 123 74 123 21 0 95 -51 120 -83 27 -34 42 -34 87 0 33 25 35 30-->
+<!--30 71 -3 26 1 58 9 77 13 31 55 175 51 175 -1 0 -125 -70 -274 -156z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M2319 5711 l-85 -57 12 -47 c17 -66 45 -117 121 -216 104 -135 151-->
+<!-- -188 225 -251 l69 -60 90 68 c50 37 91 70 92 74 3 12 -416 548 -427 547 -6 0-->
+<!-- -49 -26 -97 -58z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5862 5547 c-45 -122 -82 -228 -82 -235 0 -7 24 -69 53 -138 49 -118-->
+<!--53 -125 77 -121 14 3 173 22 353 43 l328 38 -218 219 c-120 120 -265 263 -323-->
+<!--317 l-106 98 -82 -221z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M6847 5585 c-71 -51 -131 -96 -134 -98 -4 -5 283 -410 344 -486 l19-->
+<!-- -23 147 131 c81 73 147 135 147 139 0 5 -321 356 -383 419 -9 9 -42 -10 -140-->
+<!-- -82z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7962 5423 c-46 -123 -82 -226 -80 -227 2 -2 78 8 169 22 165 25 167-->
+<!--26 157 48 -9 18 -3 33 36 93 62 97 61 119 -9 193 -48 51 -57 57 -78 49 -17 -7-->
+<!-- -30 -6 -43 3 -11 7 -30 20 -44 29 l-25 15 -83 -225z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4067 5229 c-48 -38 -87 -77 -87 -86 0 -29 133 -523 141 -523 5 0 75-->
+<!--53 157 119 l149 118 40 101 41 100 -167 114 c-91 63 -171 117 -177 121 -6 3-->
+<!-- -50 -25 -97 -64z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5695 5295 c-5 -2 -58 -13 -116 -25 l-106 -22 39 -72 c37 -67 44 -75-->
+<!--100 -100 33 -16 62 -36 65 -45 2 -9 18 -22 34 -28 27 -10 29 -14 19 -32 -6-->
+<!-- -12 -22 -28 -36 -37 -23 -16 -26 -15 -64 12 -92 67 -126 73 -118 23 2 -19 21-->
+<!-- -33 86 -65 99 -49 125 -70 102 -84 -28 -18 -61 -10 -107 25 -26 20 -51 34 -57-->
+<!--32 -25 -8 -117 -337 -136 -490 -12 -92 -13 -85 42 -310 l9 -39 52 7 c29 4 177-->
+<!--25 331 46 153 21 293 39 310 39 21 0 40 8 55 24 l22 24 -242 561 c-240 553-->
+<!-- -248 569 -284 556z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7443 5242 c-53 -29 -370 -315 -387 -350 l-16 -33 187 -209 c102-->
+<!-- -116 189 -210 193 -210 12 0 465 212 477 223 8 9 1 72 -30 257 -22 135 -41-->
+<!--246 -41 247 -2 3 -333 93 -342 93 -5 -1 -23 -9 -41 -18z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M8056 5180 c-98 -16 -180 -31 -183 -34 -2 -2 8 -80 23 -173 l28 -169-->
+<!--60 22 c34 12 90 30 125 40 l65 18 42 -48 41 -48 99 -9 c55 -5 110 -11 123 -12-->
+<!--22 -2 28 7 61 93 20 52 45 109 56 127 18 30 18 32 1 51 -17 19 -90 43 -172 57-->
+<!-- -52 9 -130 51 -160 87 -13 15 -25 28 -27 27 -2 -1 -83 -14 -182 -29z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M2795 5128 l-98 -72 29 -22 c39 -32 230 -129 281 -145 32 -9 46 -9-->
+<!--56 -1 11 9 17 6 27 -13 7 -14 17 -25 22 -25 4 0 8 -17 8 -39 0 -50 18 -65 49-->
+<!-- -42 23 17 23 20 11 72 -14 63 -97 319 -108 335 -4 6 -46 14 -93 17 l-87 6 -97-->
+<!-- -71z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4960 5170 c-25 -5 -126 -33 -225 -63 l-180 -54 -22 -44 c-12 -24-->
+<!-- -31 -68 -42 -97 l-21 -53 212 -220 c146 -151 222 -222 243 -228 16 -5 33 -5-->
+<!--36 -2 3 3 16 148 28 321 12 173 25 345 28 383 3 37 2 66 -3 66 -5 -1 -29 -5-->
+<!-- -54 -9z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5056 5118 c-4 -35 -15 -189 -26 -343 -11 -154 -23 -306 -26 -337-->
+<!--l-6 -57 53 -26 c30 -14 70 -25 94 -25 54 0 64 21 75 150 4 52 13 107 18 122-->
+<!--10 25 7 566 -3 576 -2 3 -25 -2 -51 -9 -33 -10 -50 -21 -58 -39 -7 -15 -18-->
+<!-- -24 -27 -22 -14 2 -15 10 -9 38 7 29 5 34 -10 34 -15 0 -19 -11 -24 -62z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3140 5155 c0 -13 87 -346 92 -350 4 -4 748 -315 754 -315 13 0 94-->
+<!--85 94 99 -1 21 -136 530 -143 537 -5 5 -184 14 -724 36 -45 2 -73 -1 -73 -7z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M6244 5056 l-341 -41 175 -407 c97 -225 178 -408 181 -408 3 0 173-->
+<!--144 376 321 271 234 375 330 387 357 9 20 14 40 10 44 -19 18 -400 178 -422-->
+<!--177 -14 -1 -179 -20 -366 -43z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4269 4681 c-96 -76 -186 -152 -201 -168 l-28 -29 128 -126 127 -126-->
+<!--285 -7 285 -7 3 86 4 86 -209 215 c-114 118 -211 215 -214 215 -4 0 -85 -63-->
+<!-- -180 -139z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M6645 4478 c-209 -181 -389 -333 -400 -338 -42 -17 -58 -46 -51 -95-->
+<!--9 -54 6 -53 171 -27 100 16 113 16 149 2 l38 -15 -5 -111 -4 -111 44 5 c38 4-->
+<!--49 1 85 -28 l41 -33 19 22 c10 13 18 33 18 45 0 39 15 49 61 43 39 -5 62 -21-->
+<!--72 -51 2 -6 35 4 83 26 l79 36 3 46 c3 41 6 46 28 46 13 0 24 2 24 5 0 20 -53-->
+<!--118 -79 144 -43 44 -49 76 -20 107 12 13 40 30 62 36 32 10 37 15 32 32 -20-->
+<!--70 -25 124 -15 173 24 131 73 134 187 9 53 -58 94 -86 124 -86 39 0 -50 114-->
+<!-- -275 351 l-92 96 -379 -329z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3246 4737 c8 -26 101 -135 126 -148 37 -20 22 -60 -68 -174 l-87-->
+<!-- -108 29 -21 c76 -55 75 -53 62 -138 l-11 -77 36 -45 c38 -46 114 -90 144 -84-->
+<!--13 2 19 16 23 51 7 55 22 73 76 92 30 10 80 56 211 193 l173 179 -361 151-->
+<!--c-308 128 -359 147 -353 129z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M7672 4511 c-134 -61 -234 -113 -237 -122 -10 -30 6 -46 72 -72 l65-->
+<!-- -26 61 31 61 30 105 -17 c59 -9 114 -19 124 -22 17 -5 18 -3 3 26 -23 43 -21-->
+<!--82 4 88 38 10 20 32 -40 49 -33 9 -63 21 -66 26 -3 4 16 18 43 31 45 21 48 24-->
+<!--43 53 l-5 32 -233 -107z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M3840 4273 c-167 -173 -170 -178 -141 -181 29 -3 31 -6 31 -42 0 -26-->
+<!--8 -48 25 -68 22 -26 23 -32 13 -60 -11 -27 -10 -34 9 -54 15 -17 23 -43 27-->
+<!-- -93 12 -120 16 -136 42 -145 31 -12 31 -42 -1 -97 l-26 -43 56 0 c50 0 57 3-->
+<!--67 25 7 15 17 24 25 20 7 -3 19 -7 26 -10 14 -6 28 26 189 443 73 188 87 236-->
+<!--78 248 -7 8 -66 64 -130 124 l-118 110 -172 -177z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4301 4169 c-51 -132 -245 -638 -248 -651 -4 -12 9 -24 47 -43 l51-->
+<!-- -26 -55 -47 c-31 -25 -56 -51 -56 -57 0 -5 18 -30 40 -55 l39 -45 38 23 c21-->
+<!--12 56 32 78 43 l40 21 40 -39 c23 -21 67 -51 99 -67 l58 -29 43 44 c23 24 176-->
+<!--187 338 361 295 317 296 318 286 350 -5 18 -9 51 -9 74 0 49 -25 79 -77 93-->
+<!-- -21 6 -43 11 -49 11 -6 0 -28 11 -48 25 -37 25 -38 25 -341 32 l-304 6 -10-->
+<!-- -24z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5677 4030 c-109 -15 -200 -30 -203 -33 -10 -10 25 -64 76 -120 44-->
+<!-- -49 56 -56 93 -59 37 -3 45 -8 72 -48 17 -25 43 -83 59 -130 16 -47 30 -87 32-->
+<!-- -89 1 -1 13 4 25 13 26 18 47 10 97 -37 42 -40 53 -29 62 60 4 37 13 89 20-->
+<!--114 16 57 10 76 -32 94 -18 7 -44 25 -57 39 -24 25 -24 28 -13 89 21 114 19-->
+<!--137 -10 136 -13 -1 -112 -14 -221 -29z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4861 3556 c-166 -179 -311 -336 -322 -350 l-20 -26 23 -9 c13 -4 46-->
+<!-- -14 74 -21 l52 -13 -6 -40 -5 -40 119 7 c704 39 718 40 709 64 -4 9 -63 170-->
+<!-- -131 357 -89 241 -132 348 -151 367 -15 16 -30 28 -33 28 -4 0 -143 -146 -309-->
+<!-- -324z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5319 3695 c68 -192 211 -579 215 -583 3 -2 33 -1 68 3 l63 7 3 63 3-->
+<!--63 -55 46 c-68 59 -79 87 -70 193 l7 82 -41 11 c-30 8 -52 23 -79 57 -21 26-->
+<!-- -64 74 -96 108 l-57 60 39 -110z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5556 3071 c-16 -6 -29 -48 -72 -227 -29 -120 -51 -220 -50 -221 0 0-->
+<!--103 29 229 65 214 62 227 67 227 90 0 13 10 52 22 87 l23 64 -21 27 c-11 15-->
+<!-- -58 49 -104 75 -81 45 -89 48 -160 48 -41 0 -84 -4 -94 -8z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5040 3040 c-212 -16 -386 -28 -387 -29 -2 -1 -3 -23 -3 -50 l0 -48-->
+<!--182 -154 c100 -85 192 -162 205 -172 21 -17 32 -17 173 -6 83 7 158 17 166 24-->
+<!--9 6 35 93 65 220 27 116 52 218 55 228 7 21 33 22 -456 -13z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M4640 2832 c0 -21 8 -32 34 -46 l34 -18 -59 -98 c-32 -54 -59 -99-->
+<!-- -59 -101 0 -2 39 -3 86 -1 111 4 140 -7 155 -61 15 -58 3 -132 -35 -210 l-33-->
+<!-- -68 73 -50 73 -49 3 -67 c3 -67 4 -64 61 182 32 138 60 257 63 266 3 12 -53-->
+<!--65 -190 183 -108 91 -198 166 -201 166 -3 0 -5 -12 -5 -28z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5682 2646 c-123 -39 -224 -75 -224 -80 0 -4 48 -62 106 -127 l107-->
+<!-- -119 31 16 c32 16 113 16 301 -2 85 -8 107 7 107 72 0 81 -34 146 -121 234-->
+<!-- -45 44 -81 80 -82 79 -1 -1 -103 -33 -225 -73z"></path>-->
+<!--                </g>-->
+<!--                <g transform="translate(0,1000) scale(0.1,-0.1)" fill="#000000" stroke="none">-->
+<!--                    <path d="M5221 2546 l-124 -11 -83 -320 c-46 -176 -84 -320 -84 -320 0 0 60 0-->
+<!--134 0 l135 0 31 -30 c68 -65 132 -246 164 -467 9 -57 21 -191 27 -298 6 -107-->
+<!--13 -196 14 -197 2 -4 665 255 673 262 2 2 -19 32 -48 66 -85 103 -86 124 -4-->
+<!--147 41 12 94 46 94 62 0 4 -14 13 -30 20 -45 19 -130 102 -130 128 0 41 -41-->
+<!--130 -81 176 l-40 45 10 73 c13 93 -1 124 -103 234 -40 43 -85 98 -99 121 -15-->
+<!--24 -84 106 -153 183 -106 118 -129 140 -152 139 -15 -1 -83 -7 -151 -13z"></path>-->
+<!--                </g>-->
+<!--            </svg>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div id="div_full_statistics" class="statistics">-->
+<!--        <div>-->
+<!--            <p class="title">Kyiv</p>-->
+<!--            <p class="detail"><b>Average rate :</b> 23`310 $</p>-->
+<!--            <p class="detail" style="color:yellowGreen"><b>Growth in percentage :</b> +3.14 %</p>-->
+<!--        </div>-->
+<!--        <hr>-->
+
+<!--    </div>-->
+
+<!--    <div id="btn_window_full_statistics_close" class="exit_statistics">-->
+<!--        <div class="div_obj_full_line1"></div>-->
+<!--        <div class="div_obj_full_line2"></div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!-- Alert box -->
+<div id="alert_box" class="alert_box">
+    <p>loren</p>
+</div>
+
+<!--Map-->
+<script type="text/javascript" src="../static/js/behaviour/map.js" charset="utf-8"></script>
+
+<!-- THEMES -->
+<script type="text/javascript" src="../static/js/behaviour/themes.js" charset="utf-8"></script>
+<script type="text/javascript" src="../static/js/behaviour/profile.js" charset="utf-8"></script>
+</body>
+
+</html>
