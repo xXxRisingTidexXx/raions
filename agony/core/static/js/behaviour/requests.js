@@ -73,7 +73,6 @@ class Requests {
             })
             .then(data => {
                 SEARCH_HOLDER.RemoveAlerts();
-                console.log(data.length);
                 if (data.length > 0) {
                     data.forEach(v => {
                         if (!SEARCH_HOLDER.HasUniqueItem(v.id)) {
