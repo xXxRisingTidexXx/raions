@@ -406,7 +406,7 @@ class DomRiaFlatParser(DomRiaEstateParser):
                 avatar = tag.find('span', 'load-photo').find('img')
                 areas = self.__area_pattern.search(next((
                     t.text for t in tag.find_all('li', 'mt-5 i-block')
-                    if t['title'].startswith('Площа:')
+                    if t.get('title', '').startswith('Площа:')
                 ))).groups()
                 return {
                     'url': f'https://dom.ria.com{url}',
