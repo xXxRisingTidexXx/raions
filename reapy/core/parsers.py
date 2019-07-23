@@ -1,5 +1,4 @@
 import logging
-from _pydecimal import InvalidOperation
 from asyncio import get_event_loop, gather
 from datetime import date, datetime
 from functools import reduce
@@ -21,7 +20,7 @@ class Parser:
         def parse_stop(self, markup):
             try:
                 return self._parse_stop(BeautifulSoup(markup, self._builder))
-            except (IndexError, AttributeError, ValueError):
+            except (IndexError, AttributeError, ValueError, TypeError):
                 logging.exception('stop parsing failed')
 
         def _parse_stop(self, soup):
@@ -52,8 +51,6 @@ class Parser:
                 soup = BeautifulSoup(offer.pop('markup'), self._builder)
                 if self._check_offer(soup):
                     return self._parse_offer(url, soup, **offer)
-            except InvalidOperation:
-                pass
             except Exception:
                 logging.exception(f'{url} parsing failed')
 
@@ -174,7 +171,8 @@ class OlxEstateParser(EstateParser):
             return (
                 self.__find_junk(soup) is None and
                 self.__find_published(soup) is not None and
-                self.__find_point(soup) is not None
+                self.__find_point(soup) is not None and
+                self.__find_price(soup) is not None
             )
 
         @staticmethod
@@ -188,6 +186,14 @@ class OlxEstateParser(EstateParser):
         @staticmethod
         def __find_point(soup):
             return soup.find(id='mapcontainer')
+
+        @staticmethod
+        def __find_price(soup):
+            tag = soup.find('strong', 'xxxx-large')
+            return (
+                tag if tag is not None
+                else soup.find_all('strong', 'xx-large')[1]
+            )
 
         @staticmethod
         def _parse_avatar(soup):
@@ -217,14 +223,6 @@ class OlxEstateParser(EstateParser):
             }
 
         @staticmethod
-        def __find_price(soup):
-            tag = soup.find('strong', 'xxxx-large')
-            return (
-                tag if tag is not None
-                else soup.find_all('strong', 'xx-large')[1]
-            )
-
-        @staticmethod
         def _parse_pairs(soup):
             return {
                 t.find('th').text: t.find('strong').text.strip('\t\n')
@@ -240,7 +238,7 @@ class OlxEstateParser(EstateParser):
 
 class OlxFlatParser(OlxEstateParser):
     class _Shaft(OlxEstateParser._Shaft):
-        _details = json('resources/olx/flat/details.json')
+        _details = json('resources/olx_flat_reaper/details.json')
 
         def _parse_offer(self, url, soup, **kwargs):
             shapes = self._parse_shapes(soup)
@@ -295,7 +293,8 @@ class DomRiaEstateParser(EstateParser):
         def _check_offer(self, soup):
             return (
                 self.__find_junk(soup) is None and
-                self.__find_description(soup) is not None
+                self.__find_description(soup) is not None and
+                'Дог' not in self.__find_price(soup)
             )
 
         @staticmethod
@@ -305,6 +304,10 @@ class DomRiaEstateParser(EstateParser):
         @staticmethod
         def __find_description(soup):
             return soup.find('div', id='description')
+
+        @staticmethod
+        def __find_price(soup):
+            return soup.find('span', 'price').text
 
         @staticmethod
         def _parse_avatar(soup, avatar):
@@ -345,11 +348,10 @@ class DomRiaEstateParser(EstateParser):
                 )
             ))
 
-        @staticmethod
-        def _parse_price(soup):
-            return decimalize(soup.find(
-                'span', 'price'
-            ).text.replace(' ', '').replace('$', ''))
+        def _parse_price(self, soup):
+            return decimalize(
+                self.__find_price(soup).replace(' ', '').replace('$', '')
+            )
 
         def _parse_pairs(self, soup):
             return {
@@ -389,7 +391,7 @@ class DomRiaEstateParser(EstateParser):
 class DomRiaFlatParser(DomRiaEstateParser):
     class _Shaft(DomRiaEstateParser._Shaft):
         _offer_strainer = SoupStrainer('section')
-        _details = json('resources/dom_ria/flat/details.json')
+        _details = json('resources/dom_ria_flat_reaper/details.json')
         __area_pattern = compile(r'Площа (\S+)/(\S+)/(\S+)')
 
         def _parse_page(self, soup):
@@ -412,8 +414,8 @@ class DomRiaFlatParser(DomRiaEstateParser):
                     'url': f'https://dom.ria.com{url}',
                     'avatar': avatar.get('src', avatar.get('data-src')),
                     'area': self._float(areas[0]),
-                    'living_area': self.__floor(areas[1]),
-                    'kitchen_area': self.__floor(areas[2])
+                    'living_area': self._float(areas[1]),
+                    'kitchen_area': self._float(areas[2])
                 }
 
         def _parse_offer(self, url, soup, **kwargs):
@@ -449,15 +451,12 @@ class DomRiaFlatParser(DomRiaEstateParser):
         def __parse_parameters(self, pairs):
             return {
                 'rooms': self._int(pairs.get('Кімнат')),
-                'floor': self.__floor(pairs.get('Поверх')),
+                'floor': self._int(pairs.get('Поверх')),
                 'total_floor': self._int(pairs.get('Поверховість')),
                 'ceiling_height': self._ceiling_height(
                     pairs.get('висота стелі')
                 )
             }
-
-        def __floor(self, f):
-            return 0 if f == 'цокольний' else self._int(f)
 
         def _ceiling_height(self, ch):
             ch = self._float(ch)

@@ -25,14 +25,10 @@ class Crawler:
                 async with self._session.get(url, **kwargs) as response:
                     return await getattr(response, content_type)()
         except (
-            TimeoutError, TooManyRedirects,
+            TimeoutError, TooManyRedirects, ContentTypeError,
             ClientPayloadError, ClientConnectorError
         ):
             pass
-        except ContentTypeError:
-            logging.warning(
-                f'{url} crawling failed, possibly \'cause of TooManyRequests'
-            )
         except ClientError:
             logging.exception(f'{url} crawling failed')
 
@@ -67,8 +63,8 @@ class Crawler:
 
 
 class OlxFlatCrawler(Crawler):
-    _page_url = 'https://www.olx.ua/nedvizhimost/kvartiry' \
-                '-komnaty/prodazha-kvartir-komnat/?page={}'
+    _page_url = 'https://www.olx.ua/nedvizhimost/kvartiry-' \
+                'komnaty/prodazha-kvartir-komnat/?page={}'
 
 
 class DomRiaFlatCrawler(Crawler):

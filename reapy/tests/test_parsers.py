@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 from unittest import TestCase
 from core.decorators import processtest
@@ -7,12 +8,17 @@ from core.parsers import OlxFlatParser, DomRiaFlatParser
 
 
 class OlxFlatParserTestCase(TestCase):
+    def setUp(self) -> None:
+        logging.disable()
+
+    def tearDown(self) -> None:
+        logging.disable(logging.WARNING)
+
     @processtest
     async def test_parse_stop(self, executor, scribbler):
         parser = OlxFlatParser(executor, scribbler)
         self.assertEqual(await parser.parse_stop(await load('fixtures/test_parse_stop/olx_flat0.html')), 500)
-        with self.assertRaises(TypeError):
-            await parser.parse_stop(None)
+        self.assertIsNone(await parser.parse_stop(None))
 
     @processtest
     async def test_parse_pages(self, executor, scribbler):
@@ -488,14 +494,19 @@ class OlxFlatParserTestCase(TestCase):
 
 
 class DomRiaFlatParserTestCase(TestCase):
+    def setUp(self) -> None:
+        logging.disable()
+
+    def tearDown(self) -> None:
+        logging.disable(logging.WARNING)
+
     @processtest
     async def test_parse_stop(self, executor, scribbler):
         parser = DomRiaFlatParser(executor, scribbler)
         self.assertEqual(
             await parser.parse_stop(await load('fixtures/test_parse_stop/dom_ria_flat0.html')), 5664
         )
-        with self.assertRaises(TypeError):
-            await parser.parse_stop(None)
+        self.assertIsNone(await parser.parse_stop(None))
 
     @processtest
     async def test_parse_pages(self, executor, scribbler):
@@ -593,7 +604,7 @@ class DomRiaFlatParserTestCase(TestCase):
             {
                 'area': 44.0,
                 'avatar': 'https://cdn.riastatic.com/photosnewr/dom/photo/realty__98027540-300x200x80.webp',
-                'kitchen_area': 13,
+                'kitchen_area': 13.5,
                 'living_area': 23,
                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
                        '-vinnitsa-staryiy-gorod-jk-evropeyskiy-kvartal-15579915.html'
@@ -625,8 +636,8 @@ class DomRiaFlatParserTestCase(TestCase):
             {
                 'area': 56.26,
                 'avatar': 'https://cdn3.riastatic.com/photosnewr/dom/photo/realty__98794643-300x200x80.webp',
-                'kitchen_area': 14,
-                'living_area': 20,
+                'kitchen_area': 14.44,
+                'living_area': 20.12,
                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
                        '-vinnitsa-zamoste-50letiya-pobedyi-ulitsa-15672070.html'
             },
@@ -649,7 +660,7 @@ class DomRiaFlatParserTestCase(TestCase):
             {
                 'area': 49.0,
                 'avatar': 'https://cdn1.riastatic.com/photosnewr/dom/photo/realty__98237561-300x200x80.webp',
-                'kitchen_area': 17,
+                'kitchen_area': 17.2,
                 'living_area': 15,
                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
                        '-vinnitsa-zamoste-chehova-ulitsa-15646353.html'
@@ -663,7 +674,7 @@ class DomRiaFlatParserTestCase(TestCase):
                        'vinnitsa-vishenka-keletskaya-ulitsa-15582553.html'
             }
         ]
-        self.assertListEqual(list(await parser.parse_pages(pages)), offers)
+        self.assertEqual(list(await parser.parse_pages(pages)), offers)
 
     @processtest
     async def test_parse_offers(self, executor, scribbler):
@@ -744,6 +755,14 @@ class DomRiaFlatParserTestCase(TestCase):
                 'area': 73.5,
                 'living_area': None,
                 'kitchen_area': 25
+            },
+            {
+                'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-zaporoje-dneprovskiy-leninskiy-12440307.html',
+                'markup': await load('fixtures/test_parse_offer/dom_ria_flat8.html'),
+                'avatar': None,
+                'area': 169,
+                'living_area': None,
+                'kitchen_area': None
             }
         )
         structs = [

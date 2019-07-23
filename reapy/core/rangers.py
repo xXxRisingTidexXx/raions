@@ -37,11 +37,11 @@ class Ranger:
 class OlxFlatRanger(Ranger):
     _stop_url = 'https://www.olx.ua/nedvizhimost/kvartiry' \
                 '-komnaty/prodazha-kvartir-komnat/?page=1'
-    _range_path = 'resources/olx/flat/range.json'
+    _range_path = 'resources/olx_flat_reaper/range.json'
     _step = 5
 
 
 class DomRiaFlatRanger(Ranger):
     _stop_url = 'https://dom.ria.com/uk/prodazha-kvartir/?page=1'
-    _range_path = 'resources/dom_ria/flat/range.json'
+    _range_path = 'resources/dom_ria_flat_reaper/range.json'
     _step = 15
