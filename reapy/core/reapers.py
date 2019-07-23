@@ -22,7 +22,6 @@ class Reaper(Worker):
         self._validator = self._validator_class(executor, self._scribbler)
         self._ranger = self._ranger_class(self._crawler, self._parser)
 
-
     @measurable('reap')
     async def _work(self):
         await self._repository.create_all(
