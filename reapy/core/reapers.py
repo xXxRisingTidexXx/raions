@@ -62,9 +62,10 @@ class EstateReaper(Reaper):
         struct.price = await self._converter.convert_to_usd(
             struct.currency, struct.price
         )
-        struct.rate = decimalize(struct.price / decimalize(struct.area))
-        struct.currency = '$'
-        return struct
+        if struct.price is not None:
+            struct.rate = decimalize(struct.price / decimalize(struct.area))
+            struct.currency = '$'
+            return struct
 
     @measurable('location')
     async def _locate_all(self, structs):

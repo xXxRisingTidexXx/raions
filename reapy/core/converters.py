@@ -7,8 +7,7 @@ based on public APIs.
 """
 from asyncio import get_event_loop
 from datetime import date
-from json import loads, dumps
-from .utils import exist, load, dump, decimalize, makedir
+from .utils import decimalize
 
 
 class Converter:
@@ -20,7 +19,6 @@ class Converter:
 
     Class properties:
         _rates_url (str): public rates' API url
-        _rates_path (str): cached rates' file absolute path
         _symbols (dict[str, str]): complete dictionary of the currency chars
         _shaft_class (Converter._Shaft): an inner class, which wraps all
         synchronous calculations (to be able to call them in the executor)
@@ -34,7 +32,6 @@ class Converter:
 
     """
     _rates_url = None
-    _rates_path = None
     _symbols = {
         'грн.': 'UAH', '$': 'USD', '€': 'EUR',
         'USD': 'USD', 'UAH': 'UAH', 'EUR': 'EUR'
@@ -63,15 +60,17 @@ class Converter:
         @staticmethod
         def convert(fr, to, amount, pairs):
             """
-            Maps the input money sum into another currency
+            Maps the input money sum into another currency or returns None
+            if the pair wasn't found
 
             :param fr: input currency
             :param to: output currency
             :param amount: input money sum
             :param pairs: currency pairs' table
-            :return: converted money sum
+            :return: converted money sum or None
             """
-            return decimalize(pairs[(fr, to)] * amount)
+            pair = pairs.get((fr, to))
+            return decimalize(pair * amount) if pair is not None else None
 
     _shaft_class = _Shaft
 
@@ -91,39 +90,14 @@ class Converter:
 
     async def prepare(self):
         """
-        Prepares currency pairs' ratios
-
-        Checks the cached rates; if they are absent or irrelevant - fulfils an
-        HTTP request. If the rates weren't got, raises Runtime Error; otherwise,
-        calculates currency pairs' ratios.
-
-        :raises: RuntimeError
+        Sets the currency pairs, fetching the rates via HTTP request
         """
-        rates = None
-        if exist(self._rates_path):
-            rates = loads(await load(self._rates_path))
-        if not self._check(rates):
-            try:
-                rates = await self._get_rates()
-                await dump(self._rates_path, dumps(rates))
-            except TypeError:
-                raise RuntimeError('no rates were got')
-        self._pairs = await self._loop.run_in_executor(
-            self._executor, self._shaft.calc_pairs, rates
-        )
+        self._pairs = await self._calc_pairs()
 
-    def _check(self, rates):
+    async def _calc_pairs(self):
         """
-        Checks the rates' existence and relevance
-
-        :param rates: a JSON with currency ratios
-        :return: rates' validity
-        """
-        pass
-
-    async def _get_rates(self):
-        """
-        Fetches the rates' JSON from the public API
+        Fetches the rates' JSON from the public API and calculates
+        the resulting currency pairs
 
         :return: currency ratios
         """
@@ -158,33 +132,21 @@ class NBUConverter(Converter):
     """
     Currency converter based on the National Bank of Ukraine public API
     """
-    _rates_url = 'https://bank.gov.ua/NBUStatService/v1' \
-                 '/statdirectory/exchange?date={}&json'
-    _rates_path = 'resources/nbu/rates.json'
+    _rates_url = 'https://bank.gov.ua/NBUStatService/v1/' \
+                 'statdirectory/exchange?date={}&json'
 
-    class _Shaft(Converter._Shaft):
-        """
-        Converter's shaft class suitable for NBU API processing
-        """
-        def calc_pairs(self, rates):
-            pairs = {r['cc']: r['rate'] for r in rates}
-            return {
-                ('UAH', 'USD'): decimalize(1 / pairs['USD']),
-                ('EUR', 'USD'): decimalize(pairs['EUR'] / pairs['USD'])
-            }
-
-    _shaft_class = _Shaft
-
-    async def prepare(self):
-        makedir('resources/nbu')
-        await super().prepare()
-
-    def _check(self, rates):
+    async def _calc_pairs(self):
         today = date.today()
-        return (
-            rates is not None and rates[0]['exchangedate'] ==
-            f'{self.__str(today.day)}.{self.__str(today.month)}.{today.year}'
-        )
+        rates = await self._crawler.get_json(self._rates_url.format(
+            f'{today.year}{self.__str(today.month)}{self.__str(today.day)}'
+        ))
+        if rates is None:
+            return {}
+        shapes = {r['cc']: r['rate'] for r in rates}
+        return {
+            ('UAH', 'USD'): decimalize(1 / shapes['USD']),
+            ('EUR', 'USD'): decimalize(shapes['EUR'] / shapes['USD'])
+        }
 
     @staticmethod
     def __str(i):
@@ -192,16 +154,6 @@ class NBUConverter(Converter):
         Expands the integer
 
         :param i: int to be expanded
-        :return: string number which takes 2 digits at least
+        :return: string number which takes 2 digits
         """
         return f'0{i}' if i < 10 else str(i)
-
-    async def _get_rates(self):
-        today = date.today()
-        url = self._rates_url.format(
-            f'{today.year}{self.__str(today.month)}{self.__str(today.day)}'
-        )
-        return [
-            r for r in await self._crawler.get_json(url)
-            if r['cc'] in self._symbols
-        ]
