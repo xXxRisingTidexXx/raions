@@ -20,13 +20,11 @@ class Item {
             this.marker.on('dblclick', (e) => {
                 if (!e.originalEvent.ctrlKey) {
                     WINDOWS.Toggle("saves");
-                    this.node.scrollIntoView({
-                        inline: "center", behavior: "smooth"
-                    });
+                    this.node.scrollIntoView({inline: "center"});
                     if (this.node.style.borderTopWidth !== "10px") {
                         this.node.click();
                     }
-                }else{
+                } else {
                     this.ShowFull();
                 }
             });
@@ -41,13 +39,11 @@ class Item {
             this.marker.on('dblclick', (e) => {
                 if (!e.originalEvent.ctrlKey) {
                     WINDOWS.TargetSearchTypeWindow("items");
-                    this.node.scrollIntoView({
-                        inline: "center", behavior: "smooth"
-                    });
+                    this.node.scrollIntoView({inline: "center"});
                     if (this.node.style.borderTopWidth !== "10px") {
                         this.node.click();
                     }
-                }else{
+                } else {
                     this.ShowFull();
                 }
             });
@@ -70,16 +66,28 @@ class Item {
             }
         };
 
+        // let geo = [];
+        // if (this.json.geolocation.properties.state) {
+        //     geo.push(this.json.geolocation.properties.state);
+        // }
+        // if (this.json.geolocation.properties.locality) {
+        //     geo.push(this.json.geolocation.properties.locality);
+        // }
+        // if (this.json.geolocation.properties.county) {
+        //     geo.push(this.json.geolocation.properties.county);
+        // }
+
         let geo = [];
-        if (this.json.geolocation.properties.state) {
-            geo.push(this.json.geolocation.properties.state);
-        }
-        if (this.json.geolocation.properties.locality) {
-            geo.push(this.json.geolocation.properties.locality);
-        }
-        if (this.json.geolocation.properties.county) {
-            geo.push(this.json.geolocation.properties.county);
-        }
+        let geoAdd = (p) => {
+            if (!!p) geo.push(p)
+        };
+
+        geoAdd(this.json.geolocation.properties["state"]);
+        geoAdd(this.json.geolocation.properties["locality"]);
+        geoAdd(this.json.geolocation.properties["county"]);
+        geoAdd(this.json.geolocation.properties["neighbourhood"]);
+        geoAdd(this.json.geolocation.properties["road"]);
+        geoAdd(this.json.geolocation.properties["house_number"]);
 
         buildNode.appendChild(this.NewItemExampleParagraph(
             geo.join(", "),
@@ -274,7 +282,9 @@ class Item {
         this.FullSetButtonsAction(buttonsParams);
 
         let geo = [];
-        let geoAdd = (p) => {if (!!p) geo.push(p)};
+        let geoAdd = (p) => {
+            if (!!p) geo.push(p)
+        };
 
         geoAdd(this.json.geolocation.properties["state"]);
         geoAdd(this.json.geolocation.properties["locality"]);
