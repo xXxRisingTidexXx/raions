@@ -1,6 +1,6 @@
 from json import loads, dumps
-from .decorators import measurable
-from .utils import load, exist, dump
+from core.decorators import measurable
+from core.utils import load, exist, dump
 
 
 class Ranger:

@@ -1,8 +1,8 @@
 import logging
 from asyncio import gather
 from asyncpg import UniqueViolationError, PostgresError
-from .utils import map_filter
-from .decorators import measurable
+from core.utils import filter_map
+from core.decorators import measurable
 
 
 class Repository:
@@ -49,7 +49,7 @@ class Repository:
 
     @measurable('distinction')
     async def distinct_all(self, structs):
-        return await map_filter(structs, self.__distinct)
+        return await filter_map(structs, self.__distinct)
 
     async def __distinct(self, struct):
         try:

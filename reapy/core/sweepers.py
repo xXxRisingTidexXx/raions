@@ -1,10 +1,10 @@
 from datetime import timedelta
-from .scribblers import SweeperScribbler
-from .crawlers import OlxFlatCrawler, DomRiaFlatCrawler
-from .parsers import OlxFlatParser, DomRiaFlatParser
-from .repositories import FlatRepository
-from .workers import Worker
-from .decorators import measurable
+from core.scribblers import SweeperScribbler
+from core.crawlers import OlxFlatCrawler, DomRiaFlatCrawler
+from core.parsers import OlxFlatParser, DomRiaFlatParser
+from core.repositories import FlatRepository
+from core.workers import Worker
+from core.decorators import measurable
 
 
 class Sweeper(Worker):

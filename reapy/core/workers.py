@@ -1,16 +1,18 @@
-import logging
+from logging import basicConfig, getLogger, INFO
 from asyncio import run
 from concurrent.futures.process import ProcessPoolExecutor
 from os.path import join
 from aiohttp import ClientSession
 from asyncpg import create_pool
 from uvloop import install
-from . import BASE_DIR, DEFAULT_DSN
-from .crawlers import Crawler
-from .parsers import Parser
-from .repositories import Repository
-from .scribblers import Scribbler
-from .utils import snake_case, makedir
+from core import BASE_DIR, DEFAULT_DSN
+from core.crawlers import Crawler
+from core.parsers import Parser
+from core.repositories import Repository
+from core.scribblers import Scribbler
+from core.utils import snake_case, makedir
+
+logger = getLogger(__name__)
 
 
 class Worker:
@@ -32,19 +34,19 @@ class Worker:
             run(self.__run())
             self._scribbler.scribble_row()
         except KeyboardInterrupt:
-            logging.info(f'{self._name} was terminated')
+            logger.info(f'{self._name} was terminated')
         except Exception:
-            logging.exception('fatal error occurred')
+            logger.exception('fatal error occurred')
 
     def __configure_logging(self):
         makedir('logs')
-        logging.basicConfig(
-            level=logging.INFO,
+        basicConfig(
+            level=INFO,
             filename=join(BASE_DIR, f'logs/{self._name}.log'),
             filemode='a+',
             format='%(asctime)s - %(name)s - [%(levelname)-8s] - %(message)s'
         )
-        logging.getLogger('asyncio').setLevel('CRITICAL')
+        getLogger('asyncio').setLevel('CRITICAL')
 
     def __configure_scribbling(self):
         makedir('scribbles')
@@ -61,9 +63,9 @@ class Worker:
                     await self._work()
 
     async def _prepare(self, pool, session, executor):
-        self._repository = self._repository_class(pool, self._scribbler)
         self._crawler = self._crawler_class(session, self._scribbler)
         self._parser = self._parser_class(executor, self._scribbler)
+        self._repository = self._repository_class(pool, self._scribbler)
 
     async def _work(self):
         pass

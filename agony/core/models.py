@@ -55,6 +55,7 @@ class Flat(Estate):
     total_floor = SmallIntegerField()
     ceiling_height = FloatField(null=True)
     details = ManyToManyField(Detail, db_table='flats_details')
+    is_visible = BooleanField(default=True)
     saved_field = 'saved_flats'
     lookups = {
         'state': 'geolocation__state',

@@ -7,9 +7,12 @@ values. That's why :class:`core.validators.Validator` and its successors
 are in charge of correct data checks and filtering.
 """
 from asyncio import get_event_loop
+from concurrent.futures import Executor
 from datetime import timedelta, date
-from .decorators import measurable
-from .utils import map_filter
+from typing import Any, Iterator, Iterable
+from core.decorators import measurable
+from core.scribblers import Scribbler
+from core.utils import filter_map
 
 
 class Validator:
@@ -21,14 +24,14 @@ class Validator:
     values would be discarded; the others would pass further.
 
     Class properties:
-        _shaft_class (Validator._Shaft): an inner class, which wraps all
+        _shaft_class: an inner class, which wraps all
         synchronous calculations (to be able to call them in the executor)
 
     Instance properties:
-        _executor (ProcessPoolExecutor): CPU bound problems' calculator
-        _scribbler (Scribbler): shape statistician
-        _loop (Any): asyncio event loop
-        _shaft (Converter._Shaft): synchronous functions' wrapper
+        _executor: CPU bound problems' calculator
+        _scribbler: shape statistician
+        _loop: asyncio event loop
+        _shaft: synchronous functions' wrapper
     """
     class _Shaft:
         """
@@ -41,7 +44,7 @@ class Validator:
         That's why converter can't pass its methods to the executor and why it
         requires extra object with synchronous methods.
         """
-        def validate(self, struct):
+        def validate(self, struct: Any) -> bool:
             """
             Checks the struct special fields' values. If all of them are correct,
             the struct will pass.
@@ -53,29 +56,23 @@ class Validator:
 
     _shaft_class = _Shaft
 
-    def __init__(self, executor, scribbler):
-        """
-        Initializes CPU bound problems' calculator and shape statistician
-
-        :param executor: CPU bound problems' calculator
-        :param scribbler: shape statistician
-        """
+    def __init__(self, executor: Executor, scribbler: Scribbler):
         self._executor = executor
         self._scribbler = scribbler
         self._loop = get_event_loop()
         self._shaft = self._shaft_class()
 
     @measurable('validation')
-    async def validate_all(self, structs):
+    async def validate_all(self, structs: Iterable) -> Iterator:
         """
         Validates the structs' sequence
 
         :param structs: set of parsed objects
         :return: set of validated objects
         """
-        return await map_filter(structs, self.__validate)
+        return await filter_map(structs, self.__validate)
 
-    async def __validate(self, struct):
+    async def __validate(self, struct: Any) -> Any:
         """
         Validates the single struct
 
@@ -101,15 +98,15 @@ class FlatValidator(Validator):
         taken into account.
 
         Class properties:
-            __limits (tuple[float]): a set of max flats' specific areas;
+            __limits: a set of max flats' specific areas;
             each value is calculated empirically for each room count
-            __expiration (timedelta): max offers' expiration period; too
+            __expiration: max offers' expiration period; too
             'old' offers shouldn't be taken into account
         """
         __limits = (69.5, 110, 130, 110, 86, 75, 65, 65, 65)
-        __expiration = timedelta(days=210)
+        __expiration = timedelta(days=210)  # TODO: fix the quarter validation
 
-        def validate(self, struct):
+        def validate(self, struct: Any) -> bool:
             return (
                 struct.area is not None and
                 struct.rooms is not None and
@@ -119,7 +116,7 @@ class FlatValidator(Validator):
                 self.__validate_ranges(struct)
             )
 
-        def __validate_ranges(self, struct):
+        def __validate_ranges(self, struct: Any) -> bool:
             """
             Checks struct's publication date and
             numeric values concernedly specific ranges

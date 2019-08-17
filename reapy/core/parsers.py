@@ -7,9 +7,9 @@ from re import compile
 from bs4 import BeautifulSoup
 from bs4.element import SoupStrainer
 from json import loads
-from .decorators import measurable
-from .structs import Flat
-from .utils import decimalize, json, map_filter
+from core.decorators import measurable
+from core.structs import Flat
+from core.utils import decimalize, json, filter_map
 
 
 class Parser:
@@ -99,7 +99,7 @@ class Parser:
 
     @measurable('offer parsing')
     async def parse_offers(self, offers):
-        return await map_filter(offers, self.__parse_offer)
+        return await filter_map(offers, self.__parse_offer)
 
     async def __parse_offer(self, offer):
         struct = await self.__parse('parse_offer', offer)
@@ -108,7 +108,7 @@ class Parser:
         await self._scribbler.add('unparsed')
 
     async def parse_junks(self, junks):
-        return set(await map_filter(junks, self.__parse_junk))
+        return set(await filter_map(junks, self.__parse_junk))
 
     async def __parse_junk(self, junk):
         return await self.__parse('parse_junk', junk)

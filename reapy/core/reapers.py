@@ -1,15 +1,14 @@
-from asyncio import gather
-from .scribblers import ReaperScribbler
-from .repositories import FlatRepository
-from .workers import Worker
-from .converters import NBUConverter
-from .crawlers import OlxFlatCrawler, DomRiaFlatCrawler
-from .decorators import measurable
-from .geolocators import NominatimGeolocator
-from .parsers import OlxFlatParser, DomRiaFlatParser
-from .rangers import OlxFlatRanger, DomRiaFlatRanger, Ranger
-from .utils import decimalize, map_filter
-from .validators import Validator, FlatValidator
+from core.scribblers import ReaperScribbler
+from core.repositories import FlatRepository
+from core.workers import Worker
+from core.converters import NBUConverter
+from core.crawlers import OlxFlatCrawler, DomRiaFlatCrawler
+from core.decorators import measurable
+from core.geolocators import NominatimGeolocator
+from core.parsers import OlxFlatParser, DomRiaFlatParser
+from core.rangers import OlxFlatRanger, DomRiaFlatRanger, Ranger
+from core.utils import decimalize, filter_map
+from core.validators import Validator, FlatValidator
 
 
 class Reaper(Worker):
@@ -56,7 +55,7 @@ class EstateReaper(Reaper):
 
     @measurable('conversion')
     async def _convert_all(self, structs):
-        return await gather(*map(self.__convert, structs))
+        return await filter_map(structs, self.__convert)
 
     async def __convert(self, struct):
         struct.price = await self._converter.convert_to_usd(
@@ -69,7 +68,7 @@ class EstateReaper(Reaper):
 
     @measurable('location')
     async def _locate_all(self, structs):
-        return await map_filter(
+        return await filter_map(
             structs, self.__locate, lambda s: s.geolocation is not None
         )
 
