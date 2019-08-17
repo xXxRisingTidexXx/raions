@@ -66,17 +66,6 @@ class Item {
             }
         };
 
-        // let geo = [];
-        // if (this.json.geolocation.properties.state) {
-        //     geo.push(this.json.geolocation.properties.state);
-        // }
-        // if (this.json.geolocation.properties.locality) {
-        //     geo.push(this.json.geolocation.properties.locality);
-        // }
-        // if (this.json.geolocation.properties.county) {
-        //     geo.push(this.json.geolocation.properties.county);
-        // }
-
         let geo = [];
         let geoAdd = (p) => {
             if (!!p) geo.push(p)
@@ -416,7 +405,7 @@ class Item {
         for (let i = 0; i < params.length; i++) {
             let paramNode = document.createElement("P");
 
-            paramNode.innerHTML = params[i][1] + params[i][2];
+            paramNode.innerHTML = `<b>${params[i][1]}</b>&nbsp;&nbsp;&nbsp;${params[i][2]}`;
             paramNode.setAttribute("class", params[i][0]);
 
             objectMainParamsContainer.appendChild(paramNode);

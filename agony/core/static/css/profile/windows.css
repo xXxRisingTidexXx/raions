@@ -6,14 +6,8 @@
 
 .div_main_window_home {
     display: grid;
-    grid-template-areas: "userInfo" "userSaves";
-    grid-template-rows: auto 1fr;
-}
-
-.userInfo {
-    margin: 20px;
-    display: grid;
-    justify-content: center;
+    grid-template-areas: "userSaves";
+    grid-template-rows: 1fr;
 }
 
 .div_user_img {
@@ -123,14 +117,16 @@
 .div_main_objects_objects {
     transition: 0s;
     display: flex;
+    flex-wrap: wrap;
     margin: 10px 30px;
-    overflow-y: scroll;
-    overflow-x: scroll;
+    justify-content: center;
+    overflow-y: auto;
+    overflow-x: auto;
     background: var(--background);
 }
 
 .div_main_objects_objects::-webkit-scrollbar {
-    height: 5px;
+    width: 5px;
     background-color: var(--background);
 }
 
@@ -152,15 +148,6 @@
     background: var(--object_p_color);
 }
 
-.div_main_objects_objects::after {
-    content: "";
-    min-width: 70px;
-}
-
-.div_main_objects_objects::before {
-    content: "";
-    min-width: 70px;
-}
 
 .div_main_objects_objects > .message {
     margin: auto;
@@ -216,21 +203,20 @@
     transition: 0s;
     z-index: 3;
     position: relative;
-    margin-left: 30px;
-    height: 100%;
-    width: 40px;
-    background: linear-gradient(90deg, var(--background) 10%, transparent);
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(var(--background) 10%, transparent);
 }
 
 .div_main_objects_border_right {
     transition: 0s;
     z-index: 3;
     position: relative;
-    margin-left: auto;
-    margin-right: 30px;
-    height: 100%;
-    width: 40px;
-    background: linear-gradient(90deg, transparent, var(--background));
+    margin-bottom: 10px;
+    margin-top: auto;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(transparent, var(--background));
 }
 
 .div_main_window_settings {
