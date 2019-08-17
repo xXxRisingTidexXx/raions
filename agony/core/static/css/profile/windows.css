@@ -119,6 +119,7 @@
     display: flex;
     flex-wrap: wrap;
     margin: 10px 30px;
+    align-content: flex-start;
     justify-content: center;
     overflow-y: auto;
     overflow-x: auto;
@@ -148,9 +149,15 @@
     background: var(--object_p_color);
 }
 
+.div_main_objects_objects:after {
+    content: '';
+    width: 100%;
+    height: 50px;
+}
 
 .div_main_objects_objects > .message {
-    margin: auto;
+    margin: 30px;
+    width: 100%;
     font-weight: bold;
     font-size: 18px;
     color: var(--object_p_color);
@@ -162,9 +169,10 @@
 
 .div_main_objects_objects > button {
     transition: background 0.5s, color 0.5s;
-    margin: auto 30px;
-    height: 100px;
-    border-radius: 10px;
+    margin: 30px 20px;
+    height: 30px;
+    width: 100%;
+    border-radius: 5px;
     padding: 5px;
     border: 3px solid var(--first);
     background: var(--background);
@@ -174,10 +182,14 @@
     font-size: 24px;
     font-weight: bold;
     box-shadow: 2px 2px 10px black;
+    background: url("https://image.flaticon.com/icons/svg/25/25629.svg"), var(--first);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .div_main_objects_objects > button:hover {
-    background: var(--first);
+    border: var(--background);
     color: var(--background);
 }
 
@@ -191,7 +203,6 @@
     background: var(--background) !important;
     transition: 0s;
     z-index: 1;
-    margin: 20px 30px;
     border-radius: 10px;
 }
 
@@ -212,7 +223,6 @@
     transition: 0s;
     z-index: 3;
     position: relative;
-    margin-bottom: 10px;
     margin-top: auto;
     width: 100%;
     height: 20px;

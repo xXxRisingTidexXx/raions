@@ -60,121 +60,121 @@
 <button id="panel_filters_toggle_button" class="panel_filters_toggle_button" type="button">F</button>
 <div id="panel_filters" class="div_panel_filters">
     <div id="div_panel_filters_objects" class="div_panel_filters_objects">
-        <p>Filters</p>
+        <p>Фільтри</p>
         <div>
-            <p>Placement</p>
+            <p>Місцезнаходження</p>
             <div>
-                <pre>State:     </pre>
+                <pre>Область:    </pre>
                 <input id="filters_select_state" type="text" list="filters_select_state_details">
-                <datalist id="filters_select_state_details">
-                    <!-- <option value="asd">asd</option> -->
-                </datalist>
+                <datalist id="filters_select_state_details"></datalist>
             </div>
-
             <div>
-                <pre>Locality:</pre>
+                <pre>Місцевість:</pre>
                 <input id="filters_select_locality" type="text" list="filters_select_locality_details">
                 <datalist id="filters_select_locality_details"></datalist>
             </div>
             <div>
-                <pre>County: </pre>
+                <pre>Район:         </pre>
                 <input id="filters_select_county" type="text" list="filters_select_county_details">
                 <datalist id="filters_select_county_details"></datalist>
             </div>
         </div>
+        <!--        місцевість -->
+        <!--        вулиця-->
+        <!--        номер будинку-->
         <hr>
         <div>
-            <p>Area</p>
+            <p>Загальна площа</p>
             <div>
-                <pre>From:         </pre>
+                <pre>Від:              </pre>
                 <input id="filters_area_from" style="width: 100px;" class="input" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До:               </pre>
                 <input id="filters_area_to" style="width: 100px;" class="input" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Kitchen area</p>
+            <p>Площа кухні</p>
             <div>
-                <pre>From:         </pre>
+                <pre>Від:              </pre>
                 <input id="filters_kitchen_area_from" style="width: 100px;" class="input" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До:               </pre>
                 <input id="filters_kitchen_area_to" style="width: 100px;" class="input" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Living area</p>
+            <p>Житлова площа</p>
             <div>
-                <pre>From:         </pre>
+                <pre>Від:              </pre>
                 <input id="filters_living_area_from" style="width: 100px;" class="input" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До:               </pre>
                 <input id="filters_living_area_to" style="width: 100px;" class="input" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Rooms</p>
+            <p>Кількість кімнат</p>
             <div>
-                <pre>From:         </pre>
+                <pre>Від:              </pre>
                 <input id="filters_rooms_from" style="width: 100px;" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До:               </pre>
                 <input id="filters_rooms_to" style="width: 100px;" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Floor</p>
+            <p>Поверх</p>
             <div>
-                <pre>From:         </pre>
+                <pre>Від:              </pre>
                 <input id="filters_floor_from" style="width: 100px;" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До:               </pre>
                 <input id="filters_floor_to" style="width: 100px;" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Total floor</p>
+            <p>Поверховість</p>
             <div>
-                <pre>From:         </pre>
+                <pre>Від:              </pre>
                 <input id="filters_total_floor_from" style="width: 100px;" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До:               </pre>
                 <input id="filters_total_floor_to" style="width: 100px;" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Celling height</p>
+            <p>Висота стелі</p>
             <div>
-                <pre>From:         </pre>
+                <pre>Від:              </pre>
                 <input id="filter_celling_height_from" style="width: 100px;" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До:               </pre>
                 <input id="filter_celling_height_to" style="width: 100px;" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Sort by</p>
+            <p>Сортування за</p>
             <div>
                 <select id="sorting_order_by" style="width: 150px; color: var(--second);">
                     <option value="null">--</option>
-                    <option value="area">Area</option>
-                    <option value="rooms">Rooms</option>
-                    <option value="price">Price</option>
+                    <option value="area">Загальною площею</option>
+                    <option value="rooms">Кількістю кімнат</option>
+                    <option value="price">Ціною</option>
                 </select>
                 <button id="sorting_ordering" style="width: 30px; margin: 0 10px 0 10px;">
                     ⬈
@@ -186,10 +186,10 @@
             </div>
         </div>
         <hr>
-        <button id="btn_add_detail" class="btn_add_detail">Add detail</button>
+        <button id="btn_add_detail" class="btn_add_detail">Додати деталь</button>
         <hr>
     </div>
-    <button id="btn_search" type="button" class="div_filters_search">Search</button>
+    <button id="btn_search" type="button" class="div_filters_search">Пошук</button>
 </div>
 
 <!-- MAIN DIVS -->
@@ -201,8 +201,8 @@
 </div>
 <div id="window_search" class="div_window div_main_window_objects">
     <div class="div_main_objects_sort" style="grid-area:selector">
-        <button id="btn_show_items" class="button_main_selector" type="button">Items</button>
-        <button id="btn_show_map" class="button_main_selector" type="button">Map</button>
+        <button id="btn_show_items" class="button_main_selector" type="button">Елементи</button>
+        <button id="btn_show_map" class="button_main_selector" type="button">Карта</button>
         <!-- to avoid map and item moving-->
         <button class="button_main_selector" style="visibility: hidden"></button>
     </div>
