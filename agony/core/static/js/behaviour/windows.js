@@ -19,11 +19,11 @@ class Windows {
 
         this.filtersButton.onclick = () => {
             this.AlertBoxHide();
-            if (this.filtersPanel.style.right === "-390px" || this.filtersPanel.style.right === "") {
+            if (this.filtersPanel.style.right === "-490px" || this.filtersPanel.style.right === "") {
                 this.filtersPanel.style.right = "0";
-                this.filtersButton.style.right = "365px";
+                this.filtersButton.style.right = "465px";
             } else {
-                this.filtersPanel.style.right = "-390px";
+                this.filtersPanel.style.right = "-490px";
                 this.filtersButton.style.right = "-20px";
             }
         }

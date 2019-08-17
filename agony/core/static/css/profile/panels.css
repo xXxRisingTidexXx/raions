@@ -143,11 +143,11 @@
 .div_panel_filters {
     transition: right 0.5s;
     z-index: 5;
-    width: 400px;
+    width: 500px;
     height: 100%;
     position: fixed;
     top: 0;
-    right: -390px;
+    right: -490px;
     background-color: var(--panels);
     border-left: 3px solid var(--second);
     overflow-x: hidden;

@@ -169,8 +169,8 @@
 
 .div_main_objects_objects > button {
     transition: background 0.5s, color 0.5s;
-    margin: 30px 20px;
-    height: 30px;
+    margin: 30px 20px 0;
+    height: 20px;
     width: 100%;
     border-radius: 5px;
     padding: 5px;
@@ -204,6 +204,7 @@
     transition: 0s;
     z-index: 1;
     border-radius: 10px;
+    margin: 0 40px 30px;
 }
 
 .div_main_objects_objects_map > * {
