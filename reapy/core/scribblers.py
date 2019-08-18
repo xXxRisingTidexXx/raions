@@ -79,11 +79,8 @@ class ReaperScribbler(Scribbler):
     that's why their reports contain many shapes concernedly
     inserted/duplicated/invalid data.
     """
-    _fields = (
-        'inserted', 'updated', 'duplicated', 'unlocated',
-        'unresponded', 'invalidated', 'unparsed', 'written'
-    )
-    _defaults = (0, 0, 0, 0, 0, 0, 0, None)
+    _fields = ('inserted', 'updated', 'duplicated', 'unlocated', 'written')
+    _defaults = (0, 0, 0, 0, None)
 
 
 class SweeperScribbler(Scribbler):

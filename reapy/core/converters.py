@@ -5,8 +5,6 @@ Each offer in the data flow has a price, but many web-resources publish offers
 without automatic recalculation. Classes below carry out currency conversion,
 based on public APIs.
 """
-from asyncio import get_event_loop
-from concurrent.futures import Executor
 from datetime import date
 from decimal import Decimal
 from typing import Dict, Tuple
@@ -40,41 +38,9 @@ class Converter:
         'USD': 'USD', 'UAH': 'UAH', 'EUR': 'EUR'
     }
 
-    class _Shaft:
-        """
-        An inner class, which covers CPU bound calculations. Asynchronous
-        context requires CPU bound problems to be done in an executor,
-        that's why :class:`concurrent.futures.ProcessPoolExecutor` is used
-        in :class:`core.converters.Converter`. But multiprocessing classes
-        use :mod:`pickles`, which causes problems with serialization. That's
-        why converter can't pass its methods to the executor and why it
-        requires extra object with synchronous methods.
-        """
-        @staticmethod
-        def convert(
-            fr: str, to: str, amount: Decimal, pairs: Dict[Tuple, Decimal]
-        ) -> Decimal:
-            """
-            Maps the input money sum into another currency or returns None
-            if the pair wasn't found.
-
-            :param fr: input currency
-            :param to: output currency
-            :param amount: input money sum
-            :param pairs: currency pairs' table
-            :return: converted money sum or None
-            """
-            pair = pairs.get((fr, to))
-            return decimalize(pair * amount) if pair is not None else None
-
-    _shaft_class = _Shaft
-
-    def __init__(self, crawler: Crawler, executor: Executor):
+    def __init__(self, crawler: Crawler):
         self._crawler = crawler
-        self._executor = executor
-        self._loop = get_event_loop()
         self._pairs = None
-        self._shaft = self._shaft_class()
 
     async def prepare(self):
         """
@@ -91,7 +57,7 @@ class Converter:
         """
         pass
 
-    async def convert_to_usd(self, fr: str, amount: Decimal) -> Decimal:
+    def convert_to_usd(self, fr: str, amount: Decimal) -> Decimal:
         """
         Converts the input money sum into USD.
 
@@ -99,9 +65,9 @@ class Converter:
         :param amount: money sum
         :return: money sum in USD
         """
-        return await self.convert(fr, 'USD', amount)
+        return self.convert(fr, 'USD', amount)
 
-    async def convert(self, fr: str, to: str, amount: Decimal) -> Decimal:
+    def convert(self, fr: str, to: str, amount: Decimal) -> Decimal:
         """
         Converts the input money sum into another currency.
 
@@ -111,9 +77,10 @@ class Converter:
         :return: mapped money sum
         """
         fr, to = self._symbols[fr], self._symbols[to]
-        return amount if fr == to else await self._loop.run_in_executor(
-            self._executor, self._shaft.convert, fr, to, amount, self._pairs
-        )
+        if fr == to:
+            return amount
+        pair = self._pairs.get((fr, to))
+        return decimalize(pair * amount) if pair is not None else None
 
 
 class NBUConverter(Converter):

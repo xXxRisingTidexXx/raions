@@ -1,14 +1,17 @@
+from typing import Iterable, Dict, List, Any
+from core.clixes import Clix
+from core.decorators import measurable
+from core.geomappers import NominatimGeomapper
 from core.scribblers import ReaperScribbler
 from core.repositories import FlatRepository
 from core.workers import Worker
 from core.converters import NBUConverter
-from core.crawlers import OlxFlatCrawler, DomRiaFlatCrawler
-from core.decorators import measurable
+from core.crawlers import OlxFlatCrawler, DomRiaFlatCrawler, EstateCrawler
 from core.geolocators import NominatimGeolocator
 from core.parsers import OlxFlatParser, DomRiaFlatParser
 from core.rangers import OlxFlatRanger, DomRiaFlatRanger, Ranger
-from core.utils import decimalize, filter_map
-from core.validators import Validator, FlatValidator
+from core.utils import decimalize, notnull
+from core.validators import FlatValidator, Validator
 
 
 class Reaper(Worker):
@@ -16,49 +19,55 @@ class Reaper(Worker):
     _validator_class = Validator
     _ranger_class = Ranger
 
-    async def _prepare(self, pool, session, executor):
-        await super()._prepare(pool, session, executor)
-        self._validator = self._validator_class(executor, self._scribbler)
+    async def _prepare(self):
+        await super()._prepare()
         self._ranger = self._ranger_class(self._crawler, self._parser)
-
-    @measurable('reap')
-    async def _work(self):
-        await self._repository.create_all(
-            await self._sift_all(
-                await self._parser.parse_offers(
-                    await self._crawler.get_offers(
-                        await self._parser.parse_pages(
-                            await self._crawler.get_pages(
-                                await self._ranger.range()
-                            )
-                        )
-                    )
-                )
-            )
-        )
-
-    async def _sift_all(self, structs):
-        pass
+        self._validator = self._validator_class()
 
 
 class EstateReaper(Reaper):
-    _converter_class = NBUConverter
+    _crawler_class = EstateCrawler
     _geolocator_class = NominatimGeolocator
+    _geomapper_class = NominatimGeomapper
 
-    async def _prepare(self, pool, session, executor):
-        await super()._prepare(pool, session, executor)
-        self._converter = self._converter_class(self._crawler, executor)
-        await self._converter.prepare()
-        self._geolocator = self._geolocator_class(
-            self._crawler, executor, self._scribbler
+    async def _prepare(self):
+        await super()._prepare()
+        self._geolocator = self._geolocator_class(self._scribbler, self._crawler)
+        self._geomapper = self._geomapper_class()
+
+    @staticmethod
+    def _flatten_pages(pages: Iterable[Iterable[Dict]]) -> List[Dict]:
+        return list(
+            {o['url']: o for ol in pages for o in ol}.values()
         )
 
-    @measurable('conversion')
-    async def _convert_all(self, structs):
-        return await filter_map(structs, self.__convert)
+    @staticmethod
+    def _filter_offer(offer: Any) -> bool:
+        return notnull(offer['markup'])
 
-    async def __convert(self, struct):
-        struct.price = await self._converter.convert_to_usd(
+    async def _set_geolocation(self, struct: Any) -> Any:
+        struct.geolocation = await self._geolocator.locate(struct.geolocation)
+        return struct
+
+    @staticmethod
+    def _filter_geolocation(struct: Any) -> bool:
+        return notnull(struct.geolocation)
+
+    def _map_geolocation(self, struct: Any) -> Any:
+        struct.geolocation = self._geomapper.map(struct.geolocation)
+        return struct
+
+
+class OlxEstateReaper(EstateReaper):
+    _converter_class = NBUConverter
+
+    async def _prepare(self):
+        await super()._prepare()
+        self._converter = self._converter_class(self._crawler)
+        await self._converter.prepare()
+
+    def _set_shapes(self, struct: Any) -> Any:
+        struct.price = self._converter.convert_to_usd(
             struct.currency, struct.price
         )
         if struct.price is not None:
@@ -66,52 +75,51 @@ class EstateReaper(Reaper):
             struct.currency = '$'
             return struct
 
-    @measurable('location')
-    async def _locate_all(self, structs):
-        return await filter_map(
-            structs, self.__locate, lambda s: s.geolocation is not None
-        )
-
-    async def __locate(self, struct):
-        struct.geolocation = await self._geolocator.locate(struct.geolocation)
-        return struct
-
-
-class OlxEstateReaper(EstateReaper):
-    async def _sift_all(self, structs):
-        return await self._locate_all(
-            await self._repository.distinct_all(
-                await self._validator.validate_all(
-                    await self._convert_all(structs)
-                )
-            )
+    @measurable('reap')
+    async def _work(self):
+        await (
+            Clix(self._ranger.range)
+            .reform(self._crawler.get_page)
+            .map(self._parser.parse_page)
+            .flatten(self._flatten_pages)
+            .reform(self._crawler.get_offer, self._filter_offer)
+            .sieve(self._parser.parse_offer)
+            .sieve(self._set_shapes, self._validator.validate)
+            .reform(self._repository.distinct)
+            .reform(self._set_geolocation, self._filter_geolocation)
+            .reform(self._map_geolocation, self._filter_geolocation)
+            .apply(self._repository.create)
         )
 
 
 class OlxFlatReaper(OlxEstateReaper):
-    _repository_class = FlatRepository
+    _ranger_class = OlxFlatRanger
     _crawler_class = OlxFlatCrawler
     _parser_class = OlxFlatParser
-    _ranger_class = OlxFlatRanger
     _validator_class = FlatValidator
-    _max_pool_size = 40
+    _repository_class = FlatRepository
 
 
 class DomRiaEstateReaper(EstateReaper):
-    async def _sift_all(self, structs):
-        return await self._repository.distinct_all(
-            await self._locate_all(
-                await self._validator.validate_all(
-                    await self._convert_all(structs)
-                )
-            )
+    @measurable('reap')
+    async def _work(self):
+        await (
+            Clix(self._ranger.range)
+            .reform(self._crawler.get_page)
+            .map(self._parser.parse_page)
+            .flatten(self._flatten_pages)
+            .reform(self._crawler.get_offer, self._filter_offer)
+            .sieve(self._parser.parse_offer, self._validator.validate)
+            .reform(self._set_geolocation, self._filter_geolocation)
+            .reform(self._map_geolocation, self._filter_geolocation)
+            .reform(self._repository.distinct)
+            .apply(self._repository.create)
         )
 
 
 class DomRiaFlatReaper(DomRiaEstateReaper):
-    _repository_class = FlatRepository
+    _ranger_class = DomRiaFlatRanger
     _crawler_class = DomRiaFlatCrawler
     _parser_class = DomRiaFlatParser
-    _ranger_class = DomRiaFlatRanger
     _validator_class = FlatValidator
-    _max_pool_size = 50
+    _repository_class = FlatRepository

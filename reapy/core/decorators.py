@@ -8,13 +8,16 @@ from time import time
 from typing import Callable, Any
 from unittest import TestCase
 from aiohttp import ClientSession, ContentTypeError
-from aiohttp.client_exceptions import ClientConnectorError, ClientPayloadError, ClientError
 from aiohttp.client import TooManyRedirects
-from asyncpg import create_pool
+from asyncpg import create_pool, UniqueViolationError, PostgresError
 from asyncpg.pool import Pool
 from asynctest import MagicMock, CoroutineMock
 from uvloop import install
 from core import TESTING_DSN
+from core.repositories import Repository
+from aiohttp.client_exceptions import (
+    ClientConnectorError, ClientPayloadError, ClientError
+)
 
 logger = getLogger(__name__)
 
@@ -52,10 +55,47 @@ def networking(function: Callable) -> Callable:
             TimeoutError, TooManyRedirects, ContentTypeError,
             ClientPayloadError, ClientConnectorError
         ) as e:
-            logger.error(e)
+            logger.error(f'HTTP connection failed: {e}')
         except ClientError:
             logger.exception(f'{url} crawling failed')
     return wrapper
+
+
+def nullable(function: Callable) -> Callable:
+    def wrapper(*args, **kwargs):
+        try:
+            return function(*args, **kwargs)
+        except (AttributeError, TypeError):
+            return None
+    return wrapper
+
+
+def transactional(message: str) -> Callable:
+    def decorator(function: Callable) -> Callable:
+        async def wrapper(repository: Repository, *args, **kwargs) -> Any:
+            try:
+                async with repository._pool.acquire() as connection:  # noqa
+                    async with connection.transaction():
+                        return await function(
+                            repository, connection, *args, **kwargs
+                        )
+            except UniqueViolationError:
+                await repository._scribbler.add('duplicated')  # noqa
+            except PostgresError:
+                logger.exception(message)
+        return wrapper
+    return decorator
+
+
+def connected(message: str) -> Callable:
+    def decorator(function: Callable) -> Callable:
+        async def wrapper(*args, **kwargs) -> Any:
+            try:
+                return await function(*args, **kwargs)
+            except PostgresError:
+                logger.exception(message)
+        return wrapper
+    return decorator
 
 
 def dbtest(function: Callable) -> Callable:

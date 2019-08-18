@@ -1,14 +1,13 @@
 """
 Basic helping tools and instruments
 """
-from typing import Iterable, Callable, Iterator, Union, List, Dict
+from asyncio import gather
+from typing import Union, List, Dict, Any, Callable, Iterable, Iterator
 from aiofiles import open as aioopen
 from decimal import Decimal, ROUND_HALF_EVEN
 from json import loads
 from os.path import exists, join
-from os import mkdir
 from re import sub
-from asyncio import gather
 from core import BASE_DIR
 
 
@@ -22,8 +21,20 @@ def snake_case(string: str) -> str:
     return sub(r'([a-z])([A-Z])', r'\1_\2', string).lower()
 
 
+def notnull(value: Any) -> bool:
+    """
+    The simplest check for emptiness
+
+    :param value: target entity
+    :return: is target null or not
+    """
+    return value is not None
+
+
 def decimalize(
-    number: float, exp: Decimal = Decimal('.001'), rounding: str = ROUND_HALF_EVEN
+    number: Union[float, str],
+    exp: Decimal = Decimal('.001'),
+    rounding: str = ROUND_HALF_EVEN
 ) -> Decimal:
     """
     Rounds the input float number.
@@ -36,32 +47,6 @@ def decimalize(
     return Decimal(number).quantize(exp, rounding=rounding)
 
 
-async def filter_map(
-    iterable: Iterable, mapper: Callable, predicate: Callable = (lambda x: x is not None)
-) -> Iterator:
-    """
-    Asynchronously converts and then filters the input sequence.
-
-    :param iterable: the target sequence
-    :param mapper: coroutine-converter
-    :param predicate: synchronous filtering function
-    :return: mapped and filtered iterable
-    """
-    flow = await gather(*map(mapper, iterable))
-    return filter(predicate, flow)
-
-
-def makedir(path: str):
-    """
-    Creates the folder by the provided relative path if it doesn't exist.
-
-    :param path: folder's relative path concernedly the project's root
-    """
-    abs_path = join(BASE_DIR, path)
-    if not exists(abs_path):
-        mkdir(abs_path)
-
-
 def exist(path: str):
     """
     Checks the existence of the provided directory or file.
@@ -70,6 +55,27 @@ def exist(path: str):
     :return: file's existence
     """
     return exists(join(BASE_DIR, path))
+
+
+async def filter_map(
+    iterable: Iterable,
+    mapper: Callable,
+    predicate: Callable
+) -> Iterator:
+    """
+    Asynchronously maps, gathers and filters data sequence.
+
+    :param iterable: data sequence
+    :param mapper: asynchronous function-converter
+    :param predicate: synchronous filtering function
+    :return: mapped & filtered collection
+    """
+    gathered = await gather(*(map(mapper, iterable)))
+    return filter(predicate, gathered)
+
+
+def find(predicate: Callable, iterable: Iterable) -> Any:
+    return next(filter(predicate, iterable), None)
 
 
 def json(path: str) -> Union[List, Dict]:

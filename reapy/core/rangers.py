@@ -1,5 +1,4 @@
 from json import loads, dumps
-from core.decorators import measurable
 from core.utils import load, exist, dump
 
 
@@ -12,26 +11,27 @@ class Ranger:
         self._crawler = crawler
         self._parser = parser
 
-    @measurable('ranging')
     async def range(self):
-        stop = await self._parser.parse_stop(
-            await self._crawler.get_text(self._stop_url)
-        )
+        page = await self._crawler.get_text(self._stop_url)
+        stop = self._parser.parse_stop(page)
         return (
             range(1, 1 + self._step) if stop is None
-            else await self.__range(await self.__load_pair(), stop)
+            else await self.__dump_and_range(stop)
         )
 
-    async def __load_pair(self):
-        return (
-            loads(await load(self._range_path))
-            if exist(self._range_path) else [1, 1 + self._step]
-        )
+    async def __dump_and_range(self, stop):
+        start, new_start = await self.__load_start(), 1
+        if start + self._step < stop:
+            stop = start + self._step
+            new_start = stop + 1
+        await dump(self._range_path, dumps({'start': new_start}))
+        return range(start, stop + 1)
 
-    async def __range(self, pair, stop):
-        start, stop = (pair[1], pair[1]) if pair[1] < stop else (1, stop + 1)
-        await dump(self._range_path, dumps([start, start + self._step]))
-        return range(pair[0], stop)
+    async def __load_start(self):
+        if not exist(self._range_path):
+            return 1
+        contents = await load(self._range_path)
+        return loads(contents)['start']
 
 
 class OlxFlatRanger(Ranger):

@@ -1,28 +1,29 @@
-import logging
-from asyncio import gather
-from asyncpg import UniqueViolationError, PostgresError
-from core.utils import filter_map
-from core.decorators import measurable
+from logging import getLogger
+from asyncpg import UniqueViolationError, create_pool
+from core import DEFAULT_DSN
+from core.decorators import transactional, connected
+
+logger = getLogger(__name__)
 
 
 class Repository:
+    _max_pool_size = 45
     _portion = 200
 
-    def __init__(self, pool, scribbler):
-        self._pool = pool
+    def __init__(self, scribbler):
         self._scribbler = scribbler
+        self._pool = None
 
-    async def delete_all_expired(self, expiration):
-        try:
-            async with self._pool.acquire() as connection:
-                async with connection.transaction():
-                    cursor = await self._get_expired_cursor(connection, expiration)
-                    records = await cursor.fetch(self._portion)
-                    while len(records) > 0:
-                        await self._delete_records(connection, records)
-                        records = await cursor.fetch(self._portion)
-        except PostgresError:
-            logging.exception('expired item deletion failed')
+    async def prepare(self):
+        self._pool = await create_pool(DEFAULT_DSN, max_size=self._max_pool_size)
+
+    @transactional('expired item deletion failed')
+    async def delete_all_expired(self, connection, expiration):
+        cursor = await self._get_expired_cursor(connection, expiration)
+        records = await cursor.fetch(self._portion)
+        while len(records) > 0:
+            await self._delete_records(connection, records)
+            records = await cursor.fetch(self._portion)
 
     async def _get_expired_cursor(self, connection, expiration):
         pass
@@ -30,39 +31,24 @@ class Repository:
     async def _delete_records(self, connection, records):
         pass
 
-    async def delete_all_junks(self, prefix, sieve):
-        try:
-            async with self._pool.acquire() as connection:
-                async with connection.transaction():
-                    cursor = await self._get_prefixed_cursor(connection, prefix)
-                    records = await cursor.fetch(self._portion)
-                    while len(records) > 0:
-                        await self._delete_records(
-                            connection, await sieve(records)
-                        )
-                        records = await cursor.fetch(self._portion)
-        except PostgresError:
-            logging.exception('junk item deletion failed')
+    @transactional('junk item deletion failed')
+    async def delete_all_junks(self, connection, prefix, sieve):
+        cursor = await self._get_prefixed_cursor(connection, prefix)
+        records = await cursor.fetch(self._portion)
+        while len(records) > 0:
+            sieved = await sieve(records)
+            await self._delete_records(connection, sieved)
+            records = await cursor.fetch(self._portion)
 
     async def _get_prefixed_cursor(self, connection, prefix):
         pass
 
-    @measurable('distinction')
-    async def distinct_all(self, structs):
-        return await filter_map(structs, self.__distinct)
-
-    async def __distinct(self, struct):
-        try:
-            async with self._pool.acquire() as connection:
-                async with connection.transaction():
-                    record = await self._find_record(connection, struct)
-                    if record is None:
-                        return struct
-                    await self._update_record(connection, record, struct)
-        except UniqueViolationError:
-            await self._scribbler.add('duplicated')
-        except PostgresError:
-            logging.exception(f'couldn\'t distinct struct: {struct.url}')
+    @transactional('couldn\'t distinct struct')
+    async def distinct(self, connection, struct):
+        record = await self._find_record(connection, struct)
+        if record is None:
+            return struct
+        await self._update_record(connection, record, struct)
 
     async def _find_record(self, connection, struct):
         pass
@@ -70,35 +56,26 @@ class Repository:
     async def _update_record(self, connection, record, struct):
         pass
 
-    @measurable('storing')
-    async def create_all(self, structs):
-        await gather(*map(self.__create, structs))
-
-    async def __create(self, struct):
-        try:
-            async with self._pool.acquire() as connection:
-                async with connection.transaction():
-                    await self._create_record(connection, struct)
-                    await self._scribbler.add('inserted')
-        except UniqueViolationError:
-            await self._scribbler.add('duplicated')
-        except PostgresError:
-            logging.exception(f'{struct.url} storing failed')
+    @transactional('storing failed')
+    async def create(self, connection, struct):
+        await self._create_record(connection, struct)
+        await self._scribbler.add('inserted')
 
     async def _create_record(self, connection, struct):
         pass
 
+    async def spare(self):
+        await self._pool.close()
+
 
 class EstateRepository(Repository):
+    @connected('records\' deletion failed')
     async def _delete_records(self, connection, records):
-        try:
-            ids = [r['id'] for r in records]
-            async with connection.transaction():
-                await self._delete_estates_details(connection, ids)
-                await self._delete_estates(connection, ids)
-            await self._scribbler.add('deleted', len(ids))
-        except PostgresError:
-            logging.exception('records\' deletion failed')
+        ids = [r['id'] for r in records]
+        async with connection.transaction():
+            await self._delete_estates_details(connection, ids)
+            await self._delete_estates(connection, ids)
+        await self._scribbler.add('deleted', len(ids))
 
     async def _delete_estates_details(self, connection, ids):
         pass
@@ -107,15 +84,9 @@ class EstateRepository(Repository):
         pass
 
     async def _create_record(self, connection, struct):
-        await self._set_estate_details(
-            connection,
-            await self._create_estate(
-                connection, struct, await self.__get_geolocation(
-                    connection, struct.geolocation
-                )
-            ),
-            struct.details
-        )
+        geolocation = await self.__get_geolocation(connection, struct.geolocation)
+        estate = await self._create_estate(connection, struct, geolocation)
+        await self._set_estate_details(connection, estate, struct.details)
 
     async def __get_geolocation(self, connection, geodict):
         try:
@@ -153,11 +124,8 @@ class EstateRepository(Repository):
         pass
 
     async def _set_estate_details(self, connection, estate, details_values):
-        await self._create_estate_details(
-            connection, estate, await self.__find_details(
-                connection, details_values
-            )
-        )
+        details = await self.__find_details(connection, details_values)
+        await self._create_estate_details(connection, estate, details)
 
     @staticmethod
     async def __find_details(connection, details_values):
@@ -165,7 +133,7 @@ class EstateRepository(Repository):
             'SELECT id FROM details WHERE value = ANY ($1)', details_values
         )
         if len(details) != len(details_values):
-            logging.warning(
+            logger.warning(
                 f'some of these details are absent in the DB:\n{details_values}'
             )
         return details

@@ -5,22 +5,16 @@ Crawlers are very useful abstraction layer upon `aiohttp.ClientSession` -
 they cover this connection pool, supplying convenient API for HTTP requests.
 Each crawler has a specific set of parameters, suitable for the target site.
 """
-from asyncio import Semaphore, gather
-from typing import Dict, Union, List, Any, Iterator, Iterable
+from asyncio import Semaphore
+from typing import Dict, Union, List, Any
 from aiohttp.client import ClientSession
-from core.scribblers import Scribbler
-from core.decorators import measurable, networking
+from core.decorators import networking
 
 
 class Crawler:
     """
-    Basic asynchronous currency calculator. It leverages an HTTP client
-    to perform currency rates' requests and an executor to fulfil CPU bound
-    calculations. To make them effective, converter caches the actual rates
-    in the local file.
 
     Class properties:
-        _page_url: specific resource url template
         _limit: the max number of concurrent connections to the same site
         _timeout: default HTTP request timeout
 
@@ -29,14 +23,15 @@ class Crawler:
         _scribbler: statistics entity which writes success & failure shapes
         _semaphore: HTTP connection "restriction frame"
     """
-    _page_url = None
-    _limit = 80
-    _timeout = 10
+    _limit = 10
+    _timeout = 1
 
-    def __init__(self, session: ClientSession, scribbler: Scribbler):
-        self._session = session
-        self._scribbler = scribbler
+    def __init__(self):
+        self._session = None
         self._semaphore = Semaphore(self._limit)
+
+    async def prepare(self):
+        self._session = ClientSession()
 
     async def get_json(self, url: str, **kwargs) -> Union[List, Dict]:
         """
@@ -63,28 +58,6 @@ class Crawler:
             async with self._session.get(url, **kwargs) as response:
                 return await getattr(response, content_type)()
 
-    @measurable('page crawling')
-    async def get_pages(self, indices: List[int], **kwargs) -> Iterator:
-        """
-        Returns a set of HTML pages from the current site via pagination.
-
-        :param indices: a sequence of pagination indices
-        :param kwargs: additional config like timeout, content-type, etc.
-        :return: a sequence of HTMLs
-        """
-        pages = await gather(*(self.__get_page(i, **kwargs) for i in indices))
-        return filter(lambda o: o is not None, pages)
-
-    async def __get_page(self, index: int, **kwargs) -> str:
-        """
-        Fulfills single HTTP request and returns the HTML contents.
-
-        :param index: page's index at the site's pagination
-        :param kwargs: additional config like timeout, content-type, etc.
-        :return: HTML file's contents
-        """
-        return await self.get_text(self._page_url.format(index), **kwargs)
-
     async def get_text(self, url: str, **kwargs) -> str:
         """
         Makes an HTTP request and returns response in HTML (text) format.
@@ -95,44 +68,44 @@ class Crawler:
         """
         return await self.__get_content(url, 'text', **kwargs)
 
-    @measurable('offer crawling')
-    async def get_offers(self, forms: Iterable, **kwargs) -> Iterator:
-        """
-        Maps the offer dicts' sequence, adding to each one 'markup' value.
-        An offer - it's a dict, which contains object's publication info,
-        like URL, page's HTML, etc. "Raw offer" - a dict without 'markup'
-        key-value pair.
+    async def spare(self):
+        await self._session.close()
 
-        :param forms: "raw" offer's list
-        :param kwargs: additional config like timeout, content-type, etc.
-        :return: a filtered set of offers
-        """
-        offers = await gather(*(self.__get_offer(f, **kwargs) for f in forms))
-        return filter(lambda o: o['markup'] is not None, offers)
 
-    async def __get_offer(self, form: Dict[str, Any], **kwargs) -> Dict[str, Any]:
+class EstateCrawler(Crawler):
+    _page_url = None
+
+    async def get_page(self, index: int) -> str:
+        """
+        Fulfills single HTTP request and returns the HTML contents.
+
+        :param index: page's index at the site's pagination
+        :return: HTML file's contents
+        """
+        return await self.get_text(self._page_url.format(index))
+
+    async def get_offer(self, form: Dict[str, Any]) -> Dict[str, Any]:
         """
         Maps a "raw offer" form into a normal offer dict.
 
         :param form: "raw offer" dict
-        :param kwargs: additional config like timeout, content-type, etc.
         :return: the same dict with a 'markup' field if the request succeeded
         """
-        form['markup'] = await self.get_text(form['url'], **kwargs)
-        if form['markup'] is None:
-            await self._scribbler.add('unresponded')
+        form['markup'] = await self.get_text(form['url'])
         return form
 
 
-class OlxFlatCrawler(Crawler):
+class OlxFlatCrawler(EstateCrawler):
     """
     A crawler which searches flat offers from `www.olx.ua <https://www.olx.ua/>`_.
     """
     _page_url = 'https://www.olx.ua/nedvizhimost/kvartiry-' \
                 'komnaty/prodazha-kvartir-komnat/?page={}'
+    _limit = 80
+    _timeout = 10
 
 
-class DomRiaFlatCrawler(Crawler):
+class DomRiaFlatCrawler(EstateCrawler):
     """
     A crawler which searches flat offers from `www.olx.ua <https://dom.ria.com/>`_.
     """
