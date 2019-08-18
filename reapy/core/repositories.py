@@ -1,7 +1,7 @@
 from logging import getLogger
 from asyncpg import UniqueViolationError, create_pool
-from core import DEFAULT_DSN
 from core.decorators import transactional, connected
+from core.scribblers import Scribbler
 
 logger = getLogger(__name__)
 
@@ -10,12 +10,12 @@ class Repository:
     _max_pool_size = 45
     _portion = 200
 
-    def __init__(self, scribbler):
+    def __init__(self, scribbler: Scribbler):
         self._scribbler = scribbler
         self._pool = None
 
-    async def prepare(self):
-        self._pool = await create_pool(DEFAULT_DSN, max_size=self._max_pool_size)
+    async def prepare(self, dsn: str):
+        self._pool = await create_pool(dsn, max_size=self._max_pool_size)
 
     @transactional('expired item deletion failed')
     async def delete_all_expired(self, connection, expiration):

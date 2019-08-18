@@ -2,7 +2,7 @@ from logging import basicConfig, getLogger, INFO
 from asyncio import run
 from os.path import join
 from uvloop import install
-from core import BASE_DIR
+from core import BASE_DIR, DEFAULT_DSN
 from core.crawlers import Crawler
 from core.parsers import Parser
 from core.repositories import Repository
@@ -51,8 +51,10 @@ class Worker:
 
     async def _prepare(self):
         self._crawler = self._crawler_class()
+        await self._crawler.prepare()
         self._parser = self._parser_class()
         self._repository = self._repository_class(self._scribbler)
+        await self._repository.prepare(DEFAULT_DSN)
 
     async def _work(self):
         pass

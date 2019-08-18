@@ -9,15 +9,15 @@ class Clix:
         self._creator = creator
         self._queue = Queue()
         self._executor = ProcessPoolExecutor()
-        self._loop = get_event_loop()
+        self._loop = None
 
-    def reform(self, mapper: Callable, predicate: Callable = notnull):
+    def reform(self, mapper: Callable, predicate: Callable = notnull) -> 'Clix':
         self._queue.put_nowait(
             lambda iterable: filter_map(iterable, mapper, predicate)
         )
         return self
 
-    def map(self, mapper: Callable):
+    def map(self, mapper: Callable) -> 'Clix':
         self._queue.put_nowait(
             lambda iterable: gather(*(self.__execute(mapper, i) for i in iterable))
         )
@@ -26,14 +26,15 @@ class Clix:
     def __execute(self, function: Callable, *args) -> Generator:
         return self._loop.run_in_executor(self._executor, function, *args)
 
-    def flatten(self, flattener: Callable):
+    def flatten(self, flattener: Callable) -> 'Clix':
         self._queue.put_nowait(lambda iterable: self.__execute(flattener, iterable))
         return self
 
-    def sieve(self, mapper: Callable, predicate: Callable = notnull):
+    def sieve(self, mapper: Callable, predicate: Callable = notnull) -> 'Clix':
         return self.reform(lambda i: self.__execute(mapper, i), predicate)
 
     async def apply(self, applier: Callable):
+        self._loop = get_event_loop()
         iterable = await self._creator()
         while not self._queue.empty():
             function = await self._queue.get()
