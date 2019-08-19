@@ -32,7 +32,7 @@ run(
     Clix(generate)
     .flatten(flatten)
     .sieve(convert, lambda i: i > 25)
-    .map(convert)
+    .map(lambda i: i + 10)
     .reform(calc, lambda i: i > 16)
     .apply(output)
 )

@@ -124,13 +124,13 @@ class NominatimGeomapper(Geomapper):
         )
 
     def _get_county(self, location: Dict[str, Any]) -> str:
-        county = self.__search_county(location['address'].get('county'))
+        county = self._search_county(location['address'].get('county'))
         if county is not None:
             return county
-        return self.__search_county(location.get('display_name'))
+        return self._search_county(location.get('display_name'))
 
     @nullable
-    def __search_county(self, string: str) -> str:
+    def _search_county(self, string: str) -> str:
         """
         Tries to extract location's county from the address string.
 

@@ -41,7 +41,7 @@ def networking(function: Callable) -> Callable:
     :param function: target callable
     :return: wrapper with `aiohttp` errors' handling
     """
-    async def wrapper(url, *args, **kwargs) -> Any:
+    async def wrapper(url: str, *args, **kwargs) -> Any:
         try:
             return await function(url, *args, **kwargs)
         except (
@@ -69,9 +69,7 @@ def transactional(message: str) -> Callable:
             try:
                 async with repository._pool.acquire() as connection:  # noqa
                     async with connection.transaction():
-                        return await function(
-                            repository, connection, *args, **kwargs
-                        )
+                        return await function(repository, connection, *args, **kwargs)
             except UniqueViolationError:
                 await repository._scribbler.add('duplicated')  # noqa
             except PostgresError:
