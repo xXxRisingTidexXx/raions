@@ -1,6 +1,6 @@
 from concurrent.futures.process import ProcessPoolExecutor
 from asyncio import Queue, gather, get_event_loop
-from typing import Callable, Generator
+from typing import Callable, Generator, Iterable, List, Any
 from core.utils import notnull, filter_map
 
 
@@ -33,11 +33,19 @@ class Clix:
     def sieve(self, mapper: Callable, predicate: Callable = notnull) -> 'Clix':
         return self.reform(lambda i: self.__execute(mapper, i), predicate)
 
-    async def apply(self, applier: Callable):
+    async def apply(self, applier: Callable) -> Iterable:
         self._loop = get_event_loop()
         iterable = await self._creator()
         while not self._queue.empty():
             function = await self._queue.get()
             iterable = await function(iterable)
-        await gather(*(map(applier, iterable)))
         self._executor.shutdown()
+        return await gather(*(map(applier, iterable)))
+
+    @staticmethod
+    async def __skip(value: Any) -> Any:
+        return value
+
+    async def list(self) -> List:
+        iterable = await self.apply(self.__skip)
+        return list(iterable)

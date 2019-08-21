@@ -47,22 +47,22 @@ def __mapper_maker(latencies: List[float]) -> Callable:
     [0.1, 0.17, 0.1, 0.6, 0.1, 0.7]
 ])
 async def test_filter_map_with_latencies(latencies: List[float]):
-    results = await filter_map(
+    iterator = await filter_map(
         ['Iqos', 'Phantom', 'Vape', 'Glo', 'Parma', 'Ad Hoc'],
         __mapper_maker(latencies),
         lambda l: l > 4
     )
-    assert set(results) == {6, 5, 7}
+    assert set(iterator) == {6, 5, 7}
 
 
 @mark.asyncio
 async def test_filter_map_emptiness():
-    results = await filter_map(
+    iterator = await filter_map(
         ['Colombo', 'Atlas', 'Django', 'Aldente'],
         __mapper_maker([0.1, 0.3, 0.18, 0.2]),
         lambda l: l < -5
     )
-    assert list(results) == []
+    assert list(iterator) == []
 
 
 @mark.asyncio

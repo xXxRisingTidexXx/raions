@@ -1,40 +1,55 @@
-from uvloop import install
+from typing import List, Tuple
+from pytest import mark, raises
 from core.clixes import Clix
-from asyncio import run, sleep
-from random import uniform, randint
-from time import time
+from asyncio import sleep
+from random import uniform
+from logging import disable
 
 
-async def generate():
-    return [[3, -6], [2], [], [5, 9, 0, -23]]
+async def create_int_sequence() -> List[int]:
+    await sleep(uniform(0.3, 1))
+    return [23, 3, 7, 0, 10, -18]
 
 
-def flatten(ils):
-    return [i for il in ils for i in il]
+async def create_empty_sequence() -> Tuple:
+    await sleep(uniform(0.3, 0.7))
+    return ()
 
 
-def convert(value):
-    return (value + 10) * 3 - 5
+@mark.asyncio
+async def test_successful_creation():
+    assert [23, 3, 7, 0, 10, -18] == await Clix(create_int_sequence).list()
+    assert [] == await Clix(create_empty_sequence).list()
 
 
-async def calc(value):
-    await sleep(uniform(0.3, 2))
-    return value % randint(40, 500)
+@mark.asyncio
+async def test_erroneous_creation():
+    with raises(TypeError):
+        await Clix(lambda: [3, -4, 0]).list()
+    with raises(TypeError):
+        await Clix(create_int_sequence).apply(lambda i: i)
+    with raises(TypeError):
+        await Clix({2, -5, 9}).list()  # noqa
 
 
-async def output(value):
-    print(value)
+async def create_str_sequence() -> List[str]:
+    await sleep(uniform(0.2, 1))
+    return ['  Titiyo  ', '  Eminem ', '    Metallica ', ' Madonna', 'Lady Gaga  ']
 
 
-install()
-start = time()
-run(
-    Clix(generate)
-    .flatten(flatten)
-    .sieve(convert, lambda i: i > 25)
-    .map(lambda i: i + 10)
-    .reform(calc, lambda i: i > 16)
-    .apply(output)
-)
-end = time()
-print(f'Total time: {end - start}')
+def strip(value: str) -> str:
+    return value.strip()
+
+
+@mark.asyncio
+async def test_successful_map():
+    assert await Clix(create_str_sequence).map(strip).list() == [
+        'Titiyo', 'Eminem', 'Metallica', 'Madonna', 'Lady Gaga'
+    ]
+
+
+@mark.asyncio
+async def test_erroneous_map():
+    disable()
+    with raises(AttributeError):
+        await Clix(create_str_sequence).map(lambda i: len(i)).list()
