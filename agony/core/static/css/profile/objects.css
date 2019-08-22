@@ -1,5 +1,5 @@
 .obj_example {
-    transition: margin 0.5s, border 0.5s;
+    transition: margin 0.5s;
     padding: 5px;
     background-color: var(--object);
     border-radius: 10px;
@@ -8,7 +8,7 @@
     border-top: 0 solid var(--second);
     border-bottom: 0 solid var(--second);
     display: grid;
-    grid-template-areas: "address address buttonSave" "price price buttonShowWeb" "area rooms buttonShowMap" "image image buttonShowFull";
+    grid-template-areas: "address address buttonSave" "price celling_height buttonShowWeb" "area rooms buttonShowMap" "image image buttonShowFull";
     grid-template-rows: auto auto auto auto;
     grid-template-columns: 150px 150px;
     box-shadow: 2px 2px 10px var(--box_shadow);
@@ -37,6 +37,10 @@
     grid-area: rooms;
 }
 
+.obj_example > .celling_height {
+    grid-area: celling_height;
+}
+
 .obj_example > .image {
     grid-area: image;
 }
@@ -58,11 +62,9 @@
 }
 
 .obj_example > p {
-    transition: border 0.5s;
-
     font-size: 16px;
     text-align: center;
-    margin: 2px;
+    margin: 3px;
     color: var(--object_p_color);
     background: var(--object);
     border: 0 solid var(--second);
@@ -70,6 +72,7 @@
     border-left-color: var(--first);
     border-radius: 10px;
     line-height: 25px;
+    padding: 3px 0;
 }
 
 .obj_example > p:hover {

@@ -98,6 +98,12 @@ class Item {
             "rooms",
             buildNode.onclick
         ));
+        if (!!this.json.total_floor)
+            buildNode.appendChild(this.NewItemExampleParagraph(
+                `<b>${LANGUAGE.item.totalFloor}</b><br>${this.json.total_floor}`,
+                "ceiling_height",
+                buildNode.onclick
+            ));
 
         buildNode.appendChild(this.NewItemExampleImage());
 

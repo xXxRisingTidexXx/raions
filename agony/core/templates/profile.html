@@ -64,33 +64,36 @@
         <div>
             <p>Місцезнаходження</p>
             <div>
-                <pre>Область</pre>
-                <input id="filters_select_state" type="text" list="filters_select_state_details">
+                <pre style="width: 170px">Область</pre>
+                <input id="filters_select_state" style="width: 250px" type="text" list="filters_select_state_details">
                 <datalist id="filters_select_state_details"></datalist>
             </div>
             <div>
-                <pre>Населений пункт</pre>
-                <input id="filters_select_locality" type="text" list="filters_select_locality_details">
+                <pre style="width: 170px">Населений пункт</pre>
+                <input id="filters_select_locality" style="width: 250px" type="text"
+                       list="filters_select_locality_details">
                 <datalist id="filters_select_locality_details"></datalist>
             </div>
             <div>
-                <pre>Район</pre>
-                <input id="filters_select_county" type="text" list="filters_select_county_details">
+                <pre style="width: 170px">Район</pre>
+                <input id="filters_select_county" style="width: 250px" type="text" list="filters_select_county_details">
                 <datalist id="filters_select_county_details"></datalist>
             </div>
             <div>
-                <pre>Місцевість</pre>
-                <input id="filters_select_neighbourhood" type="text" list="filters_select_neighbourhood_detail">
+                <pre style="width: 170px">Місцевість</pre>
+                <input id="filters_select_neighbourhood" style="width: 250px" type="text"
+                       list="filters_select_neighbourhood_detail">
                 <datalist id="filters_select_neighbourhood_detail"></datalist>
             </div>
             <div>
-                <pre>Вулиця</pre>
-                <input id="filters_select_road" type="text" list="filters_select_road_detail">
+                <pre style="width: 170px">Вулиця</pre>
+                <input id="filters_select_road" style="width: 250px" type="text" list="filters_select_road_detail">
                 <datalist id="filters_select_road_detail"></datalist>
             </div>
             <div>
-                <pre>Номер будинку</pre>
-                <input id="filters_select_house_number" type="text" list="filters_select_house_number_detail">
+                <pre style="width: 170px">Номер будинку</pre>
+                <input id="filters_select_house_number" style="width: 250px" type="text"
+                       list="filters_select_house_number_detail">
                 <datalist id="filters_select_house_number_detail"></datalist>
             </div>
         </div>
@@ -106,7 +109,6 @@
                 <input id="filters_rooms_to" style="width: 100px;" type="number">
             </div>
         </div>
-        <hr>
         <div>
             <p>Поверховість</p>
             <div>
@@ -118,7 +120,6 @@
                 <input id="filters_total_floor_to" style="width: 100px;" type="number">
             </div>
         </div>
-        <hr>
         <div>
             <p>Загальна площа</p>
             <div>
@@ -128,6 +129,17 @@
             <div>
                 <pre>До               </pre>
                 <input id="filters_area_to" style="width: 100px;" class="input" type="number">
+            </div>
+        </div>
+        <div>
+            <p>Поверх</p>
+            <div>
+                <pre>Від              </pre>
+                <input id="filters_floor_from" style="width: 100px;" type="number">
+            </div>
+            <div>
+                <pre>До               </pre>
+                <input id="filters_floor_to" style="width: 100px;" type="number">
             </div>
         </div>
         <hr>
@@ -142,7 +154,6 @@
                 <input id="filter_celling_height_to" style="width: 100px;" type="number">
             </div>
         </div>
-        <hr>
         <div>
             <p>Площа кухні</p>
             <div>
@@ -154,7 +165,6 @@
                 <input id="filters_kitchen_area_to" style="width: 100px;" class="input" type="number">
             </div>
         </div>
-        <hr>
         <div>
             <p>Житлова площа</p>
             <div>
@@ -164,18 +174,6 @@
             <div>
                 <pre>До               </pre>
                 <input id="filters_living_area_to" style="width: 100px;" class="input" type="number">
-            </div>
-        </div>
-        <hr>
-        <div>
-            <p>Поверх</p>
-            <div>
-                <pre>Від              </pre>
-                <input id="filters_floor_from" style="width: 100px;" type="number">
-            </div>
-            <div>
-                <pre>До               </pre>
-                <input id="filters_floor_to" style="width: 100px;" type="number">
             </div>
         </div>
         <hr>
@@ -202,20 +200,21 @@
 
 <!-- MAIN DIVS -->
 <div id="window_home" class="div_window div_main_window_home">
+    <div class="div_user_img">
+        <img src="../static/images/bookmark.png" alt="bookmark">
+    </div>
     <div class="div_main_objects_border_left" style="grid-area:userSaves"></div>
     <div class="div_main_objects_border_right" style="grid-area:userSaves"></div>
-    <div id="div_main_objects_saved" class="div_main_objects_objects" style="grid-area: userSaves">
-    </div>
+    <div id="div_main_objects_saved" class="div_main_objects_objects" style="grid-area: userSaves"></div>
 </div>
 <div id="window_search" class="div_window div_main_window_objects">
     <div class="div_main_objects_sort" style="grid-area:selector">
         <button id="btn_show_items" class="button_main_selector" type="button">Оголошення</button>
         <button id="btn_show_map" class="button_main_selector" type="button">Карта</button>
-        <button class="button_main_selector" style="visibility: hidden"></button>
     </div>
     <div id="gradient_overlay_left" class="div_main_objects_border_left" style="grid-area:objects"></div>
     <div id="gradient_overlay_right" class="div_main_objects_border_right" style="grid-area:objects"></div>
-    <div id="div_main_objects_search" class="div_main_objects_objects" style="grid-area:objects"></div>
+    <div id="div_main_objects_search" class="search_objects div_main_objects_objects" style="grid-area:objects"></div>
     <div id="div_main_objects_search_map" class="div_main_objects_objects_map" style="grid-area:objects"></div>
 </div>
 <!--<div id="window_statistics" class="div_window div_main_window_home">-->

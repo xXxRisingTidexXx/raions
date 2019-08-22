@@ -6,20 +6,21 @@
 
 .div_main_window_home {
     display: grid;
-    grid-template-areas: "userSaves";
-    grid-template-rows: 1fr;
+    grid-template-areas: "userImg" "userSaves";
+    grid-template-rows: auto 1fr;
 }
 
 .div_user_img {
+    grid-area: userImg;
     width: 50px;
     height: 50px;
     padding: 15px;
-    margin: auto;
+    margin: 10px auto;
     border-radius: 50%;
     border: 5px solid var(--object_p_color);
     display: grid;
     background: var(--icons_background);
-    box-shadow: 0 0 15px var(--object_p_color);
+    box-shadow: 0 0 10px var(--object_p_color);
 }
 
 .div_user_img > img {
@@ -197,6 +198,13 @@
     transition: 0s;
     background: var(--background);
     color: var(--first);
+}
+
+.search_objects:empty {
+    background-image: url("./../../images/search13.svg");
+    background-size: 200px 200px;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .div_main_objects_objects_map {

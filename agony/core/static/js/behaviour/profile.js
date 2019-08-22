@@ -811,6 +811,6 @@ let flats = [
     }
 ];
 
-flats.forEach(f => SAVES_HOLDER.AddItem(new Item(f, "delete")));
-flats.forEach(f => SEARCH_HOLDER.AddItem(new Item(f, "save")));
-SEARCH_HOLDER.AddPaginationButton();
+// flats.forEach(f => SAVES_HOLDER.AddItem(new Item(f, "delete")));
+// flats.forEach(f => SEARCH_HOLDER.AddItem(new Item(f, "save")));
+// SEARCH_HOLDER.AddPaginationButton();
