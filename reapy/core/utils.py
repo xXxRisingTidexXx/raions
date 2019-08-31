@@ -58,9 +58,7 @@ def exist(path: str):
 
 
 async def filter_map(
-    iterable: Iterable,
-    mapper: Callable,
-    predicate: Callable
+    iterable: Iterable, mapper: Callable, predicate: Callable
 ) -> Iterator:
     """
     Asynchronously maps, gathers and filters data sequence.
