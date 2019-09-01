@@ -1,18 +1,14 @@
 from typing import List, Tuple, Dict, Any, Optional
 from pytest import mark, raises
 from core.clixes import Clix
-from asyncio import sleep
-from random import uniform
 from logging import disable
 
 
 async def create_int_list() -> List[int]:
-    await sleep(uniform(0.3, 1))
     return [23, 3, 7, 0, 10, -18]
 
 
 async def create_empty_tuple() -> Tuple:
-    await sleep(uniform(0.3, 0.7))
     return ()
 
 
@@ -33,7 +29,6 @@ async def test_erroneous_creation():
 
 
 async def create_str_list() -> List[str]:
-    await sleep(uniform(0.2, 1))
     return ['  Titiyo  ', '  Eminem ', '    Metallica ', ' Madonna', 'Lady Gaga  ']
 
 
@@ -66,7 +61,6 @@ def create_city(
 
 
 async def create_city_list() -> List[Dict[str, Any]]:
-    await sleep(uniform(0.2, 1))
     return [
         create_city(
             'Київ', None, 'Україна', 45.89, 51.201, 6000000
@@ -90,7 +84,6 @@ async def create_city_list() -> List[Dict[str, Any]]:
 
 
 async def get_point(city: Dict[str, Any]) -> Tuple[float, float]:
-    await sleep(uniform(0.2, 0.7))
     return city['point']
 
 
@@ -143,14 +136,111 @@ async def test_successful_sieve():
 
 @mark.asyncio
 async def test_erroneous_sieve():
-    pass
+    disable()
+    with raises(TypeError):
+        await (
+            Clix(create_city_list)
+            .sieve(get_population, is_ukrainian_stateful_locality)
+            .list()
+        )
+    with raises(AttributeError):
+        await Clix(create_city_list).sieve(lambda c: c['population']).list()
+
+
+async def create_nested_str_list() -> List[List[str]]:
+    return [
+        ['New menace', 'Killgore', 'Dead island & Co'], [], [],
+        ['Alembic', 'Alchemy', 'Asyncio', 'DB'], ['Regnant']
+    ]
+
+
+async def create_people_list() -> List[Dict[str, Any]]:
+    return [
+        {
+            'name': 'Danylo',
+            'friends': ['Helga', 'Andrew', 'Michael', 'Andryi', 'Alex']
+        },
+        {
+            'name': 'Voloshyn',
+            'friends': []
+        },
+        {
+            'name': 'Andryi',
+            'friends': ['Danylo', 'Ann', 'Olya', 'Timur']
+        },
+        {
+            'name': 'Alex',
+            'friends': ['Danylo', 'Eugene', 'Cinnamon', 'Andryi', 'Olya']
+        }
+    ]
 
 
 @mark.asyncio
 async def test_successful_flatten():
-    pass
+    assert await Clix(create_empty_tuple).flatten().list() == []
+    assert await Clix(create_nested_str_list).flatten().list() == [
+        'New menace', 'Killgore', 'Dead island & Co',
+        'Alembic', 'Alchemy', 'Asyncio', 'DB', 'Regnant'
+    ]
+    assert await (
+        Clix(create_people_list)
+        .flatten(lambda p: p['friends'])
+        .list()
+    ) == [
+        'Helga', 'Andrew', 'Michael', 'Andryi', 'Alex', 'Danylo', 'Ann',
+        'Olya', 'Timur', 'Danylo', 'Eugene', 'Cinnamon', 'Andryi', 'Olya'
+    ]
+
+
+async def create_nullable_nested_list() -> List[Optional[List]]:
+    return [['airbnb', 'commode'], [], None, []]
 
 
 @mark.asyncio
+@mark.filterwarnings('ignore')
 async def test_erroneous_flatten():
-    pass
+    with raises(TypeError):
+        await Clix(create_nullable_nested_list).flatten().list()
+    with raises(KeyError):
+        await Clix(create_people_list).flatten(lambda p: p['enemies']).list()
+
+
+def add_last_name(first_name: str) -> str:
+    length = len(first_name)
+    if length <= 3:
+        return f'{first_name} Coolant'
+    if length <= 5:
+        return f'{first_name} Jerico'
+    if length <= 7:
+        return f'{first_name} Anduine'
+    return f'{first_name} Astarot'
+
+
+@mark.asyncio
+async def test_friend_clix_flow():
+    assert await (
+        Clix(create_people_list)
+        .flatten(lambda p: p['friends'])
+        .distinct(lambda fn: fn)
+        .map(add_last_name)
+        .list()
+    ) == [
+        'Helga Jerico', 'Andrew Anduine', 'Michael Anduine', 'Andryi Anduine',
+        'Alex Jerico', 'Danylo Anduine', 'Ann Coolant', 'Olya Jerico',
+        'Timur Jerico', 'Eugene Anduine', 'Cinnamon Astarot'
+    ]
+
+
+def to_int(value: str) -> int:
+    return int(value)
+
+
+@mark.asyncio
+async def test_erroneous_clix_flow():
+    with raises(ValueError):
+        await (
+            Clix(create_people_list)
+            .flatten(lambda p: p['friends'])
+            .sieve(to_int)
+            .list()
+        )

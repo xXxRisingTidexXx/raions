@@ -1,6 +1,6 @@
 from concurrent.futures.process import ProcessPoolExecutor
 from asyncio import Queue, gather, get_event_loop
-from typing import Callable, Generator, Iterable, List, Any
+from typing import Callable, Generator, Iterable, List, Any, ValuesView
 from core.utils import notnull, filter_map
 
 
@@ -26,9 +26,21 @@ class Clix:
     def __execute(self, function: Callable, *args) -> Generator:
         return self._loop.run_in_executor(self._executor, function, *args)
 
-    def flatten(self, flattener: Callable) -> 'Clix':
-        self._queue.put_nowait(lambda iterable: self.__execute(flattener, iterable))
+    def flatten(self, flattener: Callable = (lambda v: v)) -> 'Clix':
+        self._queue.put_nowait(lambda iterable: self.__flatten(iterable, flattener))
         return self
+
+    @staticmethod
+    async def __flatten(iterable: Iterable, flattener: Callable) -> Generator:
+        return (i for si in iterable for i in flattener(si))
+
+    def distinct(self, keymaker: Callable) -> 'Clix':
+        self._queue.put_nowait(lambda iterable: self.__distinct(iterable, keymaker))
+        return self
+
+    @staticmethod
+    async def __distinct(iterable: Iterable, keymaker: Callable) -> ValuesView:
+        return {keymaker(i): i for i in iterable}.values()
 
     def sieve(self, mapper: Callable, predicate: Callable = notnull) -> 'Clix':
         return self.reform(lambda i: self.__execute(mapper, i), predicate)
@@ -42,10 +54,10 @@ class Clix:
         self._executor.shutdown()
         return await gather(*(map(applier, iterable)))
 
-    @staticmethod
-    async def __skip(value: Any) -> Any:
-        return value
-
     async def list(self) -> List:
         iterable = await self.apply(self.__skip)
         return list(iterable)
+
+    @staticmethod
+    async def __skip(value: Any) -> Any:
+        return value

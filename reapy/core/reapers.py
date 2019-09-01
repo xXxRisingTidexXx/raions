@@ -1,4 +1,4 @@
-from typing import Iterable, Dict, List, Any
+from typing import Dict, Any
 from core.clixes import Clix
 from core.decorators import measurable
 from core.geomappers import NominatimGeomapper
@@ -16,8 +16,8 @@ from core.validators import FlatValidator, Validator
 
 class Reaper(Worker):
     _scribbler_class = ReaperScribbler
-    _validator_class = Validator
     _ranger_class = Ranger
+    _validator_class = Validator
 
     async def _prepare(self):
         await super()._prepare()
@@ -36,10 +36,8 @@ class EstateReaper(Reaper):
         self._geomapper = self._geomapper_class()
 
     @staticmethod
-    def _flatten_pages(pages: Iterable[Iterable[Dict]]) -> List[Dict]:
-        return list(
-            {o['url']: o for ol in pages for o in ol}.values()
-        )
+    def _get_url(offer: Dict[str, Any]) -> str:
+        return offer['url']
 
     @staticmethod
     def _filter_offer(offer: Any) -> bool:
@@ -81,7 +79,8 @@ class OlxEstateReaper(EstateReaper):
             Clix(self._ranger.range)
             .reform(self._crawler.get_page)
             .map(self._parser.parse_page)
-            .flatten(self._flatten_pages)
+            .flatten()
+            .distinct(self._get_url)
             .reform(self._crawler.get_offer, self._filter_offer)
             .sieve(self._parser.parse_offer)
             .sieve(self._set_shapes, self._validator.validate)
@@ -107,7 +106,8 @@ class DomRiaEstateReaper(EstateReaper):
             Clix(self._ranger.range)
             .reform(self._crawler.get_page)
             .map(self._parser.parse_page)
-            .flatten(self._flatten_pages)
+            .flatten()
+            .distinct(self._get_url)
             .reform(self._crawler.get_offer, self._filter_offer)
             .sieve(self._parser.parse_offer, self._validator.validate)
             .reform(self._set_geolocation, self._filter_geolocation)

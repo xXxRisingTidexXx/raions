@@ -23,7 +23,6 @@ class Worker:
         self._scribbler = self._scribbler_class(
             join(BASE_DIR, f'scribbles/{self._name}.csv')
         )
-        self._executor = None
 
     # noinspection PyBroadException
     def work(self):

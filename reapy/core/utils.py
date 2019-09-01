@@ -2,7 +2,7 @@
 Basic helping tools and instruments
 """
 from asyncio import gather
-from typing import Union, List, Dict, Any, Callable, Iterable, Iterator
+from typing import Union, List, Dict, Any, Callable, Iterable, Iterator, Optional
 from aiofiles import open as aioopen
 from decimal import Decimal, ROUND_HALF_EVEN
 from json import loads
@@ -72,7 +72,15 @@ async def filter_map(
     return filter(predicate, gathered)
 
 
-def find(predicate: Callable, iterable: Iterable) -> Any:
+def find(predicate: Callable, iterable: Iterable) -> Optional[Any]:
+    """
+    Finds the first value of the sequence which satisfies the conditions
+    or returns None otherwise.
+
+    :param predicate: function which accepts scalar and returns bool
+    :param iterable: target  sequence
+    :return: the first desired value or None
+    """
     return next(filter(predicate, iterable), None)
 
 
