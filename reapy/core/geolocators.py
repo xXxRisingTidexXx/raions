@@ -56,7 +56,7 @@ class Geolocator:
     async def _reverse(self, point: Tuple[float, float]) -> Dict[str, Any]:
         pass
 
-    async def _get_json(self, url: str) -> Union[List, Dict]:
+    async def _get_json(self, url: str) -> Union[List[Any], Dict[str, Any]]:
         """
         Performs JSON request with the geolocator's parameters.
 
@@ -83,4 +83,6 @@ class NominatimGeolocator(Geolocator):
         return None if json is None or len(json) == 0 else json[0]
 
     async def _reverse(self, point: Tuple[float, float]) -> Dict[str, Any]:
-        return await self._get_json(self._reversing_url.format(point[1], point[0]))
+        return await self._get_json(
+            self._reversing_url.format(point[1], point[0])
+        )

@@ -13,6 +13,11 @@ from core.decorators import networking
 
 class Crawler:
     """
+    Simple asynchronous HTTP client, which encapsulates the logic of web requests
+    inside itself. All descendants are specialized on concrete web sites, but the
+    current class supplies simple interface of the web interaction with any site.
+    It's reusable and portable, that's why any crawler can easily fetch data via
+    the Internet.
 
     Class properties:
         _limit: the max number of concurrent connections to the same site
@@ -33,7 +38,7 @@ class Crawler:
     async def prepare(self):
         self._session = ClientSession()
 
-    async def get_json(self, url: str, **kwargs) -> Union[List, Dict]:
+    async def get_json(self, url: str, **kwargs: Any) -> Union[List, Dict]:
         """
         Makes an HTTP request and returns response in JSON format.
 
@@ -44,7 +49,9 @@ class Crawler:
         return await self.__get_content(url, 'json', **kwargs)
 
     @networking
-    async def __get_content(self, url: str, content_type: str, **kwargs) -> Any:
+    async def __get_content(
+        self, url: str, content_type: str, **kwargs: Any
+    ) -> Any:
         """
         Makes an HTTP request and returns response in a specified format.
 
@@ -58,7 +65,7 @@ class Crawler:
             async with self._session.get(url, **kwargs) as response:
                 return await getattr(response, content_type)()
 
-    async def get_text(self, url: str, **kwargs) -> str:
+    async def get_text(self, url: str, **kwargs: Any) -> str:
         """
         Makes an HTTP request and returns response in HTML (text) format.
 

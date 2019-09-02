@@ -47,7 +47,7 @@ def decimalize(
     return Decimal(number).quantize(exp, rounding=rounding)
 
 
-def exist(path: str):
+def exist(path: str) -> bool:
     """
     Checks the existence of the provided directory or file.
 

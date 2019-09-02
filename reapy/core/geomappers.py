@@ -1,11 +1,11 @@
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 from re import compile
 from core.decorators import nullable
 from core.utils import find
 
 
 class Geomapper:
-    def map(self, location: Dict[str, Any]) -> Dict[str, Any]:
+    def map(self, location: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
         Performs JSON validation, then returns None if it failed and
         renovated dict otherwise.
@@ -41,7 +41,7 @@ class Geomapper:
         """
         pass
 
-    def _get_state(self, location: Dict[str, Any]) -> str:
+    def _get_state(self, location: Dict[str, Any]) -> Optional[str]:
         """
         Extracts location's state (region, "oblast" or None in case of Kyiv)
 
@@ -50,7 +50,7 @@ class Geomapper:
         """
         pass
 
-    def _get_locality(self, location: Dict[str, Any]) -> str:
+    def _get_locality(self, location: Dict[str, Any]) -> Optional[str]:
         """
         Extracts location's locality (city, town or village)
 
@@ -59,7 +59,7 @@ class Geomapper:
         """
         pass
 
-    def _get_county(self, location: Dict[str, Any]) -> str:
+    def _get_county(self, location: Dict[str, Any]) -> Optional[str]:
         """
         Extracts location's county (district or "raion")
 
@@ -68,7 +68,7 @@ class Geomapper:
         """
         pass
 
-    def _get_neighbourhood(self, location: Dict[str, Any]) -> str:
+    def _get_neighbourhood(self, location: Dict[str, Any]) -> Optional[str]:
         """
         Extracts location's neighbourhood (suburb)
 
@@ -77,7 +77,7 @@ class Geomapper:
         """
         pass
 
-    def _get_road(self, location: Dict[str, Any]) -> str:
+    def _get_road(self, location: Dict[str, Any]) -> Optional[str]:
         """
         Extracts location's road (street, hwy, blw or ave)
 
@@ -86,7 +86,7 @@ class Geomapper:
         """
         pass
 
-    def _get_house_number(self, location: Dict[str, Any]) -> str:
+    def _get_house_number(self, location: Dict[str, Any]) -> Optional[str]:
         """
         Extracts location's house number
 
@@ -109,12 +109,12 @@ class NominatimGeomapper(Geomapper):
     def _get_point(self, location: Dict[str, Any]) -> Tuple[float, float]:
         return float(location['lon']), float(location['lat'])
 
-    def _get_state(self, location: Dict[str, Any]) -> str:
+    def _get_state(self, location: Dict[str, Any]) -> Optional[str]:
         state = location['address'].get('state')
         if state is not None and len(state) <= 30:
             return state
 
-    def _get_locality(self, location: Dict[str, Any]) -> str:
+    def _get_locality(self, location: Dict[str, Any]) -> Optional[str]:
         address = location['address']
         return find(
             lambda l: not (
@@ -123,14 +123,14 @@ class NominatimGeomapper(Geomapper):
             (address.get('city'), address.get('town'), address.get('village'))
         )
 
-    def _get_county(self, location: Dict[str, Any]) -> str:
+    def _get_county(self, location: Dict[str, Any]) -> Optional[str]:
         county = self._search_county(location['address'].get('county'))
         if county is not None:
             return county
         return self._search_county(location.get('display_name'))
 
     @nullable
-    def _search_county(self, string: str) -> str:
+    def _search_county(self, string: str) -> Optional[str]:
         """
         Tries to extract location's county from the address string.
 
@@ -141,15 +141,15 @@ class NominatimGeomapper(Geomapper):
         if county[0].isupper():
             return county
 
-    def _get_neighbourhood(self, location: Dict[str, Any]) -> str:
+    def _get_neighbourhood(self, location: Dict[str, Any]) -> Optional[str]:
         address = location['address']
         return address.get('neighbourhood', address.get('suburb'))
 
-    def _get_road(self, location: Dict[str, Any]) -> str:
+    def _get_road(self, location: Dict[str, Any]) -> Optional[str]:
         address = location['address']
         return address.get('road', address.get('pedestrian'))
 
-    def _get_house_number(self, location: Dict[str, Any]) -> str:
+    def _get_house_number(self, location: Dict[str, Any]) -> Optional[str]:
         house_number = location['address'].get('house_number')
         if house_number is not None and len(house_number) <= 20:
             return house_number

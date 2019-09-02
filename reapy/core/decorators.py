@@ -23,7 +23,7 @@ def measurable(name: str) -> Callable:
     :return: wrapper with time measuring
     """
     def decorator(function: Callable) -> Callable:
-        async def wrapper(*args, **kwargs) -> Any:
+        async def wrapper(*args: Any, **kwargs: Any) -> Any:
             logger.info(f'{name} has been started')
             start = time()
             result = await function(*args, **kwargs)
@@ -41,7 +41,7 @@ def networking(function: Callable) -> Callable:
     :param function: target callable
     :return: wrapper with `aiohttp` errors' handling
     """
-    async def wrapper(url: str, *args, **kwargs) -> Any:
+    async def wrapper(url: str, *args: Any, **kwargs: Any) -> Any:
         try:
             return await function(url, *args, **kwargs)
         except (
@@ -55,7 +55,14 @@ def networking(function: Callable) -> Callable:
 
 
 def nullable(function: Callable) -> Callable:
-    def wrapper(*args, **kwargs):
+    """
+    Simple wrapper suitable for functions which
+    produce errors 'cause of None.
+
+    :param function: target callable
+    :return: upgraded callable
+    """
+    def wrapper(*args: Any, **kwargs: Any):
         try:
             return function(*args, **kwargs)
         except (AttributeError, TypeError):
@@ -64,12 +71,21 @@ def nullable(function: Callable) -> Callable:
 
 
 def transactional(message: str) -> Callable:
+    """
+    Simple repo methods' wrapper, which gracefully open/close connections
+    and transactions.
+
+    :param message: logging message in a case of an error
+    :return: upgraded callable
+    """
     def decorator(function: Callable) -> Callable:
-        async def wrapper(repository: Any, *args, **kwargs) -> Any:
+        async def wrapper(repository: Any, *args: Any, **kwargs: Any) -> Any:
             try:
                 async with repository._pool.acquire() as connection:  # noqa
                     async with connection.transaction():
-                        return await function(repository, connection, *args, **kwargs)
+                        return await function(
+                            repository, connection, *args, **kwargs
+                        )
             except UniqueViolationError:
                 await repository._scribbler.add('duplicated')  # noqa
             except PostgresError:
@@ -79,8 +95,14 @@ def transactional(message: str) -> Callable:
 
 
 def connected(message: str) -> Callable:
+    """
+    Handles basic asyncpg exceptions.
+
+    :param message: logging message in a case of an error
+    :return: upgraded callable
+    """
     def decorator(function: Callable) -> Callable:
-        async def wrapper(*args, **kwargs) -> Any:
+        async def wrapper(*args: Any, **kwargs: Any) -> Any:
             try:
                 return await function(*args, **kwargs)
             except PostgresError:

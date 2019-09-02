@@ -7,7 +7,7 @@ based on public APIs.
 """
 from datetime import date
 from decimal import Decimal
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Optional
 from core.crawlers import Crawler
 from core.utils import decimalize
 
@@ -48,7 +48,7 @@ class Converter:
         """
         self._pairs = await self._calc_pairs()
 
-    async def _calc_pairs(self) -> Dict[Tuple, Decimal]:
+    async def _calc_pairs(self) -> Dict[Tuple[str, str], Decimal]:
         """
         Fetches the rates' JSON from the public API and calculates
         the resulting currency pairs.
@@ -67,7 +67,7 @@ class Converter:
         """
         return self.convert(fr, 'USD', amount)
 
-    def convert(self, fr: str, to: str, amount: Decimal) -> Decimal:
+    def convert(self, fr: str, to: str, amount: Decimal) -> Optional[Decimal]:
         """
         Converts the input money sum into another currency.
 
@@ -90,7 +90,7 @@ class NBUConverter(Converter):
     _rates_url = 'https://bank.gov.ua/NBUStatService/v1/' \
                  'statdirectory/exchange?date={}&json'
 
-    async def _calc_pairs(self) -> Dict[Tuple, Decimal]:
+    async def _calc_pairs(self) -> Dict[Tuple[str, str], Decimal]:
         today = date.today()
         rates = await self._crawler.get_json(self._rates_url.format(
             f'{today.year}{self.__str(today.month)}{self.__str(today.day)}'
