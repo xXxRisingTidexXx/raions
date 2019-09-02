@@ -61,7 +61,7 @@ class Geolocator:
         Performs JSON request with the geolocator's parameters.
 
         :param url: request URL
-        :return: response's contents in JSON format
+        :return: response's markup in JSON format
         """
         return await self._crawler.get_json(
             url, semaphore=self._semaphore,

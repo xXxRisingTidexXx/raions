@@ -43,7 +43,7 @@ class Parser:
         """
         Tries to process the target HTML and supply the last pagination index.
 
-        :param markup: HTML contents
+        :param markup: HTML markup
         :return: last paging index or None
         """
         try:
@@ -66,7 +66,7 @@ class Parser:
         Processes the target page and provides a list of
         "raw offers" (offer page's dicts without 'markup' field).
 
-        :param markup: HTML contents
+        :param markup: HTML markup
         :return: list of "raw offers"
         """
         try:
@@ -458,7 +458,7 @@ class DomRiaEstateParser(EstateParser):
         Finds the tag with main offer's tabular data.
 
         :param soup: DOM tags' tree
-        :return: tag with main offer's contents
+        :return: tag with main offer's markup
         """
         return soup.find('div', id='description')
 

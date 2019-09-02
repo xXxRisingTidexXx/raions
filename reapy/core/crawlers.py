@@ -71,7 +71,7 @@ class Crawler:
 
         :param url: request's URL
         :param kwargs: additional config like timeout, content-type, etc.
-        :return: HTML file's contents
+        :return: HTML file's markup
         """
         return await self.__get_content(url, 'text', **kwargs)
 
@@ -84,10 +84,10 @@ class EstateCrawler(Crawler):
 
     async def get_page(self, index: int) -> str:
         """
-        Fulfills single HTTP request and returns the HTML contents.
+        Fulfills single HTTP request and returns the HTML markup.
 
         :param index: page's index at the site's pagination
-        :return: HTML file's contents
+        :return: HTML file's markup
         """
         return await self.get_text(self._page_url.format(index))
 

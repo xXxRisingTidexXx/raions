@@ -89,10 +89,20 @@ def json(path: str) -> Union[List, Dict]:
     Converts the provided .json file into Python objects.
 
     :param path: file's relative path concernedly the project's root
+    :return: file's content in JSON
+    """
+    return loads(read(path))
+
+
+def read(path: str) -> str:
+    """
+    Reads the markup of the provided file.
+
+    :param path: file's relative path concernedly the project's root
     :return: file's content
     """
     with open(join(BASE_DIR, path)) as stream:
-        return loads(stream.read())
+        return stream.read()
 
 
 async def load(path: str) -> str:
