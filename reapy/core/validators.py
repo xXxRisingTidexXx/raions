@@ -9,16 +9,46 @@ are in charge of correct data checks and filtering.
 from datetime import timedelta, date
 from typing import Any
 from core.utils import notnull
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
 class Validator:
+    """
+    Basic value checker, which inspects target object's attributes
+    according to the predefined rules. This class has to filter
+    inadequate structs during the data flow. The most basic check
+    is nullability.
+    """
     def validate(self, struct: Any) -> bool:
+        """
+        It's a general validation facade, which handles exceptions and
+        performs nullability check.
+
+        :param struct: target object
+        :return: whether object is valid or not
+        """
+        try:
+            return self._validate(struct)
+        except (AttributeError, TypeError):
+            logger.exception('struct validation failed')
+            return False
+
+    def _validate(self, struct: Any) -> bool:
+        """
+        The most basic inspection, which implies nullability check.
+
+        :param struct: target object
+        :return: whether object is valid or not
+        """
         return notnull(struct)
 
 
 class FlatValidator(Validator):
     """
-    Validator, specialized on the flat checks
+    Value checker, specialized on the flat inspections.
+
     Class properties:
         __limits: a set of max flats' specific areas;
         each value is calculated empirically for each room count
@@ -28,9 +58,9 @@ class FlatValidator(Validator):
     __limits = (69.5, 110, 130, 110, 86, 75, 65, 65, 65)
     __expiration = timedelta(days=210)  # TODO: fix the quarter validation
 
-    def validate(self, struct: Any) -> bool:
+    def _validate(self, struct: Any) -> bool:
         return (
-            super().validate(struct) and
+            super()._validate(struct) and
             struct.area is not None and
             struct.rooms is not None and
             struct.floor is not None and

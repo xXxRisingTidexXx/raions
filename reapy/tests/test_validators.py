@@ -1,5 +1,5 @@
 from datetime import date
-from pytest import fixture, raises
+from pytest import fixture
 from core.structs import Flat
 from core.validators import FlatValidator
 
@@ -9,7 +9,7 @@ def flat_validator() -> FlatValidator:
     return FlatValidator()
 
 
-def test_validate_successful(flat_validator: FlatValidator):
+def test_validate(flat_validator: FlatValidator):
     assert flat_validator.validate(Flat(
         url='x1', published=date.today(), area=45.8, rooms=2, floor=6, total_floor=9
     ))
@@ -19,8 +19,9 @@ def test_validate_successful(flat_validator: FlatValidator):
     ))
 
 
-def test_validate_failure(flat_validator: FlatValidator):
+def test_validate_emptiness(flat_validator: FlatValidator):
     assert not flat_validator.validate(None)
+    assert not flat_validator.validate({'area': 54})
     assert not flat_validator.validate(Flat(
         published=date.today(), area=2, kitchen_area=18,
         rooms=2, floor=5, total_floor=9
@@ -92,8 +93,3 @@ def test_validate_failure(flat_validator: FlatValidator):
         published=date.today(), area=81, kitchen_area=26, living_area=51,
         rooms=3, floor=12, total_floor=16, ceiling_height=0.27
     ))
-
-
-def test_validate_errors(flat_validator: FlatValidator):
-    with raises(AttributeError):
-        flat_validator.validate({'area': 54})
