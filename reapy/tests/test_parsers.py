@@ -17,7 +17,7 @@ def test_parse_stop_olx_flat(olx_flat_parser: OlxFlatParser):
     )
 
 
-def test_parse_stop_olx_flat_emptiness(olx_flat_parser: OlxFlatParser):
+def test_parse_stop_olx_flat_invalid(olx_flat_parser: OlxFlatParser):
     assert None is olx_flat_parser.parse_stop(6)  # noqa
     assert None is olx_flat_parser.parse_stop(None)  # noqa
     assert None is olx_flat_parser.parse_stop('')  # noqa
@@ -201,6 +201,11 @@ def test_parse_page_olx_flat(olx_flat_parser: OlxFlatParser):
     ]
 
 
+def test_parse_page_olx_flat_invalid(olx_flat_parser: OlxFlatParser):
+    assert olx_flat_parser.parse_page(None) == []  # noqa
+    assert olx_flat_parser.parse_page('') == []  # noqa
+
+
 def test_parse_offer_olx_flat(olx_flat_parser: OlxFlatParser):
     assert olx_flat_parser.parse_offer({
         'url': 'https://www.olx.ua/obyavlenie/prodam-2k-'
@@ -221,565 +226,601 @@ def test_parse_offer_olx_flat(olx_flat_parser: OlxFlatParser):
         total_floor=5,
         details=[]
     )
+    assert olx_flat_parser.parse_offer({
+        'url': 'https://www.olx.ua/obyavlenie/2-komnatnaya-kvartira-74-met'
+               'ra-v-novopecherskoy-vezhe-po-ul-kikvidze-41-IDCqiKk.html',
+        'markup': read('fixtures/test_parse_offer/olx_flat1.html')
+    }) == Flat(
+        url='https://www.olx.ua/obyavlenie/2-komnatnaya-kvartira-74-metra-v-'
+            'novopecherskoy-vezhe-po-ul-kikvidze-41-IDCqiKk.html',
+        avatar='https://apollo-ireland.akamaized.net:443/'
+               'v1/files/nyj7wonmwpf9-UA/image;s=644x461',
+        published=date(2019, 2, 27),
+        geolocation={'point': (30.55172926, 50.4070917)},
+        price=Decimal('1850000.000'),
+        currency='грн.',
+        area=74.0,
+        kitchen_area=28.0,
+        rooms=2,
+        floor=8,
+        total_floor=26,
+        details=[
+            'under construction', 'monolith', 'separate planning',
+            'separate bathrooms', 'own boiler room', 'after construction',
+            'no furniture'
+        ]
+    )
+    assert olx_flat_parser.parse_offer({
+        'url': 'https://www.olx.ua/obyavlenie/bolshaya-kvartira'
+               '-v-samom-tsentre-irpenya-IDDJbxi.html',
+        'markup': read('fixtures/test_parse_offer/olx_flat2.html')
+    }) == Flat(
+        url='https://www.olx.ua/obyavlenie/bolshaya-kvartira'
+            '-v-samom-tsentre-irpenya-IDDJbxi.html',
+        avatar='https://apollo-ireland.akamaized.net:443/v1/'
+               'files/37oo82mm73sv3-UA/image;s=644x461',
+        published=date(2019, 3, 23),
+        geolocation={'point': (30.2593, 50.51752)},
+        price=Decimal('30500.000'),
+        area=75.0,
+        kitchen_area=16.0,
+        rooms=1,
+        floor=9,
+        total_floor=10,
+        details=[
+            'the tsar project', 'brick', 'adjacent through planning',
+            'adjacent bathrooms', 'own boiler room'
+        ]
+    )
+    assert olx_flat_parser.parse_offer({
+        'url': 'https://www.olx.ua/obyavlenie/prodam-2-komnatnuyu-kvartir'
+               'u-v-32-zhemchuzhine-arkadiya-dom-sdan-IDBbRIG.html',
+        'markup': read('fixtures/test_parse_offer/olx_flat3.html')
+    }) == Flat(
+        url='https://www.olx.ua/obyavlenie/prodam-2-komnatnuyu-kvartiru'
+            '-v-32-zhemchuzhine-arkadiya-dom-sdan-IDBbRIG.html',
+        avatar='https://apollo-ireland.akamaized.net:443/v1/'
+               'files/p5fbluxbefad3-UA/image;s=644x461',
+        published=date(2019, 3, 12),
+        geolocation={'point': (30.76142585, 46.42438896)},
+        price=Decimal('50000.000'),
+        area=52.0,
+        kitchen_area=9.0,
+        rooms=2,
+        floor=4,
+        total_floor=24,
+        details=[
+            'under construction', 'free layout', 'separate bathrooms',
+            'own boiler room', 'after construction'
+        ]
+    )
+    assert olx_flat_parser.parse_offer({
+        'url': 'https://www.olx.ua/obyavlenie/prodam-3-k-'
+               'kvartiru-ul-uzhviy-10-podolskiy-r-n-IDDIwaX.html',
+        'markup': read('fixtures/test_parse_offer/olx_flat4.html')
+    }) == Flat(
+        url='https://www.olx.ua/obyavlenie/prodam-3-k-kvartiru-ul-'
+            'uzhviy-10-podolskiy-r-n-IDDIwaX.html',
+        avatar='https://apollo-ireland.akamaized.net:443/v1/files/'
+               'b45v2qziwxkp3-UA/image;s=644x461',
+        published=date(2019, 3, 22),
+        geolocation={'point': (30.43441159, 50.50743121)},
+        price=Decimal('60000.000'),
+        area=74.0,
+        kitchen_area=9.0,
+        rooms=3,
+        floor=5,
+        total_floor=9,
+        details=[
+            'separate planning', 'separate bathrooms',
+            'euro-standard design', 'furniture is present'
+        ]
+    )
+    assert olx_flat_parser.parse_offer({
+        'url': 'https://www.olx.ua/obyavlenie/prodazha-obmen-nedvizhimosti'
+               '-v-kieve-na-nedvizhimost-v-sankt-peterburge-IDypRFA.html',
+        'markup': read('fixtures/test_parse_offer/olx_flat5.html')
+    }) == Flat(
+        url='https://www.olx.ua/obyavlenie/prodazha-obmen-nedvizhimosti'
+            '-v-kieve-na-nedvizhimost-v-sankt-peterburge-IDypRFA.html',
+        avatar='https://apollo-ireland.akamaized.net:443/v1/'
+               'files/34mlkr9opvr2-UA/image;s=644x461',
+        published=date(2019, 5, 20),
+        geolocation={'point': (30.50188948, 50.39525513)},
+        price=Decimal('71051.200'),
+        area=62.1,
+        kitchen_area=7.2,
+        rooms=3,
+        floor=2,
+        total_floor=5,
+        details=[]
+    )
 
 
-def test_parse_offer_olx_flat_with_errors(olx_flat_parser: OlxFlatParser):
-    with raises(AttributeError):
-        assert None is olx_flat_parser.parse_offer(None)  # noqa
+def test_parse_offer_olx_flat_invalid(olx_flat_parser: OlxFlatParser):
     assert None is olx_flat_parser.parse_offer({'url': 'xxx'})
+    assert None is olx_flat_parser.parse_offer(None)  # noqa
 
-#         offers = (
-#             {
-#                 'url': 'https://www.olx.ua/obyavlenie/2-komnatnaya-kvartira-74-met'
-#                        'ra-v-novopecherskoy-vezhe-po-ul-kikvidze-41-IDCqiKk.html',
-#                 'markup': await load('fixtures/test_parse_offer/olx_flat1.html')
-#             },
-#             {
-#                 'url': 'https://www.olx.ua/obyavlenie/bolshaya-kvartira-v-samom-tsentre-irpenya-IDDJbxi.html',
-#                 'markup': await load('fixtures/test_parse_offer/olx_flat2.html')
-#             },
-#             {
-#                 'url': 'https://www.olx.ua/obyavlenie/prodam-2-komnatnuyu-kvartir'
-#                        'u-v-32-zhemchuzhine-arkadiya-dom-sdan-IDBbRIG.html',
-#                 'markup': await load('fixtures/test_parse_offer/olx_flat3.html')
-#             },
-#             {
-#                 'url': 'https://www.olx.ua/obyavlenie/prodam-3-k-'
-#                        'kvartiru-ul-uzhviy-10-podolskiy-r-n-IDDIwaX.html',
-#                 'markup': await load('fixtures/test_parse_offer/olx_flat4.html')
-#             },
-#             {
-#                 'url': 'https://www.olx.ua/obyavlenie/prodazha-obmen-nedvizhimosti'
-#                        '-v-kieve-na-nedvizhimost-v-sankt-peterburge-IDypRFA.html',
-#                 'markup': await load('fixtures/test_parse_offer/olx_flat5.html')
-#             }
-#         )
-#         structs = [
-#             Flat(
-#                 url='https://www.olx.ua/obyavlenie/2-komnatnaya-kvartira-74-metra-v-'
-#                     'novopecherskoy-vezhe-po-ul-kikvidze-41-IDCqiKk.html',
-#                 avatar='https://apollo-ireland.akamaized.net:443/v1/files/nyj7wonmwpf9-UA/image;s=644x461',
-#                 published=date(2019, 2, 27),
-#                 geolocation={'point': (30.55172926, 50.4070917)},
-#                 price=decimalize('1850000.000'),
-#                 currency='грн.',
-#                 area=74.0,
-#                 kitchen_area=28.0,
-#                 rooms=2,
-#                 floor=8,
-#                 total_floor=26,
-#                 details=[
-#                     'under construction', 'monolith', 'separate planning', 'separate bathrooms',
-#                     'own boiler room', 'after construction', 'no furniture'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://www.olx.ua/obyavlenie/bolshaya-kvartira-v-samom-tsentre-irpenya-IDDJbxi.html',
-#                 avatar='https://apollo-ireland.akamaized.net:443/v1/files/37oo82mm73sv3-UA/image;s=644x461',
-#                 published=date(2019, 3, 23),
-#                 geolocation={'point': (30.2593, 50.51752)},
-#                 price=decimalize('30500.000'),
-#                 area=75.0,
-#                 kitchen_area=16.0,
-#                 rooms=1,
-#                 floor=9,
-#                 total_floor=10,
-#                 details=[
-#                     'the tsar project', 'brick', 'adjacent through planning',
-#                     'adjacent bathrooms', 'own boiler room'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://www.olx.ua/obyavlenie/prodam-2-komnatnuyu-kvartiru'
-#                     '-v-32-zhemchuzhine-arkadiya-dom-sdan-IDBbRIG.html',
-#                 avatar='https://apollo-ireland.akamaized.net:443/v1/files/p5fbluxbefad3-UA/image;s=644x461',
-#                 published=date(2019, 3, 12),
-#                 geolocation={'point': (30.76142585, 46.42438896)},
-#                 price=decimalize('50000.000'),
-#                 area=52.0,
-#                 kitchen_area=9.0,
-#                 rooms=2,
-#                 floor=4,
-#                 total_floor=24,
-#                 details=[
-#                     'under construction', 'free layout', 'separate bathrooms',
-#                     'own boiler room', 'after construction'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://www.olx.ua/obyavlenie/prodam-3-k-kvartiru-ul-uzhviy-10-podolskiy-r-n-IDDIwaX.html',
-#                 avatar='https://apollo-ireland.akamaized.net:443/v1/files/b45v2qziwxkp3-UA/image;s=644x461',
-#                 published=date(2019, 3, 22),
-#                 geolocation={'point': (30.43441159, 50.50743121)},
-#                 price=decimalize('60000.000'),
-#                 area=74.0,
-#                 kitchen_area=9.0,
-#                 rooms=3,
-#                 floor=5,
-#                 total_floor=9,
-#                 details=[
-#                     'separate planning', 'separate bathrooms', 'euro-standard design', 'furniture is present'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://www.olx.ua/obyavlenie/prodazha-obmen-nedvizhimosti'
-#                     '-v-kieve-na-nedvizhimost-v-sankt-peterburge-IDypRFA.html',
-#                 avatar='https://apollo-ireland.akamaized.net:443/v1/files/34mlkr9opvr2-UA/image;s=644x461',
-#                 published=date(2019, 5, 20),
-#                 geolocation={'point': (30.50188948, 50.39525513)},
-#                 price=decimalize('71051.200'),
-#                 area=62.1,
-#                 kitchen_area=7.2,
-#                 rooms=3,
-#                 floor=2,
-#                 total_floor=5,
-#                 details=[]
-#             )
-#         ]
-#         self.assertListEqual(list(await parser.parse_offers(offers)), structs)
-#
-#
-# class DomRiaFlatParserTestCase(TestCase):
-#     def setUp(self) -> None:
-#         logging.disable()
-#
-#     def tearDown(self) -> None:
-#         logging.disable(logging.WARNING)
-#
-#     @processtest
-#     async def test_parse_stop(self, executor, scribbler):
-#         parser = DomRiaFlatParser(executor, scribbler)
-#         self.assertEqual(
-#             await parser.parse_stop(await load('fixtures/test_parse_stop/dom_ria_flat0.html')), 5664
-#         )
-#         self.assertIsNone(await parser.parse_stop(None))
-#
-#     @processtest
-#     async def test_parse_pages(self, executor, scribbler):
-#         parser = DomRiaFlatParser(executor, scribbler)
-#         pages = (await load('fixtures/test_parse_page/dom_ria_flat0.html'),)
-#         offers = [
-#             {
-#                 'area': 44.5,
-#                 'avatar': 'https://cdn.riastatic.com/photosnewr/dom/photo/realty__97544760-300x200x80.webp',
-#                 'kitchen_area': 21,
-#                 'living_area': 18,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-sverdlovskiy-massiv-sverdlova-ulitsa-15556698.html'
-#             },
-#             {
-#                 'area': 73.0,
-#                 'avatar': 'https://cdn3.riastatic.com/photosnewr/dom/photo/realty__98744213-300x200x80.webp',
-#                 'kitchen_area': 20,
-#                 'living_area': 42,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-zamoste-50letiya-pobedyi-ulitsa-15688237.html'
-#             },
-#             {
-#                 'area': 52.0,
-#                 'avatar': 'https://cdn1.riastatic.com/photosnewr/dom/photo/realty__97472381-300x200x80.webp',
-#                 'kitchen_area': 15,
-#                 'living_area': 30,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-staryiy-gorod-pokryishkina-ulitsa-15540541.html'
-#             },
-#             {
-#                 'area': 46.0,
-#                 'avatar': 'https://cdn2.riastatic.com/photosnewr/dom/photo/realty__98504337-300x200x80.webp',
-#                 'kitchen_area': 14,
-#                 'living_area': 22,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-sverdlovskiy-massiv-sverdlova-ulitsa-15627514.html'
-#             },
-#             {
-#                 'area': 43.0,
-#                 'avatar': 'https://cdn4.riastatic.com/photosnewr/dom/photo/realty__99057354-300x200x80.webp',
-#                 'kitchen_area': 14,
-#                 'living_area': 18,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-staryiy-gorod-pokryishkina-ulitsa-15731411.html'
-#             },
-#             {
-#                 'area': 43.7,
-#                 'avatar': 'https://cdn2.riastatic.com/photosnewr/dom/photo/realty__97216697-300x200x80.webp',
-#                 'kitchen_area': 11,
-#                 'living_area': 18,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-kiev-'
-#                        'goloseevskiy-yasinovatskiy-pereulok-15514751.html'
-#             },
-#             {
-#                 'area': 125.0,
-#                 'avatar': 'https://cdn4.riastatic.com/photosnewr/dom/photo/realty__98415934-300x200x80.webp',
-#                 'kitchen_area': 13,
-#                 'living_area': 80,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-sverdlovskiy-massiv-litvinenko-ulitsa-15636114.html'
-#             },
-#             {
-#                 'area': 75.0,
-#                 'avatar': 'https://cdn2.riastatic.com/photosnewr/dom/photo/realty__98735197-300x200x80.webp',
-#                 'kitchen_area': None,
-#                 'living_area': None,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-agronomichnoe-michurina-ulitsa-15702463.html'
-#             },
-#             {
-#                 'area': 65.0,
-#                 'avatar': 'https://cdn3.riastatic.com/photosnewr/dom/photo/realty__98734323-300x200x80.webp',
-#                 'kitchen_area': None,
-#                 'living_area': None,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-agronomichnoe-michurina-ulitsa-15702369.html'
-#             },
-#             {
-#                 'area': 87.0,
-#                 'avatar': 'https://cdn4.riastatic.com/photosnewr/dom/photo/realty__98733749-300x200x80.webp',
-#                 'kitchen_area': None,
-#                 'living_area': None,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-agronomichnoe-michurina-ulitsa-15702313.html'
-#             },
-#             {
-#                 'area': 65.0,
-#                 'avatar': 'https://cdn4.riastatic.com/photosnewr/dom/photo/realty__97435174-300x200x80.webp',
-#                 'kitchen_area': 13,
-#                 'living_area': 38,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-vinnitsa'
-#                        '-barskoe-shosse-odesskaya-ulitsa-15521626.html'
-#             },
-#             {
-#                 'area': 44.0,
-#                 'avatar': 'https://cdn.riastatic.com/photosnewr/dom/photo/realty__98027540-300x200x80.webp',
-#                 'kitchen_area': 13.5,
-#                 'living_area': 23,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-staryiy-gorod-jk-evropeyskiy-kvartal-15579915.html'
-#             },
-#             {
-#                 'area': 45.0,
-#                 'avatar': 'https://cdn3.riastatic.com/photosnewr/dom/photo/realty__97758973-300x200x80.webp',
-#                 'kitchen_area': 16,
-#                 'living_area': 20,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-zamoste-olega-antonova-ulitsa-15579936.html'
-#             },
-#             {
-#                 'area': 61.6,
-#                 'avatar': 'https://cdn1.riastatic.com/photosnewr/dom/photo/realty__97747186-300x200x80.webp',
-#                 'kitchen_area': 15,
-#                 'living_area': 37,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-sverdlovskiy-massiv-sverdlova-ulitsa-15585429.html'
-#             },
-#             {
-#                 'area': 78.0,
-#                 'avatar': 'https://cdn1.riastatic.com/photosnewr/dom/photo/realty__97943841-300x200x80.webp',
-#                 'kitchen_area': 15,
-#                 'living_area': 46,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-sverdlovskiy-massiv-knyazey-koriatovichey-ulitsa-15609009.html'
-#             },
-#             {
-#                 'area': 56.26,
-#                 'avatar': 'https://cdn3.riastatic.com/photosnewr/dom/photo/realty__98794643-300x200x80.webp',
-#                 'kitchen_area': 14.44,
-#                 'living_area': 20.12,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-zamoste-50letiya-pobedyi-ulitsa-15672070.html'
-#             },
-#             {
-#                 'area': 50.5,
-#                 'avatar': 'https://cdn.riastatic.com/photosnewr/dom/photo/realty__97337415-300x200x80.webp',
-#                 'kitchen_area': 18,
-#                 'living_area': 23,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-sverdlovskiy-massiv-knyazey-koriatovichey-ulitsa-15506576.html'
-#             },
-#             {
-#                 'area': 73.0,
-#                 'avatar': 'https://cdn1.riastatic.com/photosnewr/dom/photo/realty__83999686-300x200x80.webp',
-#                 'kitchen_area': 46,
-#                 'living_area': 27,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-podole-svobodyi-bulvar-14149728.html'
-#             },
-#             {
-#                 'area': 49.0,
-#                 'avatar': 'https://cdn1.riastatic.com/photosnewr/dom/photo/realty__98237561-300x200x80.webp',
-#                 'kitchen_area': 17.2,
-#                 'living_area': 15,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-vinnitsa-zamoste-chehova-ulitsa-15646353.html'
-#             },
-#             {
-#                 'area': 65.0,
-#                 'avatar': 'https://cdn.riastatic.com/photosnewr/dom/photo/realty__97707270-300x200x80.webp',
-#                 'kitchen_area': 9,
-#                 'living_area': 40,
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-vishenka-keletskaya-ulitsa-15582553.html'
-#             }
-#         ]
-#         self.assertEqual(list(await parser.parse_pages(pages)), offers)
-#
-#     @processtest
-#     async def test_parse_offers(self, executor, scribbler):
-#         parser = DomRiaFlatParser(executor, scribbler)
-#         offers = (
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'odessa-primorskiy-italyanskiy-bulvar-15546830.html',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat0.html'),
-#                 'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/perevireno-prodaja'
-#                           '-kvartira-odessa-primorskiy-italyanskiy-bulvar__97597766fl.jpg',
-#                 'area': 47.7,
-#                 'living_area': 22.0,
-#                 'kitchen_area': 15.0
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/novostroyka-km-vyshnevyi-khutir-4972/',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat1.html'),
-#                 'avatar': None,
-#                 'area': 26,
-#                 'living_area': 14.6,
-#                 'kitchen_area': 8.3
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-staryiy-gorod-pokryishkina-ulitsa-15223903.html',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat2.html'),
-#                 'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/perevireno-prodaja'
-#                           '-kvartira-vinnitsa-staryiy-gorod-pokryishkina-ulitsa__94899036fl.jpg',
-#                 'area': 52,
-#                 'living_area': 32,
-#                 'kitchen_area': 14
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'odessa-primorskiy-italyanskiy-bulvar-15591101.html',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat3.html'),
-#                 'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/perevireno-prodaja'
-#                           '-kvartira-odessa-primorskiy-italyanskiy-bulvar__97910469fl.jpg',
-#                 'area': 65,
-#                 'living_area': None,
-#                 'kitchen_area': None
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'kiev-dneprovskiy-prajskaya-ulitsa-15581555.html',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat4.html'),
-#                 'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/perevireno-prodaja'
-#                           '-kvartira-kiev-dneprovskiy-prajskaya-ulitsa__97897725fl.jpg',
-#                 'area': 44.9,
-#                 'living_area': 29.5,
-#                 'kitchen_area': 7.8
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                        '-lvov-lyichakovskiy-begovaya-ulitsa-15431656.html',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat5.html'),
-#                 'avatar': None,
-#                 'area': 57.2,
-#                 'living_area': 39.2,
-#                 'kitchen_area': 10.8
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-'
-#                        'ochakov-ochakov-pervomayskaya-13179860.html',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat6.html'),
-#                 'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/prodaja-'
-#                           'kvartira-ochakov-ochakov-pervomayskaya__74444903fl.jpg',
-#                 'area': 35,
-#                 'living_area': 19,
-#                 'kitchen_area': 8
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'vinnitsa-blijnee-zamoste-vyacheslava-chernovola-ulitsa-14797413.html',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat7.html'),
-#                 'avatar': 'https://cdn.riastatic.com/photosnewr/dom/photo/realty__98129585-300x200x80.webp',
-#                 'area': 73.5,
-#                 'living_area': None,
-#                 'kitchen_area': 25
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-zaporoje-dneprovskiy-leninskiy-12440307.html',
-#                 'markup': await load('fixtures/test_parse_offer/dom_ria_flat8.html'),
-#                 'avatar': None,
-#                 'area': 169,
-#                 'living_area': None,
-#                 'kitchen_area': None
-#             }
-#         )
-#         structs = [
-#             Flat(
-#                 url='https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                     '-odessa-primorskiy-italyanskiy-bulvar-15546830.html',
-#                 avatar='https://cdn.riastatic.com/photosnew/dom/photo/perevireno-'
-#                        'prodaja-kvartira-odessa-primorskiy-italyanskiy-bulvar__97597766fl.jpg',
-#                 published=date(2019, 4, 15),
-#                 geolocation={'point': (30.75220862914432, 46.46768691411673)},
-#                 price=decimalize('78000.000'),
-#                 area=47.7,
-#                 living_area=22.0,
-#                 kitchen_area=15.0,
-#                 rooms=1,
-#                 floor=13,
-#                 total_floor=14,
-#                 details=[
-#                     'brick', 'individual heating', 'separate planning', 'authorial project',
-#                     'external and internal insulation', 'gas is absent', 'armored door',
-#                     'adjacent bathrooms', '1 passenger elevator', 'secondary housing'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
-#                     '-vinnitsa-staryiy-gorod-pokryishkina-ulitsa-15223903.html',
-#                 avatar='https://cdn.riastatic.com/photosnew/dom/photo/perevireno'
-#                        '-prodaja-kvartira-vinnitsa-staryiy-gorod-pokryishkina-ulitsa__94899036fl.jpg',
-#                 published=date(2019, 4, 10),
-#                 geolocation={'address': 'Вінниця, Старе місто, Покришкіна вулиця'},
-#                 price=decimalize('19900.000'),
-#                 area=52,
-#                 living_area=32,
-#                 kitchen_area=14,
-#                 rooms=2,
-#                 floor=4,
-#                 total_floor=12,
-#                 ceiling_height=2.71,
-#                 details=[
-#                     'brick', 'without heating', 'separate planning', 'repair required',
-#                     'internal insulation', 'gas is present', 'metal-plastic windows',
-#                     'adjacent bathrooms', '1 passenger elevator', 'secondary housing'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://dom.ria.com/uk/realty-perevireno-prodaja-'
-#                     'kvartira-odessa-primorskiy-italyanskiy-bulvar-15591101.html',
-#                 avatar='https://cdn.riastatic.com/photosnew/dom/photo/perevireno-prodaja-'
-#                        'kvartira-odessa-primorskiy-italyanskiy-bulvar__97910469fl.jpg',
-#                 published=date(2019, 4, 25),
-#                 geolocation={'point': (30.752294459832797, 46.467716472633796)},
-#                 price=decimalize('96000.000'),
-#                 area=65,
-#                 rooms=2,
-#                 floor=12,
-#                 total_floor=15,
-#                 details=[
-#                     'brick', 'individual heating', 'separate planning', 'repair required',
-#                     'gas is absent', 'armored door', 'metal-plastic windows', 'separate bathrooms',
-#                     '1 passenger elevator', 'secondary housing'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://dom.ria.com/uk/realty-perevireno-prodaja-'
-#                     'kvartira-kiev-dneprovskiy-prajskaya-ulitsa-15581555.html',
-#                 avatar='https://cdn.riastatic.com/photosnew/dom/photo/perevireno-'
-#                        'prodaja-kvartira-kiev-dneprovskiy-prajskaya-ulitsa__97897725fl.jpg',
-#                 published=date(2019, 4, 22),
-#                 geolocation={'point': (30.643568070947254, 50.43808004773596)},
-#                 price=decimalize('45000.000'),
-#                 area=44.9,
-#                 living_area=29.5,
-#                 kitchen_area=7.8,
-#                 rooms=2,
-#                 floor=1,
-#                 total_floor=5,
-#                 details=[
-#                     'panel', 'centralized heating', 'adjacent-separate planning',
-#                     'euro-standard design', 'external insulation', 'gas is present', 'metal door',
-#                     'metal-plastic windows', 'adjacent bathrooms', 'secondary housing'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://dom.ria.com/uk/realty-prodaja-kvartira-ochakov-ochakov-pervomayskaya-13179860.html',
-#                 avatar='https://cdn.riastatic.com/photosnew/dom/photo/prodaja'
-#                        '-kvartira-ochakov-ochakov-pervomayskaya__74444903fl.jpg',
-#                 published=date(2019, 5, 23),
-#                 geolocation={'point': (31.52812112850194, 46.62593951428682)},
-#                 price=decimalize('11500.000'),
-#                 area=35,
-#                 living_area=19,
-#                 kitchen_area=8,
-#                 rooms=1,
-#                 floor=8,
-#                 total_floor=9,
-#                 ceiling_height=2.7,
-#                 details=[
-#                     'brick', 'built in 1990-2000', 'centralized heating', 'separate planning',
-#                     'good state', 'gas is present', 'metal-plastic windows', 'adjacent bathrooms',
-#                     'without passenger elevators', 'secondary housing'
-#                 ]
-#             ),
-#             Flat(
-#                 url='https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                     'vinnitsa-blijnee-zamoste-vyacheslava-chernovola-ulitsa-14797413.html',
-#                 avatar='https://cdn.riastatic.com/photosnewr/dom/photo/realty__98129585-300x200x80.webp',
-#                 published=date(2019, 5, 6),
-#                 geolocation={'point': (28.477062352423104, 49.24405425158156)},
-#                 price=decimalize('47000.000'),
-#                 area=73.5,
-#                 kitchen_area=25,
-#                 rooms=2,
-#                 floor=6,
-#                 total_floor=12,
-#                 ceiling_height=2.8,
-#                 details=[
-#                     'brick', 'commissioning in 2019', 'individual heating', 'separate planning',
-#                     'drilling/construction work', 'external insulation', 'gas is present', 'metal door',
-#                     'metal-plastic windows', 'adjacent bathrooms', '1 passenger elevator', 'primary housing'
-#                 ]
-#             )
-#         ]
-#         self.assertListEqual(list(await parser.parse_offers(offers)), structs)
-#
-#     def test_parse_address(self):
-#         shaft = DomRiaFlatParser._Shaft()
-#         cases = (
-#             (
-#                 {
-#                     'city_name_uk': 'Київ',
-#                     'pid': 134058,
-#                     'district_name_uk': 'Святошинський',
-#                     'street_name_uk': 'Монгольська вулиця'
-#                 },
-#                 'Київ, Святошинський, Монгольська вулиця'
-#             ),
-#             (
-#                 {
-#                     'city_name_uk': 'Київ',
-#                     'district_name': 'Святошинский',
-#                     'street_name': 'Победы проспект, 231'
-#                 },
-#                 'Київ, Святошинский, Победы проспект, 231'
-#             ),
-#             (
-#                 {
-#                     'state_name_uk': 'Київська',
-#                     'city_name_uk': 'Київ',
-#                     'rev_': '@lkejrhfhj938747jjif834+3029r3',
-#                     'district_name': 'Святошинский',
-#                     'district_name_uk': 'Святошинський',
-#                     'street_name': 'Зодчих ул., 70'
-#                 },
-#                 'Київ, Святошинський, Зодчих, 70'
-#             ),
-#             (
-#                 {
-#                     'state_name_uk': 'Львівська',
-#                     'city_name_uk': 'Львів',
-#                     'city_name': 'Львов',
-#                     'a_weight': 0.9876456,
-#                     'district_name': 'Галицкий',
-#                     'district_name_uk': 'Галицький',
-#                     'street_name_uk': 'Альтаїра вулиця, буд. 13'
-#                 },
-#                 'Львів, Галицький, Альтаїра вулиця, 13'
-#             )
-#         )
-#         for case in cases:
-#             self.assertEqual(shaft._parse_address(case[0]), case[1])
-#
+
+@fixture
+def dom_ria_flat_parser() -> DomRiaFlatParser:
+    return DomRiaFlatParser()
+
+
+def test_parse_stop_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
+    assert 5664 == dom_ria_flat_parser.parse_stop(
+        read('fixtures/test_parse_stop/dom_ria_flat0.html')
+    )
+
+
+def test_parse_stop_dom_ria_flat_invalid(
+    dom_ria_flat_parser: DomRiaFlatParser
+):
+    assert None is dom_ria_flat_parser.parse_stop(-13)  # noqa
+    assert None is dom_ria_flat_parser.parse_stop(None)  # noqa
+    assert None is dom_ria_flat_parser.parse_stop('')  # noqa
+    assert None is dom_ria_flat_parser.parse_stop({'url': 'https://xxx.org/'})  # noqa
+
+
+def test_parse_page_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
+    assert dom_ria_flat_parser.parse_page(
+        read('fixtures/test_parse_page/dom_ria_flat0.html')
+    ) == [
+        {
+            'area': 44.5,
+            'avatar': 'https://cdn.riastatic.com/photosnewr/dom/'
+                      'photo/realty__97544760-300x200x80.webp',
+            'kitchen_area': 21,
+            'living_area': 18,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-sverdlovskiy-massiv-sverdlova-ulitsa-15556698.html'
+        },
+        {
+            'area': 73.0,
+            'avatar': 'https://cdn3.riastatic.com/photosnewr/dom/photo'
+                      '/realty__98744213-300x200x80.webp',
+            'kitchen_area': 20,
+            'living_area': 42,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-zamoste-50letiya-pobedyi-ulitsa-15688237.html'
+        },
+        {
+            'area': 52.0,
+            'avatar': 'https://cdn1.riastatic.com/photosnewr/dom/'
+                      'photo/realty__97472381-300x200x80.webp',
+            'kitchen_area': 15,
+            'living_area': 30,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-staryiy-gorod-pokryishkina-ulitsa-15540541.html'
+        },
+        {
+            'area': 46.0,
+            'avatar': 'https://cdn2.riastatic.com/photosnewr/dom'
+                      '/photo/realty__98504337-300x200x80.webp',
+            'kitchen_area': 14,
+            'living_area': 22,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+                   'vinnitsa-sverdlovskiy-massiv-sverdlova-ulitsa-15627514.html'
+        },
+        {
+            'area': 43.0,
+            'avatar': 'https://cdn4.riastatic.com/photosnewr/dom/'
+                      'photo/realty__99057354-300x200x80.webp',
+            'kitchen_area': 14,
+            'living_area': 18,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-staryiy-gorod-pokryishkina-ulitsa-15731411.html'
+        },
+        {
+            'area': 43.7,
+            'avatar': 'https://cdn2.riastatic.com/photosnewr/dom/'
+                      'photo/realty__97216697-300x200x80.webp',
+            'kitchen_area': 11,
+            'living_area': 18,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-kiev-'
+                   'goloseevskiy-yasinovatskiy-pereulok-15514751.html'
+        },
+        {
+            'area': 125.0,
+            'avatar': 'https://cdn4.riastatic.com/photosnewr/dom/'
+                      'photo/realty__98415934-300x200x80.webp',
+            'kitchen_area': 13,
+            'living_area': 80,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+                   'vinnitsa-sverdlovskiy-massiv-litvinenko-ulitsa-15636114.html'
+        },
+        {
+            'area': 75.0,
+            'avatar': 'https://cdn2.riastatic.com/photosnewr/dom/'
+                      'photo/realty__98735197-300x200x80.webp',
+            'kitchen_area': None,
+            'living_area': None,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+                   'vinnitsa-agronomichnoe-michurina-ulitsa-15702463.html'
+        },
+        {
+            'area': 65.0,
+            'avatar': 'https://cdn3.riastatic.com/photosnewr/dom'
+                      '/photo/realty__98734323-300x200x80.webp',
+            'kitchen_area': None,
+            'living_area': None,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+                   'vinnitsa-agronomichnoe-michurina-ulitsa-15702369.html'
+        },
+        {
+            'area': 87.0,
+            'avatar': 'https://cdn4.riastatic.com/photosnewr/'
+                      'dom/photo/realty__98733749-300x200x80.webp',
+            'kitchen_area': None,
+            'living_area': None,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+                   'vinnitsa-agronomichnoe-michurina-ulitsa-15702313.html'
+        },
+        {
+            'area': 65.0,
+            'avatar': 'https://cdn4.riastatic.com/photosnewr/dom/'
+                      'photo/realty__97435174-300x200x80.webp',
+            'kitchen_area': 13,
+            'living_area': 38,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-vinnitsa'
+                   '-barskoe-shosse-odesskaya-ulitsa-15521626.html'
+        },
+        {
+            'area': 44.0,
+            'avatar': 'https://cdn.riastatic.com/photosnewr/dom/'
+                      'photo/realty__98027540-300x200x80.webp',
+            'kitchen_area': 13.5,
+            'living_area': 23,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-staryiy-gorod-jk-evropeyskiy-kvartal-15579915.html'
+        },
+        {
+            'area': 45.0,
+            'avatar': 'https://cdn3.riastatic.com/photosnewr/'
+                      'dom/photo/realty__97758973-300x200x80.webp',
+            'kitchen_area': 16,
+            'living_area': 20,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+                   'vinnitsa-zamoste-olega-antonova-ulitsa-15579936.html'
+        },
+        {
+            'area': 61.6,
+            'avatar': 'https://cdn1.riastatic.com/photosnewr/'
+                      'dom/photo/realty__97747186-300x200x80.webp',
+            'kitchen_area': 15,
+            'living_area': 37,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+                   'vinnitsa-sverdlovskiy-massiv-sverdlova-ulitsa-15585429.html'
+        },
+        {
+            'area': 78.0,
+            'avatar': 'https://cdn1.riastatic.com/photosnewr/'
+                      'dom/photo/realty__97943841-300x200x80.webp',
+            'kitchen_area': 15,
+            'living_area': 46,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-sverdlovskiy-massiv-knyazey-koriatovichey-ulitsa-15609009.html'
+        },
+        {
+            'area': 56.26,
+            'avatar': 'https://cdn3.riastatic.com/photosnewr/dom'
+                      '/photo/realty__98794643-300x200x80.webp',
+            'kitchen_area': 14.44,
+            'living_area': 20.12,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-zamoste-50letiya-pobedyi-ulitsa-15672070.html'
+        },
+        {
+            'area': 50.5,
+            'avatar': 'https://cdn.riastatic.com/photosnewr/dom'
+                      '/photo/realty__97337415-300x200x80.webp',
+            'kitchen_area': 18,
+            'living_area': 23,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-'
+                   'kvartira-vinnitsa-sverdlovskiy-massiv-knyazey-koria'
+                   'tovichey-ulitsa-15506576.html'
+        },
+        {
+            'area': 73.0,
+            'avatar': 'https://cdn1.riastatic.com/photosnewr/dom/photo'
+                      '/realty__83999686-300x200x80.webp',
+            'kitchen_area': 46,
+            'living_area': 27,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-podole-svobodyi-bulvar-14149728.html'
+        },
+        {
+            'area': 49.0,
+            'avatar': 'https://cdn1.riastatic.com/photosnewr/dom'
+                      '/photo/realty__98237561-300x200x80.webp',
+            'kitchen_area': 17.2,
+            'living_area': 15,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+                   '-vinnitsa-zamoste-chehova-ulitsa-15646353.html'
+        },
+        {
+            'area': 65.0,
+            'avatar': 'https://cdn.riastatic.com/photosnewr/dom/'
+                      'photo/realty__97707270-300x200x80.webp',
+            'kitchen_area': 9,
+            'living_area': 40,
+            'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+                   'vinnitsa-vishenka-keletskaya-ulitsa-15582553.html'
+        }
+    ]
+
+
+def test_parse_page_dom_ria_flat_invalid(
+    dom_ria_flat_parser: DomRiaFlatParser
+):
+    assert dom_ria_flat_parser.parse_page(None) == []  # noqa
+    assert dom_ria_flat_parser.parse_page('') == []  # noqa
+
+
+def test_parse_offer_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
+    assert dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+               'odessa-primorskiy-italyanskiy-bulvar-15546830.html',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat0.html'),
+        'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/perevireno-prodaja'
+                  '-kvartira-odessa-primorskiy-italyanskiy-bulvar__97597766fl.jpg',
+        'area': 47.7,
+        'living_area': 22.0,
+        'kitchen_area': 15.0
+    }) == Flat(
+        url='https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+            '-odessa-primorskiy-italyanskiy-bulvar-15546830.html',
+        avatar='https://cdn.riastatic.com/photosnew/dom/photo/perevireno-'
+               'prodaja-kvartira-odessa-primorskiy-italyanskiy-bulvar'
+               '__97597766fl.jpg',
+        published=date(2019, 4, 15),
+        geolocation={'point': (30.75220862914432, 46.46768691411673)},
+        price=Decimal('78000.000'),
+        area=47.7,
+        living_area=22.0,
+        kitchen_area=15.0,
+        rooms=1,
+        floor=13,
+        total_floor=14,
+        details=[
+            'brick', 'individual heating', 'separate planning', 'authorial project',
+            'external and internal insulation', 'gas is absent', 'armored door',
+            'adjacent bathrooms', '1 passenger elevator', 'secondary housing'
+        ]
+    )
+    assert dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+               'vinnitsa-staryiy-gorod-pokryishkina-ulitsa-15223903.html',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat2.html'),
+        'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/perevireno-'
+                  'prodaja-kvartira-vinnitsa-staryiy-gorod-pokryishkina-ulit'
+                  'sa__94899036fl.jpg',
+        'area': 52,
+        'living_area': 32,
+        'kitchen_area': 14
+    }) == Flat(
+        url='https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+            '-vinnitsa-staryiy-gorod-pokryishkina-ulitsa-15223903.html',
+        avatar='https://cdn.riastatic.com/photosnew/dom/photo/perevireno'
+               '-prodaja-kvartira-vinnitsa-staryiy-gorod-pokryishkina-'
+               'ulitsa__94899036fl.jpg',
+        published=date(2019, 4, 10),
+        geolocation={'address': 'Вінниця, Старе місто, Покришкіна вулиця'},
+        price=Decimal('19900.000'),
+        area=52,
+        living_area=32,
+        kitchen_area=14,
+        rooms=2,
+        floor=4,
+        total_floor=12,
+        ceiling_height=2.71,
+        details=[
+            'brick', 'without heating', 'separate planning', 'repair required',
+            'internal insulation', 'gas is present', 'metal-plastic windows',
+            'adjacent bathrooms', '1 passenger elevator', 'secondary housing'
+        ]
+    )
+    assert dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+               'odessa-primorskiy-italyanskiy-bulvar-15591101.html',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat3.html'),
+        'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/'
+                  'perevireno-prodaja-kvartira-odessa-primorskiy-italyanskiy'
+                  '-bulvar__97910469fl.jpg',
+        'area': 65,
+        'living_area': None,
+        'kitchen_area': None
+    }) == Flat(
+        url='https://dom.ria.com/uk/realty-perevireno-prodaja-'
+            'kvartira-odessa-primorskiy-italyanskiy-bulvar-15591101.html',
+        avatar='https://cdn.riastatic.com/photosnew/dom/photo/perevireno-prodaja-'
+               'kvartira-odessa-primorskiy-italyanskiy-bulvar__97910469fl.jpg',
+        published=date(2019, 4, 25),
+        geolocation={'point': (30.752294459832797, 46.467716472633796)},
+        price=Decimal('96000.000'),
+        area=65,
+        rooms=2,
+        floor=12,
+        total_floor=15,
+        details=[
+            'brick', 'individual heating', 'separate planning', 'repair required',
+            'gas is absent', 'armored door', 'metal-plastic windows',
+            'separate bathrooms', '1 passenger elevator', 'secondary housing'
+        ]
+    )
+    assert dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+               'kiev-dneprovskiy-prajskaya-ulitsa-15581555.html',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat4.html'),
+        'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/perevireno'
+                  '-prodaja-kvartira-kiev-dneprovskiy-prajskaya-ulitsa'
+                  '__97897725fl.jpg',
+        'area': 44.9,
+        'living_area': 29.5,
+        'kitchen_area': 7.8
+    }) == Flat(
+        url='https://dom.ria.com/uk/realty-perevireno-prodaja-'
+            'kvartira-kiev-dneprovskiy-prajskaya-ulitsa-15581555.html',
+        avatar='https://cdn.riastatic.com/photosnew/dom/photo/perevireno-'
+               'prodaja-kvartira-kiev-dneprovskiy-prajskaya-ulitsa'
+               '__97897725fl.jpg',
+        published=date(2019, 4, 22),
+        geolocation={'point': (30.643568070947254, 50.43808004773596)},
+        price=Decimal('45000.000'),
+        area=44.9,
+        living_area=29.5,
+        kitchen_area=7.8,
+        rooms=2,
+        floor=1,
+        total_floor=5,
+        details=[
+            'panel', 'centralized heating', 'adjacent-separate planning',
+            'euro-standard design', 'external insulation', 'gas is present',
+            'metal door', 'metal-plastic windows', 'adjacent bathrooms',
+            'secondary housing'
+        ]
+    )
+    assert dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-'
+               'ochakov-ochakov-pervomayskaya-13179860.html',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat6.html'),
+        'avatar': 'https://cdn.riastatic.com/photosnew/dom/photo/prodaja-'
+                  'kvartira-ochakov-ochakov-pervomayskaya__74444903fl.jpg',
+        'area': 35,
+        'living_area': 19,
+        'kitchen_area': 8
+    }) == Flat(
+        url='https://dom.ria.com/uk/realty-prodaja-kvartira-ochakov'
+            '-ochakov-pervomayskaya-13179860.html',
+        avatar='https://cdn.riastatic.com/photosnew/dom/photo/prodaja'
+               '-kvartira-ochakov-ochakov-pervomayskaya__74444903fl.jpg',
+        published=date(2019, 5, 23),
+        geolocation={'point': (31.52812112850194, 46.62593951428682)},
+        price=Decimal('11500.000'),
+        area=35,
+        living_area=19,
+        kitchen_area=8,
+        rooms=1,
+        floor=8,
+        total_floor=9,
+        ceiling_height=2.7,
+        details=[
+            'brick', 'built in 1990-2000', 'centralized heating',
+            'separate planning', 'good state', 'gas is present',
+            'metal-plastic windows', 'adjacent bathrooms',
+            'without passenger elevators', 'secondary housing'
+        ]
+    )
+    assert dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvarti'
+               'ra-vinnitsa-blijnee-zamoste-vyacheslava-chernovola-'
+               'ulitsa-14797413.html',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat7.html'),
+        'avatar': 'https://cdn.riastatic.com/photosnewr/dom/photo/'
+                  'realty__98129585-300x200x80.webp',
+        'area': 73.5,
+        'living_area': None,
+        'kitchen_area': 25
+    }) == Flat(
+        url='https://dom.ria.com/uk/realty-perevireno-prodaja-kvart'
+            'ira-vinnitsa-blijnee-zamoste-vyacheslava-chernovola-uli'
+            'tsa-14797413.html',
+        avatar='https://cdn.riastatic.com/photosnewr/dom/photo'
+               '/realty__98129585-300x200x80.webp',
+        published=date(2019, 5, 6),
+        geolocation={'point': (28.477062352423104, 49.24405425158156)},
+        price=Decimal('47000.000'),
+        area=73.5,
+        kitchen_area=25,
+        rooms=2,
+        floor=6,
+        total_floor=12,
+        ceiling_height=2.8,
+        details=[
+            'brick', 'commissioning in 2019', 'individual heating',
+            'separate planning', 'drilling/construction work',
+            'external insulation', 'gas is present', 'metal door',
+            'metal-plastic windows', 'adjacent bathrooms', '1 passenger elevator',
+            'primary housing'
+        ]
+    )
+
+
+def test_parse_offer_dom_ria_flat_emptiness(
+    dom_ria_flat_parser: DomRiaFlatParser
+):
+    assert None is dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-'
+               'zaporoje-dneprovskiy-leninskiy-12440307.html',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat8.html'),
+        'avatar': None,
+        'area': 169,
+        'living_area': None,
+        'kitchen_area': None
+    })
+    assert None is dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira'
+               '-lvov-lyichakovskiy-begovaya-ulitsa-15431656.html',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat5.html'),
+        'avatar': None,
+        'area': 57.2,
+        'living_area': 39.2,
+        'kitchen_area': 10.8
+    })
+    assert None is dom_ria_flat_parser.parse_offer({
+        'url': 'https://dom.ria.com/uk/novostroyka-km-vyshnevyi-khutir-4972/',
+        'markup': read('fixtures/test_parse_offer/dom_ria_flat1.html'),
+        'avatar': None,
+        'area': 26,
+        'living_area': 14.6,
+        'kitchen_area': 8.3
+    })
+
+
+def test_parse_offer_dom_ria_flat_invalid(
+    dom_ria_flat_parser: DomRiaFlatParser
+):
+    assert None is dom_ria_flat_parser.parse_offer(None)  # noqa
+    assert None is dom_ria_flat_parser.parse_offer({'url': 'xxx'})
+
+
+def test_parse_address(dom_ria_flat_parser: DomRiaFlatParser):
+    assert dom_ria_flat_parser._parse_address({  # noqa
+        'city_name_uk': 'Київ',
+        'pid': 134058,
+        'district_name_uk': 'Святошинський',
+        'street_name_uk': 'Монгольська вулиця'
+    }) == 'Київ, Святошинський, Монгольська вулиця'
+    assert dom_ria_flat_parser._parse_address({  # noqa
+        'city_name_uk': 'Київ',
+        'district_name': 'Святошинский',
+        'street_name': 'Победы проспект, 231'
+    }) == 'Київ, Святошинский, Победы проспект, 231'
+    assert dom_ria_flat_parser._parse_address({  # noqa
+        'state_name_uk': 'Київська',
+        'city_name_uk': 'Київ',
+        'rev_': '@lkejrhfhj938747jjif834+3029r3',
+        'district_name': 'Святошинский',
+        'district_name_uk': 'Святошинський',
+        'street_name': 'Зодчих ул., 70'
+    }) == 'Київ, Святошинський, Зодчих, 70'
+    assert dom_ria_flat_parser._parse_address({  # noqa
+        'state_name_uk': 'Львівська',
+        'city_name_uk': 'Львів',
+        'city_name': 'Львов',
+        'a_weight': 0.9876456,
+        'district_name': 'Галицкий',
+        'district_name_uk': 'Галицький',
+        'street_name_uk': 'Альтаїра вулиця, буд. 13'
+    }) == 'Львів, Галицький, Альтаїра вулиця, 13'
+
+
+def test_parse_address_with_errors(dom_ria_flat_parser: DomRiaFlatParser):
+    with raises(AttributeError):
+        dom_ria_flat_parser._parse_address(None)  # noqa
+    with raises(AttributeError):
+        dom_ria_flat_parser._parse_address('')  # noqa
+
 #     def test_ceiling_height(self):
 #         shaft = DomRiaFlatParser._Shaft()
 #         self.assertIsNone(shaft._ceiling_height(None))

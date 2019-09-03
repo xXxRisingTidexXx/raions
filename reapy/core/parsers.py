@@ -73,7 +73,7 @@ class Parser:
             return self._parse_page(BeautifulSoup(
                 markup, self._builder, parse_only=self._offer_strainer
             ))
-        except AttributeError:
+        except (AttributeError, TypeError):
             logger.exception('page parsing failed')
             return []
 
@@ -97,8 +97,9 @@ class Parser:
         :param offer: target dict with 'markup', 'url' and some other fields
         :return: special data structure or None if the check failed
         """
-        url = offer.pop('url')
+        url = ''
         try:
+            url = offer.pop('url')
             soup = BeautifulSoup(offer.pop('markup'), self._builder)
             if self._check_offer(soup):
                 return self._parse_offer(url, soup, **offer)
