@@ -3,7 +3,49 @@ from decimal import Decimal
 from pytest import fixture, raises
 from core.utils import read
 from core.structs import Flat
-from core.parsers import OlxFlatParser, DomRiaFlatParser
+from core.parsers import OlxFlatParser, DomRiaFlatParser, EstateParser
+from math import isclose
+
+
+@fixture
+def estate_parser() -> EstateParser:
+    return EstateParser()
+
+
+def test_float(estate_parser: EstateParser):
+    assert isclose(estate_parser._float('23.8'), 23.8)  # noqa
+    assert isclose(estate_parser._float('14'), 14)  # noqa
+    assert isclose(estate_parser._float('0'), 0)  # noqa
+    assert isclose(estate_parser._float('0.00005'), 0.00005)  # noqa
+    assert isclose(estate_parser._float('523456.0456'), 523456.0456)  # noqa
+
+
+def test_float_emptiness(estate_parser: EstateParser):
+    assert estate_parser._float(None) is None  # noqa
+    assert estate_parser._float('adwef') is None  # noqa
+    assert estate_parser._float('') is None  # noqa
+    assert estate_parser._float('    ') is None  # noqa
+    assert estate_parser._float('- 4') is None  # noqa
+    assert estate_parser._float(' -  4') is None  # noqa
+
+
+def test_int(estate_parser: EstateParser):
+    assert estate_parser._int(' 23 ') == 23  # noqa
+    assert estate_parser._int(' 0 ') == 0  # noqa
+    assert estate_parser._int('5 ') == 5  # noqa
+    assert estate_parser._int('  1207') == 1207  # noqa
+    assert estate_parser._int('  9 7') == 9  # noqa
+    assert estate_parser._int('12.3') == 12  # noqa
+
+
+def test_int_emptiness(estate_parser: EstateParser):
+    assert estate_parser._int(None) is None  # noqa
+    assert estate_parser._int(' adw') is None  # noqa
+    assert estate_parser._int('') is None  # noqa
+    assert estate_parser._int('    ') is None  # noqa
+    assert estate_parser._int('-34') is None  # noqa
+    assert estate_parser._int(' -34 ') is None  # noqa
+    assert estate_parser._int(' - 19 ') is None  # noqa
 
 
 @fixture
@@ -821,41 +863,48 @@ def test_parse_address_with_errors(dom_ria_flat_parser: DomRiaFlatParser):
     with raises(AttributeError):
         dom_ria_flat_parser._parse_address('')  # noqa
 
-#     def test_ceiling_height(self):
-#         shaft = DomRiaFlatParser._Shaft()
-#         self.assertIsNone(shaft._ceiling_height(None))
-#         self.assertIsNone(shaft._ceiling_height('sdfgh'))
-#         cases = ((' 2. 5 ', 2.5), ('   2 .87', 2.87), ('   27', 2.7), ('330 ', 3.3), (' 2 800 ', 2.8))
-#         for case in cases:
-#             self.assertAlmostEqual(shaft._ceiling_height(case[0]), case[1], 3)
-#
-#     @processtest
-#     async def test_parse_junks(self, executor, scribbler):
-#         parser = DomRiaFlatParser(executor, scribbler)
-#         junks = (
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-kiev-goloseevskiy-15695319.html',
-#                 'markup': await load('fixtures/test_parse_junk/dom_ria_flat0.html')
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-odessa-'
-#                        'kievskiy-lyustdorfskaya-dor-chernomorskaya-dor-15699660.html',
-#                 'markup': await load('fixtures/test_parse_junk/dom_ria_flat1.html')
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-odessa-malinovskiy-komarova-15699670.html',
-#                 'markup': await load('fixtures/test_parse_junk/dom_ria_flat2.html')
-#             },
-#             {
-#                 'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
-#                        'odessa-primorskiy-italyanskiy-bulvar-15546830.html',
-#                 'markup': await load('fixtures/test_parse_junk/dom_ria_flat3.html')
-#             }
-#         )
-#         urls = {
-#             'https://dom.ria.com/uk/realty-prodaja-kvartira-kiev-goloseevskiy-15695319.html',
-#             'https://dom.ria.com/uk/realty-prodaja-kvartira-odessa-'
-#             'kievskiy-lyustdorfskaya-dor-chernomorskaya-dor-15699660.html',
-#             'https://dom.ria.com/uk/realty-prodaja-kvartira-odessa-malinovskiy-komarova-15699670.html'
-#         }
-#         self.assertSetEqual(await parser.parse_junks(junks), urls)
+
+def test_ceiling_height(dom_ria_flat_parser: DomRiaFlatParser):
+    assert isclose(dom_ria_flat_parser._ceiling_height(' 2. 5 '), 2.5)  # noqa
+    assert isclose(dom_ria_flat_parser._ceiling_height('   2 .87'), 2.87)  # noqa
+    assert isclose(dom_ria_flat_parser._ceiling_height('   27'), 2.7)  # noqa
+    assert isclose(dom_ria_flat_parser._ceiling_height('330 '), 3.3)  # noqa
+    assert isclose(dom_ria_flat_parser._ceiling_height(' 2 800'), 2.8)  # noqa
+
+
+def test_ceiling_height_emptiness(dom_ria_flat_parser: DomRiaFlatParser):
+    assert dom_ria_flat_parser._ceiling_height('sdsfs') is None  # noqa
+    assert dom_ria_flat_parser._ceiling_height(None) is None  # noqa
+
+
+def test_parse_junk_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
+    assert dom_ria_flat_parser.parse_junk({
+        'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira'
+               '-kiev-goloseevskiy-15695319.html',
+        'markup': read('fixtures/test_parse_junk/dom_ria_flat0.html')
+    }) == 'https://dom.ria.com/uk/realty-prodaja-' \
+          'kvartira-kiev-goloseevskiy-15695319.html'
+    assert dom_ria_flat_parser.parse_junk({
+        'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira-odessa-'
+               'kievskiy-lyustdorfskaya-dor-chernomorskaya-dor-15699660.html',
+        'markup': read('fixtures/test_parse_junk/dom_ria_flat1.html')
+    }) == 'https://dom.ria.com/uk/realty-prodaja-kvartira-odessa-' \
+          'kievskiy-lyustdorfskaya-dor-chernomorskaya-dor-15699660.html'
+    assert dom_ria_flat_parser.parse_junk({
+        'url': 'https://dom.ria.com/uk/realty-prodaja-kvartira'
+               '-odessa-malinovskiy-komarova-15699670.html',
+        'markup': read('fixtures/test_parse_junk/dom_ria_flat2.html')
+    }) == 'https://dom.ria.com/uk/realty-prodaja-kvartira-' \
+          'odessa-malinovskiy-komarova-15699670.html'
+
+
+def test_parse_junk_dom_ria_flat_emptiness(
+    dom_ria_flat_parser: DomRiaFlatParser
+):
+    assert None is dom_ria_flat_parser.parse_junk({
+        'url': 'https://dom.ria.com/uk/realty-perevireno-prodaja-kvartira-'
+               'odessa-primorskiy-italyanskiy-bulvar-15546830.html',
+        'markup': read('fixtures/test_parse_junk/dom_ria_flat3.html')
+    })
+    assert dom_ria_flat_parser.parse_junk({}) is None
+    assert dom_ria_flat_parser.parse_junk(None) is None  # noqa

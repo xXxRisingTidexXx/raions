@@ -48,7 +48,7 @@ class Parser:
         """
         try:
             return self._parse_stop(BeautifulSoup(markup, self._builder))
-        except (IndexError, AttributeError, ValueError, TypeError):
+        except (LookupError, AttributeError, ValueError, TypeError):
             logger.exception('stop parsing failed')
 
     def _parse_stop(self, soup: BeautifulSoup) -> Optional[int]:
@@ -73,7 +73,7 @@ class Parser:
             return self._parse_page(BeautifulSoup(
                 markup, self._builder, parse_only=self._offer_strainer
             ))
-        except (AttributeError, TypeError):
+        except (AttributeError, TypeError, LookupError):
             logger.exception('page parsing failed')
             return []
 
@@ -136,12 +136,14 @@ class Parser:
         :param offer: target page's view
         :return: offer's url if the page isn't obsolete and None otherwise
         """
+        url = ''
         try:
+            url = offer['url']
             return self._parse_junk(
-                offer['url'], BeautifulSoup(offer['markup'], self._builder)
+                url, BeautifulSoup(offer['markup'], self._builder)
             )
-        except TypeError:
-            logger.exception(f'{offer["url"]} parsing failed')
+        except (TypeError, LookupError, AttributeError):
+            logger.exception(f'{url} parsing failed')
 
     def _parse_junk(self, url: str, soup: BeautifulSoup) -> Optional[str]:
         """
@@ -189,6 +191,7 @@ class EstateParser(Parser):
         :param string: target char array
         :return: integer number or None if the parsing failed
         """
+        print(self._int_pattern.search(string))
         return int(self._int_pattern.search(string).groups()[0])
 
     def _parse_details(self, pairs: Dict[str, str]) -> List[str]:
