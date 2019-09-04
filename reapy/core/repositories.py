@@ -1,3 +1,10 @@
+"""
+This module is in charge of DB connectivity
+
+Hierarchy presented here supplies succinct and reusable interface for
+the DB interaction. Repositories perform CRUD queries, encapsulating
+all manipulations with the data source.
+"""
 from logging import getLogger
 from typing import Any, Optional, List, Dict
 from asyncpg import UniqueViolationError, create_pool, Connection, Record

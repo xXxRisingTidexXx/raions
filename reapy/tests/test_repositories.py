@@ -1,10 +1,15 @@
-from datetime import date, timedelta
-from unittest import TestCase
 from asynctest import CoroutineMock
-from asyncio import gather
+from pytest import fixture
+from core import TESTING_DSN
 from core.repositories import FlatRepository
-from core.structs import Flat
-from core.utils import decimalize
+
+
+@fixture
+async def flat_repository() -> FlatRepository:
+    repository = FlatRepository(CoroutineMock())
+    await repository.prepare(TESTING_DSN)
+    yield repository
+    await repository.spare()
 
 
 # class FlatRepositoryTestCase(TestCase):
