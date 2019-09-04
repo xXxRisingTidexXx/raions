@@ -36,6 +36,9 @@ class Crawler:
         self._semaphore = Semaphore(self._limit)
 
     async def prepare(self):
+        """
+        Acquires HTTP connection pool.
+        """
         self._session = ClientSession()
 
     async def get_json(self, url: str, **kwargs: Any) -> Union[List, Dict]:
@@ -76,6 +79,9 @@ class Crawler:
         return await self.__get_content(url, 'text', **kwargs)
 
     async def spare(self):
+        """
+        Releases HTTP connection pool.
+        """
         await self._session.close()
 
 

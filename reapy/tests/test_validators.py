@@ -82,10 +82,6 @@ def test_validate_emptiness(flat_validator: FlatValidator):
         living_area=110, rooms=3, floor=12, total_floor=55
     ))
     assert not flat_validator.validate(Flat(
-        published=date(2017, 4, 13), area=170,
-        living_area=110, rooms=3, floor=12, total_floor=21
-    ))
-    assert not flat_validator.validate(Flat(
         published=date.today(), area=81, kitchen_area=26, living_area=51,
         rooms=3, floor=12, total_floor=16, ceiling_height=8.1
     ))

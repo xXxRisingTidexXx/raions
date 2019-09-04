@@ -92,20 +92,3 @@ def transactional(message: str) -> Callable:
                 logger.exception(message)
         return wrapper
     return decorator
-
-
-def connected(message: str) -> Callable:
-    """
-    Handles basic asyncpg exceptions.
-
-    :param message: logging message in a case of an error
-    :return: upgraded callable
-    """
-    def decorator(function: Callable) -> Callable:
-        async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            try:
-                return await function(*args, **kwargs)
-            except PostgresError:
-                logger.exception(message)
-        return wrapper
-    return decorator

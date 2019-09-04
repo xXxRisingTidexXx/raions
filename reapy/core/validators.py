@@ -3,10 +3,9 @@
 
 Parsed data structures contain many numeric values. Sometimes offers'
 publishers make written mistakes, pointing irrelevant shapes, ranges,
-values. That's why :class:`core.validators.Validator` and its successors
-are in charge of correct data checks and filtering.
+values. That's why Validator and its successors are in charge of correct
+data checks and filtering.
 """
-from datetime import timedelta, date
 from typing import Any
 from core.utils import notnull
 from logging import getLogger
@@ -52,13 +51,10 @@ class FlatValidator(Validator):
     Class properties:
         __limits: a set of max flats' specific areas;
         each value is calculated empirically for each room count
-        __expiration: max offers' expiration period; too
-        'old' offers shouldn't be taken into account
     """
     __limits = (69.5, 110, 130, 110, 86, 75, 65, 65, 65)
-    __expiration = timedelta(days=210)  # TODO: fix the quarter validation
 
-    def _validate(self, struct: Any) -> bool:
+    def _validate(self, struct: Any) -> bool:  # TODO: add quarter validation
         return (
             super()._validate(struct) and
             struct.area is not None and
@@ -79,7 +75,6 @@ class FlatValidator(Validator):
         """
         specific_area = struct.area / struct.rooms
         return (
-            date.today() - struct.published < self.__expiration and
             10 <= struct.area < 560 and
             1 <= struct.rooms <= 9 and
             13.5 <= specific_area <= self.__limits[struct.rooms - 1] and
