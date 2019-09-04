@@ -42,11 +42,13 @@ class Repository:
         self, connection: Connection, struct: Any
     ) -> Optional[Any]:
         """
-        
+        Tries to recognize the duplicate. If the struct's been in the
+        DB, then tries to update the existing row.
 
-        :param connection:
-        :param struct:
-        :return:
+        :param connection: DB connection
+        :param struct: target entity to be checked
+        :return: struct if record with provided values exists
+        and None otherwise
         """
         record = await self._find_record(connection, struct)
         if record is None:
@@ -55,12 +57,13 @@ class Repository:
 
     async def _find_record(
         self, connection: Connection, struct: Any
-    ) -> Record:
+    ) -> Optional[Record]:
         """
+        Tries to find a duplicate of the provided struct.
 
-        :param connection:
-        :param struct:
-        :return:
+        :param connection: DB connection
+        :param struct: target entity to be checked
+        :return: duplicated record or None
         """
         pass
 
@@ -68,28 +71,33 @@ class Repository:
         self, connection: Connection, record: Record, struct: Any
     ):
         """
+        Tries to update the existing row according to some rules.
+        They concern price minification, profit maximization, etc.
 
-        :param connection:
-        :param record:
-        :param struct:
+        :param connection: DB connection
+        :param record: target DB row to be updated
+        :param struct: possible data replacer
         """
         pass
 
-    @transactional('storing failed')
+    @transactional('creation failed')
     async def create(self, connection: Connection, struct: Any):
         """
+        Stores the validated data structure into the DB and
+        updates the progress.
 
-        :param connection:
-        :param struct:
+        :param connection: DB connection
+        :param struct: target entity to be saved
         """
         await self._create_record(connection, struct)
         await self._scribbler.add('inserted')
 
     async def _create_record(self, connection: Connection, struct: Any):
         """
+        Inserts the target struct into the DB.
 
-        :param connection:
-        :param struct:
+        :param connection: DB connection
+        :param struct: target entity to be saved
         """
         pass
 
@@ -114,9 +122,11 @@ class EstateRepository(Repository):
         self, connection: Connection, geodict: Dict[str, Any]
     ) -> Record:
         """
+        Inserts if not exists and then returns geolocation record.
+        Exception handling is needed for the race condition avoidance.
 
-        :param connection:
-        :param geodict:
+        :param connection: DB connection
+        :param geodict: dictionary with geolocation's attributes
         :return:
         """
         try:
@@ -130,10 +140,11 @@ class EstateRepository(Repository):
         connection: Connection, geodict: Dict[str, Any]
     ) -> Record:
         """
+        Inserts new geolocation record and returns its id.
 
-        :param connection:
-        :param geodict:
-        :return:
+        :param connection: DB connection
+        :param geodict: dictionary with geolocation's attributes
+        :return: geolocation's record with id
         """
         return await connection.fetchrow(
             '''
@@ -153,9 +164,10 @@ class EstateRepository(Repository):
         connection: Connection, geodict: Dict[str, Any]
     ) -> Record:
         """
+        Finds geolocation with the provided location's position.
 
-        :param connection:
-        :param geodict:
+        :param connection: DB connection
+        :param geodict: dictionary with geolocation's attributes
         :return:
         """
         return await connection.fetchrow(
@@ -170,11 +182,12 @@ class EstateRepository(Repository):
         self, connection: Connection, struct: Any, geolocation: Record
     ) -> Record:
         """
+        Inserts estate object into the DB.
 
-        :param connection:
-        :param struct:
-        :param geolocation:
-        :return:
+        :param connection: DB connection
+        :param struct: target entity to be saved
+        :param geolocation: geolocation's record
+        :return: newly created estate's record
         """
         pass
 
@@ -182,10 +195,11 @@ class EstateRepository(Repository):
         self, connection: Connection, estate: Record, details_values: List[str]
     ):
         """
+        Binds estate record to the details' records.
 
-        :param connection:
-        :param estate:
-        :param details_values:
+        :param connection: DB connection
+        :param estate: newly created estate's record
+        :param details_values: estate details' list
         """
         details = await self.__find_details(connection, details_values)
         await self._create_estate_details(connection, estate, details)
