@@ -156,9 +156,10 @@ class EstateRepository(Repository):
         return await connection.fetchrow(
             '''
             INSERT INTO geolocations (
-            state, locality, county, neighbourhood, road, house_number, point
+                state, locality, county, neighbourhood, 
+                road, house_number, point
             ) VALUES (
-            $1, $2, $3, $4, $5, $6, st_setsrid(st_point($7, $8), 4326)
+                $1, $2, $3, $4, $5, $6, st_setsrid(st_point($7, $8), 4326)
             ) RETURNING id
             ''',
             geodict['state'], geodict['locality'], geodict['county'],
@@ -332,11 +333,11 @@ class FlatRepository(EstateRepository):
         return await connection.fetchrow(
             '''
             INSERT INTO flats (
-            url, avatar, published, price, rate, area, living_area, 
-            kitchen_area, rooms, floor, total_floor, ceiling_height, 
-            geolocation_id, is_visible
+                url, avatar, published, price, rate, area, living_area, 
+                kitchen_area, rooms, floor, total_floor, ceiling_height, 
+                geolocation_id, is_visible
             ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
             ) RETURNING id
             ''',
             struct.url, struct.avatar, struct.published, struct.price,
