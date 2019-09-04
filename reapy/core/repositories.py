@@ -209,10 +209,11 @@ class EstateRepository(Repository):
         connection: Connection, details_values: List[str]
     ) -> List[Record]:
         """
+        Finds all details' records whose values are in details' list.
 
-        :param connection:
-        :param details_values:
-        :return:
+        :param connection: DB connection
+        :param details_values: the set of string literals
+        :return: details' records
         """
         details = await connection.fetch(
             'SELECT id FROM details WHERE value = ANY ($1)', details_values
@@ -227,10 +228,11 @@ class EstateRepository(Repository):
         self, connection: Connection, estate: Record, details: List[Record]
     ):
         """
+        Inserts connections between estates and existing details.
 
-        :param connection:
-        :param estate:
-        :param details:
+        :param connection: DB connection
+        :param estate: newly created estate's record
+        :param details: all spotted details' records
         """
         pass
 
@@ -258,11 +260,14 @@ class FlatRepository(EstateRepository):
             FROM flats f JOIN geolocations g ON geolocation_id = g.id
             WHERE url = $1 OR rooms = $2 AND floor = $3 AND 
             total_floor = $4 AND abs(area - $5) <= $6 AND 
-            st_distance_sphere(point, st_setsrid(st_point($7, $8), 4326)) <= $9
+            st_distance_sphere(
+                point, st_setsrid(st_point($7, $8), 4326)
+            ) <= $9
             ''',
-            struct.url, struct.rooms, struct.floor, struct.total_floor,
-            struct.area, self.__area_tolerance, struct.geolocation['point'][0],
-            struct.geolocation['point'][1], self.__distance_tolerance
+            struct.url, struct.rooms, struct.floor,
+            struct.total_floor, struct.area, self.__area_tolerance,
+            struct.geolocation['point'][0], struct.geolocation['point'][1],
+            self.__distance_tolerance
         )
 
     async def _update_record(
@@ -279,32 +284,39 @@ class FlatRepository(EstateRepository):
     @staticmethod
     async def __delete_flat_details(connection: Connection, flat: Record):
         """
+        Deletes obsolete connections between flat's record and
+        details' records.
 
-        :param connection:
-        :param flat:
+        :param connection: DB connection
+        :param flat: target entity to be updated
         """
         await connection.execute(
             'DELETE FROM flats_details WHERE flat_id = $1', flat['id']
         )
 
     @staticmethod
-    async def __update_flat(connection: Connection, flat: Record, struct: Flat):
+    async def __update_flat(
+        connection: Connection, flat: Record, struct: Flat
+    ):
         """
+        Rewrites existing record, setting attributes that changes from
+        offer to offer (price, rate, area (a bit), publication date)
 
-        :param connection:
-        :param flat:
-        :param struct:
+        :param connection: DB connection
+        :param flat: target entity to be updated
+        :param struct: replacement DTO
         """
         await connection.execute(
             '''
             UPDATE flats SET 
-            url = $1, avatar = $2, published = $3, price = $4, rate = $5, 
-            area = $6, living_area = $7, kitchen_area = $8, ceiling_height = $9 
+            url = $1, avatar = $2, published = $3, price = $4, 
+            rate = $5, area = $6, living_area = $7, kitchen_area = $8, 
+            ceiling_height = $9 
             WHERE id = $10
             ''',
             struct.url, struct.avatar, struct.published, struct.price,
-            struct.rate, struct.area, struct.living_area, struct.kitchen_area,
-            struct.ceiling_height, flat['id']
+            struct.rate, struct.area, struct.living_area,
+            struct.kitchen_area, struct.ceiling_height, flat['id']
         )
 
     async def _create_estate(
