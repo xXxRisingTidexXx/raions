@@ -6,7 +6,7 @@ single task is to transfer the data in a convenient way with the dot-notation.
 """
 from datetime import date
 from decimal import Decimal
-from typing import List, Dict
+from typing import List, Dict, Any
 from attr import attrs, attrib
 
 
@@ -35,7 +35,7 @@ class Flat(object):
     url = attrib(default=None, type=str)
     avatar = attrib(default=None, type=str)
     published = attrib(default=None, type=date)
-    geolocation = attrib(default=None, type=Dict)
+    geolocation = attrib(default=None, type=Dict[str, Any])
     price = attrib(default=None, type=Decimal)
     rate = attrib(default=None, type=Decimal)
     currency = attrib(default='$', type=str)
@@ -46,4 +46,4 @@ class Flat(object):
     floor = attrib(default=None, type=int)
     total_floor = attrib(default=None, type=int)
     ceiling_height = attrib(default=None, type=float)
-    details = attrib(default=[], type=List)
+    details = attrib(default=[], type=List[str])

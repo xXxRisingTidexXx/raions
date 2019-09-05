@@ -26,7 +26,7 @@ async def flat_repository() -> FlatRepository:
         await repository.spare()
 
 
-def find_record(function: Callable) -> Callable:
+def find_flat(function: Callable) -> Callable:
     async def wrapper(flat_repository: FlatRepository):
         async with flat_repository._pool.acquire() as connection:  # noqa
             geolocations = await connection.fetch('''
@@ -64,8 +64,8 @@ def find_record(function: Callable) -> Callable:
 
 
 @mark.asyncio
-@find_record
-async def test_find_record_success(
+@find_flat
+async def test_find_flat_success(
     flat_repository: FlatRepository, connection: Connection,
     flats: List[Record], geolocations: List[Record]
 ):
@@ -100,8 +100,8 @@ async def test_find_record_success(
 
 
 @mark.asyncio
-@find_record
-async def test_find_record_failure(
+@find_flat
+async def test_find_flat_failure(
     flat_repository: FlatRepository, connection: Connection,
     flats: List[Record], geolocations: List[Record]  # noqa
 ):
@@ -142,7 +142,24 @@ async def test_find_record_failure(
     )
 
 
-def update_record(function: Callable) -> Callable:
+@mark.asyncio
+@find_flat
+async def test_find_flat_almost_found(
+    flat_repository: FlatRepository, connection: Connection,
+    flats: List[Record], geolocations: List[Record]  # noqa
+):
+    assert None is await flat_repository._find_record(  # noqa
+        connection,
+        Flat(
+            url='copy1', avatar='avax', published=date(2019, 9, 5),
+            geolocation={'point': (38.0000345, 33.0023001)},
+            price=Decimal('50500.000'), rate=Decimal('505.000'), area=100,
+            living_area=60, kitchen_area=19, rooms=3, floor=9, total_floor=9
+        )
+    )
+
+
+def update_flat(function: Callable) -> Callable:
     async def wrapper(flat_repository: FlatRepository):
         async with flat_repository._pool.acquire() as connection:  # noqa
             geolocations = await connection.fetch('''
@@ -187,8 +204,8 @@ def update_record(function: Callable) -> Callable:
 
 
 @mark.asyncio
-@update_record
-async def test_update_record_success(
+@update_flat
+async def test_update_flat_no_update(
     flat_repository: FlatRepository,
     connection: Connection,
     flats: List[Record]
@@ -216,8 +233,8 @@ async def test_update_record_success(
 
 
 @mark.asyncio
-@update_record
-async def test_update_record_failure(
+@update_flat
+async def test_update_flat_success(
     flat_repository: FlatRepository,
     connection: Connection,
     flats: List[Record]
@@ -246,136 +263,109 @@ async def test_update_record_failure(
     ''')
     assert record['id'] == flats[1]['id']
 
-#     @dbtest
-#     async def test_distinct_all(self, pool, scribbler):
-#         repository = FlatRepository(pool, scribbler)
-#         async with pool.acquire() as connection:
-#             geolocations = await connection.fetch('''
-#                 INSERT INTO geolocations (point) VALUES
-#                 (st_setsrid(st_point(44.29, 32.05), 4326)),
-#                 (st_setsrid(st_point(38.000000002, 33.000000001), 4326)),
-#                 (st_setsrid(st_point(51.18181818, 48.5506), 4326))
-#                 RETURNING id
-#             ''')
-#         async with pool.acquire() as connection:
-#             details = await connection.fetch('''
-#                 INSERT INTO details (feature, value, "group") VALUES
-#                 ('f1', 'v1', 'g1'), ('f2', 'v2', 'g2'), ('f3', 'v3', 'g3')
-#                 RETURNING id
-#             ''')
-#         async with pool.acquire() as connection:
-#             flats = await connection.fetch(
-#                 '''
-#                 INSERT INTO flats (
-#                 url, avatar, published, price, rate, area, living_area, kitchen_area,
-#                 rooms, floor, total_floor, ceiling_height, geolocation_id
-#                 ) VALUES
-#                 ('xx1', NULL, DATE '2019-04-03', 35000, 500, 70, NULL, NULL, 2, 7, 9, NULL, $1),
-#                 ('xx2', 'ava2', DATE '2018-12-18', 70000, 700, 100, 60, 19.5, 3, 8, 9, 2.75, $1),
-#                 ('xx3', 'ava3', DATE '2018-12-03', 42000, 600, 70, NULL, 22, 2, 5, 9, NULL, $1),
-#                 ('xx4', NULL, DATE '2019-05-05', 135000, 1200, 112.5, 72, 34, 3, 21, 24, NULL, $2),
-#                 ('xx5', 'ava5', DATE '2018-05-02', 180000, 1560, 115.38, NULL, NULL, 3, 18, 21, 3, $3)
-#                 RETURNING id
-#                 ''',
-#                 geolocations[0][0], geolocations[1][0], geolocations[2][0]
-#             )
-#         async with pool.acquire() as connection:
-#             await connection.execute(
-#                 'INSERT INTO flats_details (detail_id, flat_id) VALUES ($1, $2), ($3, $4), ($5, $6)',
-#                 details[0][0], flats[4][0], details[1][0], flats[4][0], details[2][0], flats[3][0]
-#             )
-#         structs = (
-#             Flat(
-#                 url='o1', avatar='im1', published=date(2019, 4, 3), geolocation={'point': (48, 33)},
-#                 price=decimalize(40000), rate=decimalize(800), area=50, rooms=2, floor=5, total_floor=16
-#             ),
-#             Flat(
-#                 url='dr1', avatar='im2', published=date(2019, 1, 4), geolocation={'point': (44.29, 32.05)},
-#                 price=decimalize(60000), rate=decimalize(600), area=100, living_area=60.6, rooms=3, floor=8,
-#                 total_floor=9, details=['v1']
-#             ),
-#             Flat(
-#                 url='dr2', published=date(2019, 2, 18), geolocation={'point': (43.35, 41.5867)},
-#                 price=decimalize(80000), rate=decimalize(1600), area=50, living_area=38, kitchen_area=11,
-#                 rooms=2, floor=10, total_floor=14, details=['vx']
-#             ),
-#             Flat(
-#                 url='o2', published=date(2019, 4, 17), geolocation={'point': (38.00004, 33.00003)},
-#                 price=decimalize(130000), rate=decimalize(1000), area=130, rooms=3, floor=21, total_floor=24
-#             ),
-#             Flat(
-#                 url='o3', avatar='im5', published=date(2018, 5, 2), geolocation={'point': (51.18181818, 48.5506)},
-#                 price=decimalize(185000), rate=decimalize(1603.397), area=115.38, rooms=3, floor=18,
-#                 total_floor=21, details=['v4']
-#             )
-#         )
-#         expectations = [
-#             Flat(
-#                 url='o1', avatar='im1', published=date(2019, 4, 3), geolocation={'point': (48, 33)},
-#                 price=decimalize(40000), rate=decimalize(800), area=50, rooms=2, floor=5, total_floor=16
-#             ),
-#             Flat(
-#                 url='dr2', published=date(2019, 2, 18), geolocation={'point': (43.35, 41.5867)},
-#                 price=decimalize(80000), rate=decimalize(1600), area=50, living_area=38, kitchen_area=11,
-#                 rooms=2, floor=10, total_floor=14, details=['vx']
-#             ),
-#             Flat(
-#                 url='o2', published=date(2019, 4, 17), geolocation={'point': (38.00004, 33.00003)},
-#                 price=decimalize(130000), rate=decimalize(1000), area=130, rooms=3, floor=21, total_floor=24
-#             )
-#         ]
-#         self.assertEqual(list(await repository.distinct_all(structs)), expectations)
-#         async with pool.acquire() as connection:
-#             new = await connection.fetchrow('''
-#                 SELECT f.id, price FROM flats f
-#                 JOIN flats_details fd ON f.id = fd.flat_id
-#                 JOIN details d ON fd.detail_id = d.id
-#                 JOIN geolocations g ON f.geolocation_id = g.id
-#                 WHERE feature = 'f1' AND value = 'v1' AND url = 'dr1' AND rooms = 3 AND
-#                 floor = 8 AND total_floor = 9 AND area = 100 AND living_area = 60.6 AND
-#                 kitchen_area IS NULL AND avatar = 'im2' AND price = 60000 AND rate = 600
-#             ''')
-#         self.assertIsNotNone(new)
-#         self.assertEqual(flats[1]['id'], new['id'])
-#
-#     @dbtest
-#     async def test_create_all(self, pool, scribbler):
-#         logging.disable()
-#         repository = FlatRepository(pool, scribbler)
-#         repository._scribbler.add = CoroutineMock()
-#         async with pool.acquire() as connection:
-#             geolocations = await connection.fetch('''
-#                 INSERT INTO geolocations (point) VALUES
-#                 (st_setsrid(st_point(44.0672520115, 43.0985213187), 4326)),
-#                 (st_setsrid(st_point(41.000820002, 39.065000001), 4326))
-#                 RETURNING id
-#             ''')
-#         async with pool.acquire() as connection:
-#             details = await connection.fetch('''
-#                 INSERT INTO details (feature, value, "group") VALUES
-#                 ('state', 'excellent state', 'interior'),
-#                 ('wall_type', 'brick', 'building'),
-#                 ('bathrooms', '2 bathrooms', 'supplies')
-#                 RETURNING id
-#             ''')
-#         async with pool.acquire() as connection:
-#             flats = await connection.fetch(
-#                 '''
-#                 INSERT INTO flats (
-#                 url, avatar, published, price, rate, area, living_area, kitchen_area,
-#                 rooms, floor, total_floor, ceiling_height, geolocation_id
-#                 ) VALUES
-#                 ('url1', 'ava1', DATE '2019-05-10', 35000, 500, 70, 58, 10, 2, 3, 5, NULL, $1),
-#                 ('url2', 'ava2', DATE '2019-03-18', 50000, 556, 90, 60, 24, 3, 10, 12, 2.85, $2)
-#                 RETURNING id
-#                 ''',
-#                 geolocations[0]['id'], geolocations[1]['id']
-#             )
-#         async with pool.acquire() as connection:
-#             await connection.execute(
-#                 'INSERT INTO flats_details (detail_id, flat_id) VALUES ($1, $2), ($3, $4), ($5, $6)',
-#                 details[1]['id'], flats[0]['id'], details[1]['id'], flats[1]['id'], details[0]['id'], flats[1]['id']
-#             )
+
+def distinct_flat(function: Callable) -> Callable:  # TODO
+    async def wrapper(flat_repository: FlatRepository):
+        async with flat_repository._pool.acquire() as connection:  # noqa
+
+            await function(flat_repository, connection)
+    return wrapper
+
+
+@mark.asyncio
+@distinct_flat
+async def test_distinct_flat_success(  # TODO
+    flat_repository: FlatRepository, connection: Connection
+):
+    pass
+
+
+@mark.asyncio
+@distinct_flat
+async def test_distinct_flat_failure(  # TODO
+    flat_repository: FlatRepository, connection: Connection
+):
+    pass
+
+
+@mark.asyncio
+@distinct_flat
+async def test_distinct_flat_update(  # TODO
+    flat_repository: FlatRepository, connection: Connection
+):
+    pass
+
+
+def create_flat(function: Callable) -> Callable:
+    async def wrapper(flat_repository: FlatRepository):
+        async with flat_repository._pool.acquire() as connection:  # noqa
+            geolocations = await connection.fetch('''
+                INSERT INTO geolocations (point) VALUES
+                (st_setsrid(st_point(44.0672520115, 43.0985213187), 4326)),
+                (st_setsrid(st_point(41.000820002, 39.065000001), 4326))
+                RETURNING id
+            ''')
+            details = await connection.fetch('''
+                INSERT INTO details (feature, value, "group") VALUES
+                ('state', 'excellent state', 'interior'),
+                ('wall_type', 'brick', 'building'),
+                ('bathrooms', '2 bathrooms', 'supplies')
+                RETURNING id
+            ''')
+            flats = await connection.fetch(
+                '''
+                INSERT INTO flats (
+                    url, avatar, published, price, rate, area, living_area, 
+                    kitchen_area, rooms, floor, total_floor, ceiling_height, 
+                    geolocation_id, is_visible
+                ) VALUES (
+                    'url1', 'ava1', DATE '2019-05-10', 35000, 
+                    500, 70, 58, 10, 2, 3, 5, NULL, $1, TRUE
+                ),
+                (
+                    'url2', 'ava2', DATE '2019-03-18', 50000, 
+                    556, 90, 60, 24, 3, 10, 12, 2.85, $2, TRUE
+                )
+                RETURNING id
+                ''',
+                geolocations[0]['id'], geolocations[1]['id']
+            )
+            await connection.execute(
+                '''
+                INSERT INTO flats_details (detail_id, flat_id) 
+                VALUES ($1, $2), ($3, $4), ($5, $6)
+                ''',
+                details[1]['id'], flats[0]['id'], details[1]['id'],
+                flats[1]['id'], details[0]['id'], flats[1]['id']
+            )
+            await function(flat_repository, connection)
+    return wrapper
+
+
+@mark.asyncio
+@create_flat
+async def test_create_flat_and_new_geolocation(
+    flat_repository: FlatRepository, connection: Connection
+):
+    pass
+
+
+@mark.asyncio
+@create_flat
+async def test_create_flat_and_reuse_geolocation(
+    flat_repository: FlatRepository, connection: Connection
+):
+    pass
+
+
+@mark.asyncio
+@create_flat
+async def test_create_failure(
+    flat_repository: FlatRepository, connection: Connection
+):
+    pass
+
+
 #         structs = (
 #             Flat(
 #                 url='url4',
