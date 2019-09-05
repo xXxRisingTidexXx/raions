@@ -23,7 +23,7 @@ class Clix:
         )
         return self
 
-    def __execute(self, function: Callable, *args) -> Generator:
+    def __execute(self, function: Callable, *args: Any) -> Generator:
         return self._loop.run_in_executor(self._executor, function, *args)
 
     def flatten(self, flattener: Callable = (lambda v: v)) -> 'Clix':
@@ -51,10 +51,11 @@ class Clix:
         while not self._queue.empty():
             function = await self._queue.get()
             iterable = await function(iterable)
+        iterable = await gather(*(map(applier, iterable)))
         self._executor.shutdown()
-        return await gather(*(map(applier, iterable)))
+        return iterable
 
-    async def list(self) -> List:
+    async def list(self) -> List[Any]:
         iterable = await self.apply(self.__skip)
         return list(iterable)
 

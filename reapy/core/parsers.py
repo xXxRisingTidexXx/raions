@@ -191,7 +191,6 @@ class EstateParser(Parser):
         :param string: target char array
         :return: integer number or None if the parsing failed
         """
-        print(self._int_pattern.search(string))
         return int(self._int_pattern.search(string).groups()[0])
 
     def _parse_details(self, pairs: Dict[str, str]) -> List[str]:

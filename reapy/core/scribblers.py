@@ -89,5 +89,5 @@ class SweeperScribbler(Scribbler):
     statistics. Mainly, sweepers delete junk and expired data so that their
     scribbles contain mainly data concernedly deletions.
     """
-    _fields = ('deleted', 'unresponded', 'written')
+    _fields = ('discarded', 'unresponded', 'written')
     _defaults = (0, 0, None)

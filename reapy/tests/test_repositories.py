@@ -275,7 +275,7 @@ def distinct_flat(function: Callable) -> Callable:  # TODO
 @mark.asyncio
 @distinct_flat
 async def test_distinct_flat_success(  # TODO
-    flat_repository: FlatRepository, connection: Connection
+    flat_repository: FlatRepository, connection: Connection  # noqa
 ):
     pass
 
@@ -283,7 +283,7 @@ async def test_distinct_flat_success(  # TODO
 @mark.asyncio
 @distinct_flat
 async def test_distinct_flat_failure(  # TODO
-    flat_repository: FlatRepository, connection: Connection
+    flat_repository: FlatRepository, connection: Connection  # noqa
 ):
     pass
 
@@ -291,7 +291,7 @@ async def test_distinct_flat_failure(  # TODO
 @mark.asyncio
 @distinct_flat
 async def test_distinct_flat_update(  # TODO
-    flat_repository: FlatRepository, connection: Connection
+    flat_repository: FlatRepository, connection: Connection  # noqa
 ):
     pass
 
