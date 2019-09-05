@@ -347,7 +347,54 @@ def create_flat(function: Callable) -> Callable:
 async def test_create_flat_and_new_geolocation(
     flat_repository: FlatRepository, connection: Connection
 ):
-    pass
+    await flat_repository.create(
+        Flat(
+            url='url5',
+            published=date(2019, 5, 11),
+            geolocation={
+                'point': (51.342123403, 47.345045433),
+                'state': 'Одеська область',
+                'locality': 'Одеса',
+                'county': 'Приморський район',
+                'neighbourhood': 'Ланжерон',
+                'road': None,
+                'house_number': None
+            },
+            price=Decimal('35000.000'),
+            rate=Decimal('500.000'),
+            area=70,
+            living_area=51,
+            kitchen_area=12,
+            rooms=2,
+            floor=8,
+            total_floor=9,
+            ceiling_height=2.75,
+            details=['brick']
+        )
+    )
+    assert None is not await connection.fetchrow('''
+        SELECT f.id FROM flats f 
+        JOIN geolocations g on f.geolocation_id = g.id
+        JOIN flats_details fd on fd.flat_id = f.id 
+        JOIN details d on d.id = fd.detail_id 
+        WHERE locality = 'Одеса' AND 
+        county = 'Приморський район' AND
+        state = 'Одеська область' AND
+        neighbourhood = 'Ланжерон' AND
+        point = st_setsrid(
+            st_point(51.342123403, 47.345045433), 4326
+        ) AND 
+        url = 'url5' AND
+        price = 35000 AND
+        rate = 500 AND
+        area = 70 AND
+        living_area = 51 AND
+        kitchen_area = 12 AND
+        rooms = 2 AND
+        floor = 8 AND
+        total_floor = 9 AND
+        value IN ('brick')
+    ''')
 
 
 @mark.asyncio
@@ -355,7 +402,46 @@ async def test_create_flat_and_new_geolocation(
 async def test_create_flat_and_reuse_geolocation(
     flat_repository: FlatRepository, connection: Connection
 ):
-    pass
+    await flat_repository.create(
+        Flat(
+            url='url4',
+            avatar='ava4',
+            published=date(2019, 5, 11),
+            geolocation={
+                'point': (44.0672520115, 43.0985213187), 'state': None,
+                'locality': None, 'county': None, 'neighbourhood': None,
+                'road': None, 'house_number': None
+            },
+            price=Decimal('56000.000'),
+            rate=Decimal('800.000'),
+            area=70,
+            living_area=58,
+            kitchen_area=10,
+            rooms=2,
+            floor=4,
+            total_floor=5,
+            details=['3 passenger elevators', '2 bathrooms']
+        )
+    )
+    assert None is not await connection.fetchrow('''
+        SELECT f.id FROM flats f 
+        JOIN geolocations g on f.geolocation_id = g.id 
+        JOIN flats_details fd on fd.flat_id = f.id 
+        JOIN details d on d.id = fd.detail_id 
+        WHERE point = st_setsrid(
+            st_point(44.0672520115, 43.0985213187), 4326
+        ) AND 
+        url = 'url4' AND
+        price = 56000 AND
+        rate = 800 AND
+        area = 70 AND
+        living_area = 58 AND
+        kitchen_area = 10 AND
+        rooms = 2 AND
+        floor = 4 AND
+        total_floor = 5 AND 
+        value IN ('2 bathrooms')
+    ''')
 
 
 @mark.asyncio
@@ -363,95 +449,17 @@ async def test_create_flat_and_reuse_geolocation(
 async def test_create_failure(
     flat_repository: FlatRepository, connection: Connection
 ):
-    pass
-
-
-#         structs = (
-#             Flat(
-#                 url='url4',
-#                 avatar='ava4',
-#                 published=date(2019, 5, 11),
-#                 geolocation={
-#                     'point': (44.0672520115, 43.0985213187), 'state': None, 'locality': None,
-#                     'county': None, 'neighbourhood': None, 'road': None, 'house_number': None
-#                 },
-#                 price=decimalize(35000),
-#                 rate=decimalize(500),
-#                 area=70,
-#                 living_area=58,
-#                 kitchen_area=10,
-#                 rooms=2,
-#                 floor=7,
-#                 total_floor=12,
-#                 details=['3 passenger elevators', '2 bathrooms']
-#             ),
-#             Flat(
-#                 url='url5',
-#                 published=date(2019, 5, 11),
-#                 geolocation={
-#                     'point': (51.342123403, 47.345045433), 'state': None, 'locality': 'Одеса',
-#                     'county': 'Приморський', 'neighbourhood': None, 'road': None, 'house_number': None
-#                 },
-#                 price=decimalize(35000),
-#                 rate=decimalize(500),
-#                 area=70,
-#                 living_area=51,
-#                 kitchen_area=12,
-#                 rooms=2,
-#                 floor=8,
-#                 total_floor=9,
-#                 ceiling_height=2.75,
-#                 details=['brick']
-#             ),
-#             Flat(
-#                 url='url6',
-#                 avatar='ava6',
-#                 published=date(2019, 2, 1),
-#                 geolocation={
-#                     'point': (46.0987646, 53.578901), 'state': None, 'locality': 'Львів',
-#                     'county': None, 'neighbourhood': None, 'road': None, 'house_number': None
-#                 },
-#                 price=decimalize(50000),
-#                 rate=decimalize(1000),
-#                 area=50,
-#                 rooms=2,
-#                 floor=13,
-#                 total_floor=21,
-#                 ceiling_height=2.8,
-#                 details=['excellent state']
-#             )
-#         )
-#         await repository.create_all(structs)
-#         async with pool.acquire() as connection:
-#             new_geolocation = await connection.fetchrow('''
-#                 SELECT id FROM geolocations
-#                 WHERE locality = 'Одеса' AND county = 'Приморський' AND
-#                 point = st_setsrid(st_point(51.342123403, 47.345045433), 4326)
-#             ''')
-#         self.assertIsNotNone(new_geolocation)
-#         async with pool.acquire() as connection:
-#             remote_flat = await connection.fetchrow(
-#                 "SELECT id FROM flats WHERE url = 'url5' AND geolocation_id = $1", new_geolocation[0]
-#             )
-#         self.assertIsNotNone(remote_flat)
-#         async with pool.acquire() as connection:
-#             detail = await connection.fetchrow("SELECT value FROM details WHERE feature = 'wall_type'")
-#         self.assertEqual(detail['value'], 'brick')
-#         async with pool.acquire() as connection:
-#             flat = await connection.fetchrow('''
-#                 SELECT f.id
-#                 FROM flats f JOIN geolocations g ON f.geolocation_id = g.id
-#                 WHERE url = 'url4' AND price = 35000 AND rooms = 2
-#                 AND point = st_setsrid(st_point(44.0672520115, 43.0985213187), 4326)
-#             ''')
-#         self.assertIsNotNone(flat)
-#         async with pool.acquire() as connection:
-#             all_flats = await connection.fetch('SELECT id FROM flats')
-#         self.assertEqual(len(all_flats), 5)
-#         async with pool.acquire() as connection:
-#             flats_details = await connection.fetch('''
-#                 SELECT fd.id
-#                 FROM flats_details fd JOIN details d ON fd.detail_id = d.id
-#                 WHERE d.feature = 'wall_type' AND d.value = 'brick'
-#             ''')
-#         self.assertEqual(len(flats_details), 3)
+    await flat_repository.create(
+        Flat(
+            url='url1',
+            avatar='outstanding duplicate',
+            geolocation={
+                'point': (44.0672520115, 43.0985213187), 'state': None,
+                'locality': None, 'county': None, 'neighbourhood': None,
+                'road': None, 'house_number': None
+            }
+        )
+    )
+    assert None is await connection.fetchrow('''
+        SELECT id FROM flats WHERE url = 'outstanding duplicate'
+    ''')
