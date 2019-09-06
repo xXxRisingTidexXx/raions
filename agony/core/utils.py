@@ -1,3 +1,5 @@
+from typing import Any
+from django.apps.registry import Apps
 from django.db.utils import IntegrityError
 from django.db.transaction import atomic
 from agony.settings import BASE_DIR
@@ -6,7 +8,7 @@ from json import loads
 
 
 # noinspection PyUnusedLocal,PyPep8Naming
-def load_details(apps, schema_editor):
+def load_details(apps: Apps, schema_editor: Any):
     Detail = apps.get_model('core', 'Detail')
     with open(join(BASE_DIR, 'core/resources/details.json')) as stream:
         details = loads(stream.read())

@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from .models import User, Flat, Geolocation, Detail
+from core.models import User, Flat, Geolocation, Detail
 
 
 class GeolocationSerializer(GeoFeatureModelSerializer):
