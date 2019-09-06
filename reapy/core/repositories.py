@@ -1,123 +1,141 @@
-import logging
-from asyncio import gather
-from asyncpg import UniqueViolationError, PostgresError
-from .utils import map_filter
-from .decorators import measurable
+"""
+This module is in charge of DB connectivity
+
+Hierarchy presented here supplies succinct and reusable interface for
+the DB interaction. Repositories perform CRUD queries, encapsulating
+all manipulations with the data source.
+"""
+from logging import getLogger
+from typing import Any, Optional, List, Dict
+from asyncpg import UniqueViolationError, create_pool, Connection, Record
+from core.decorators import transactional
+from core.scribblers import Scribbler
+from core.structs import Flat
+
+logger = getLogger(__name__)
 
 
 class Repository:
-    _portion = 200
+    """
+    Main DB abstraction, which encapsulates all interactions withe data
+    source. All final derivatives are specialized on the concrete estate
+    objects, providing succinct and reusable interface. All repositories
+    have something in common with ORM.
 
-    def __init__(self, pool, scribbler):
-        self._pool = pool
+    Class properties:
+        _max_pool_size: maximal number of concurrent DB connections
+
+    Instance properties:
+        _scribbler: statistician, which counts all logical actions
+        (insertions, duplicates, etc)
+        _pool: low-level collection of DB connections
+    """
+    _max_pool_size = 45
+
+    def __init__(self, scribbler: Scribbler):
         self._scribbler = scribbler
+        self._pool = None
 
-    async def delete_all_expired(self, expiration):
-        try:
-            async with self._pool.acquire() as connection:
-                async with connection.transaction():
-                    cursor = await self._get_expired_cursor(connection, expiration)
-                    records = await cursor.fetch(self._portion)
-                    while len(records) > 0:
-                        await self._delete_records(connection, records)
-                        records = await cursor.fetch(self._portion)
-        except PostgresError:
-            logging.exception('expired item deletion failed')
+    async def prepare(self, dsn: str):
+        """
+        Acquires DB connection pool.
 
-    async def _get_expired_cursor(self, connection, expiration):
+        :param dsn: DB server's url
+        """
+        self._pool = await create_pool(dsn, max_size=self._max_pool_size)
+
+    @transactional('couldn\'t distinct struct')
+    async def distinct(
+        self, connection: Connection, struct: Any
+    ) -> Optional[Any]:
+        """
+        Tries to recognize the duplicate. If the struct's been in the
+        DB, then tries to update the existing row.
+
+        :param connection: DB connection
+        :param struct: target entity to be checked
+        :return: struct if record with provided values exists
+        and None otherwise
+        """
+        record = await self._find_record(connection, struct)
+        if record is None:
+            return struct
+        await self._update_record(connection, record, struct)
+
+    async def _find_record(
+        self, connection: Connection, struct: Any
+    ) -> Optional[Record]:
+        """
+        Tries to find a duplicate of the provided struct.
+
+        :param connection: DB connection
+        :param struct: target entity to be checked
+        :return: duplicated record or None
+        """
         pass
 
-    async def _delete_records(self, connection, records):
+    async def _update_record(
+        self, connection: Connection, record: Record, struct: Any
+    ):
+        """
+        Tries to update the existing row according to some rules.
+        They concern price minification, profit maximization, etc.
+
+        :param connection: DB connection
+        :param record: target DB row to be updated
+        :param struct: possible data replacer
+        """
         pass
 
-    async def delete_all_junks(self, prefix, sieve):
-        try:
-            async with self._pool.acquire() as connection:
-                async with connection.transaction():
-                    cursor = await self._get_prefixed_cursor(connection, prefix)
-                    records = await cursor.fetch(self._portion)
-                    while len(records) > 0:
-                        await self._delete_records(
-                            connection, await sieve(records)
-                        )
-                        records = await cursor.fetch(self._portion)
-        except PostgresError:
-            logging.exception('junk item deletion failed')
+    @transactional('creation failed')
+    async def create(self, connection: Connection, struct: Any):
+        """
+        Stores the validated data structure into the DB and
+        updates the progress.
 
-    async def _get_prefixed_cursor(self, connection, prefix):
+        :param connection: DB connection
+        :param struct: target entity to be saved
+        """
+        await self._create_record(connection, struct)
+        await self._scribbler.add('inserted')
+
+    async def _create_record(self, connection: Connection, struct: Any):
+        """
+        Inserts the target struct into the DB.
+
+        :param connection: DB connection
+        :param struct: target entity to be saved
+        """
         pass
 
-    @measurable('distinction')
-    async def distinct_all(self, structs):
-        return await map_filter(structs, self.__distinct)
-
-    async def __distinct(self, struct):
-        try:
-            async with self._pool.acquire() as connection:
-                async with connection.transaction():
-                    record = await self._find_record(connection, struct)
-                    if record is None:
-                        return struct
-                    await self._update_record(connection, record, struct)
-        except UniqueViolationError:
-            await self._scribbler.add('duplicated')
-        except PostgresError:
-            logging.exception(f'couldn\'t distinct struct: {struct.url}')
-
-    async def _find_record(self, connection, struct):
-        pass
-
-    async def _update_record(self, connection, record, struct):
-        pass
-
-    @measurable('storing')
-    async def create_all(self, structs):
-        await gather(*map(self.__create, structs))
-
-    async def __create(self, struct):
-        try:
-            async with self._pool.acquire() as connection:
-                async with connection.transaction():
-                    await self._create_record(connection, struct)
-                    await self._scribbler.add('inserted')
-        except UniqueViolationError:
-            await self._scribbler.add('duplicated')
-        except PostgresError:
-            logging.exception(f'{struct.url} storing failed')
-
-    async def _create_record(self, connection, struct):
-        pass
+    async def spare(self):
+        """
+        Releases DB connection pool.
+        """
+        await self._pool.close()
 
 
 class EstateRepository(Repository):
-    async def _delete_records(self, connection, records):
-        try:
-            ids = [r['id'] for r in records]
-            async with connection.transaction():
-                await self._delete_estates_details(connection, ids)
-                await self._delete_estates(connection, ids)
-            await self._scribbler.add('deleted', len(ids))
-        except PostgresError:
-            logging.exception('records\' deletion failed')
+    """
+    Upgraded repository, which supplies low-level methods for estate-based
+    entities. Also it's aware of estates' geolocations and details.
+    """
+    async def _create_record(self, connection: Connection, struct: Any):
+        geolocation = await self.__get_geolocation(connection, struct.geolocation)
+        estate = await self._create_estate(connection, struct, geolocation)
+        await self._set_estate_details(connection, estate, struct.details)
 
-    async def _delete_estates_details(self, connection, ids):
-        pass
+    async def __get_geolocation(
+        self, connection: Connection, geodict: Dict[str, Any]
+    ) -> Record:
+        """
+        Inserts if not exists and then returns geolocation record.
+        Exception handling is needed for the race condition avoidance.
 
-    async def _delete_estates(self, connection, ids):
-        pass
-
-    async def _create_record(self, connection, struct):
-        await self._set_estate_details(
-            connection,
-            await self._create_estate(
-                connection, struct, await self.__get_geolocation(
-                    connection, struct.geolocation
-                )
-            ),
-            struct.details
-        )
-
-    async def __get_geolocation(self, connection, geodict):
+        :param connection: DB connection
+        :param geodict: dictionary with geolocation's attributes
+        :return:
+        """
         try:
             async with connection.transaction():
                 return await self.__create_geolocation(connection, geodict)
@@ -125,13 +143,23 @@ class EstateRepository(Repository):
             return await self.__find_geolocation(connection, geodict)
 
     @staticmethod
-    async def __create_geolocation(connection, geodict):
+    async def __create_geolocation(
+        connection: Connection, geodict: Dict[str, Any]
+    ) -> Record:
+        """
+        Inserts new geolocation record and returns its id.
+
+        :param connection: DB connection
+        :param geodict: dictionary with geolocation's attributes
+        :return: geolocation's record with id
+        """
         return await connection.fetchrow(
             '''
             INSERT INTO geolocations (
-            state, locality, county, neighbourhood, road, house_number, point
+                state, locality, county, neighbourhood, 
+                road, house_number, point
             ) VALUES (
-            $1, $2, $3, $4, $5, $6, st_setsrid(st_point($7, $8), 4326)
+                $1, $2, $3, $4, $5, $6, st_setsrid(st_point($7, $8), 4326)
             ) RETURNING id
             ''',
             geodict['state'], geodict['locality'], geodict['county'],
@@ -140,7 +168,16 @@ class EstateRepository(Repository):
         )
 
     @staticmethod
-    async def __find_geolocation(connection, geodict):
+    async def __find_geolocation(
+        connection: Connection, geodict: Dict[str, Any]
+    ) -> Record:
+        """
+        Finds geolocation with the provided location's position.
+
+        :param connection: DB connection
+        :param geodict: dictionary with geolocation's attributes
+        :return:
+        """
         return await connection.fetchrow(
             '''
             SELECT id FROM geolocations 
@@ -149,80 +186,101 @@ class EstateRepository(Repository):
             geodict['point'][0], geodict['point'][1]
         )
 
-    async def _create_estate(self, connection, struct, geolocation):
+    async def _create_estate(
+        self, connection: Connection, struct: Any, geolocation: Record
+    ) -> Record:
+        """
+        Inserts estate object into the DB.
+
+        :param connection: DB connection
+        :param struct: target entity to be saved
+        :param geolocation: geolocation's record
+        :return: newly created estate's record
+        """
         pass
 
-    async def _set_estate_details(self, connection, estate, details_values):
-        await self._create_estate_details(
-            connection, estate, await self.__find_details(
-                connection, details_values
-            )
-        )
+    async def _set_estate_details(
+        self, connection: Connection, estate: Record, details_values: List[str]
+    ):
+        """
+        Binds estate record to the details' records.
+
+        :param connection: DB connection
+        :param estate: newly created estate's record
+        :param details_values: estate details' list
+        """
+        details = await self.__find_details(connection, details_values)
+        await self._create_estate_details(connection, estate, details)
 
     @staticmethod
-    async def __find_details(connection, details_values):
+    async def __find_details(
+        connection: Connection, details_values: List[str]
+    ) -> List[Record]:
+        """
+        Finds all details' records whose values are in details' list.
+
+        :param connection: DB connection
+        :param details_values: the set of string literals
+        :return: details' records
+        """
         details = await connection.fetch(
             'SELECT id FROM details WHERE value = ANY ($1)', details_values
         )
         if len(details) != len(details_values):
-            logging.warning(
+            logger.warning(
                 f'some of these details are absent in the DB:\n{details_values}'
             )
         return details
 
-    async def _create_estate_details(self, connection, estate, details):
+    async def _create_estate_details(
+        self, connection: Connection, estate: Record, details: List[Record]
+    ):
+        """
+        Inserts connections between estates and existing details.
+
+        :param connection: DB connection
+        :param estate: newly created estate's record
+        :param details: all spotted details' records
+        """
         pass
 
 
 class FlatRepository(EstateRepository):
+    """
+    Final estate repository, which is in charge of flats' filling.
+
+    Class properties:
+        __area_tolerance: approximate error (in meters) of the offer's
+        area to distinct duplicates among flats' offers
+        __distance_tolerance: approximate error (in meters) of the
+        offer's position to distinct duplicates among flats' offers
+        (mainly, connected with floating numbers' errors of www.olx.ua)
+    """
     __area_tolerance = 1.5
     __distance_tolerance = 4500
 
-    async def _get_expired_cursor(self, connection, expiration):
-        return await connection.cursor(
-            '''
-            SELECT id FROM flats 
-            WHERE current_date >= published + $1::INTERVAL AND
-            id NOT IN (SELECT flat_id FROM core_user_saved_flats)
-            ''',
-            expiration
-        )
-
-    async def _delete_estates_details(self, connection, ids):
-        await connection.execute(
-            'DELETE FROM flats_details WHERE flat_id = ANY ($1)', ids
-        )
-
-    async def _delete_estates(self, connection, ids):
-        await connection.execute(
-            'DELETE FROM flats WHERE id = ANY ($1)', ids
-        )
-
-    async def _get_prefixed_cursor(self, connection, prefix):
-        return await connection.cursor(
-            '''
-            SELECT id, url FROM flats
-            WHERE url ~ $1 AND 
-            id NOT IN (SELECT flat_id FROM core_user_saved_flats)
-            ''',
-            prefix
-        )
-
-    async def _find_record(self, connection, struct):
+    async def _find_record(
+        self, connection: Connection, struct: Flat
+    ) -> Record:
         return await connection.fetchrow(
             '''
             SELECT f.id, price, geolocation_id 
             FROM flats f JOIN geolocations g ON geolocation_id = g.id
             WHERE url = $1 OR rooms = $2 AND floor = $3 AND 
             total_floor = $4 AND abs(area - $5) <= $6 AND 
-            st_distance_sphere(point, st_setsrid(st_point($7, $8), 4326)) <= $9
+            st_distance_sphere(
+                point, st_setsrid(st_point($7, $8), 4326)
+            ) <= $9
             ''',
-            struct.url, struct.rooms, struct.floor, struct.total_floor,
-            struct.area, self.__area_tolerance, struct.geolocation['point'][0],
-            struct.geolocation['point'][1], self.__distance_tolerance
+            struct.url, struct.rooms, struct.floor,
+            struct.total_floor, struct.area, self.__area_tolerance,
+            struct.geolocation['point'][0], struct.geolocation['point'][1],
+            self.__distance_tolerance
         )
 
-    async def _update_record(self, connection, flat, struct):
+    async def _update_record(
+        self, connection: Connection, flat: Record, struct: Flat
+    ):
         if flat['price'] > struct.price:
             await self.__delete_flat_details(connection, flat)
             await self._set_estate_details(connection, flat, struct.details)
@@ -232,46 +290,68 @@ class FlatRepository(EstateRepository):
             await self._scribbler.add('duplicated')
 
     @staticmethod
-    async def __delete_flat_details(connection, flat):
+    async def __delete_flat_details(connection: Connection, flat: Record):
+        """
+        Deletes obsolete connections between flat's record and
+        details' records.
+
+        :param connection: DB connection
+        :param flat: target entity to be updated
+        """
         await connection.execute(
             'DELETE FROM flats_details WHERE flat_id = $1', flat['id']
         )
 
     @staticmethod
-    async def __update_flat(connection, flat, struct):
+    async def __update_flat(
+        connection: Connection, flat: Record, struct: Flat
+    ):
+        """
+        Rewrites existing record, setting attributes that changes from
+        offer to offer (price, rate, area (a bit), publication date)
+
+        :param connection: DB connection
+        :param flat: target entity to be updated
+        :param struct: replacement DTO
+        """
         await connection.execute(
             '''
             UPDATE flats SET 
-            url = $1, avatar = $2, published = $3, price = $4, rate = $5, 
-            area = $6, living_area = $7, kitchen_area = $8, ceiling_height = $9 
+            url = $1, avatar = $2, published = $3, price = $4, 
+            rate = $5, area = $6, living_area = $7, kitchen_area = $8, 
+            ceiling_height = $9 
             WHERE id = $10
             ''',
             struct.url, struct.avatar, struct.published, struct.price,
-            struct.rate, struct.area, struct.living_area, struct.kitchen_area,
-            struct.ceiling_height, flat['id']
+            struct.rate, struct.area, struct.living_area,
+            struct.kitchen_area, struct.ceiling_height, flat['id']
         )
 
-    async def _create_estate(self, connection, struct, geolocation):
+    async def _create_estate(
+        self, connection: Connection, struct: Flat, geolocation: Record
+    ) -> Record:
         return await connection.fetchrow(
             '''
             INSERT INTO flats (
-            url, avatar, published, price, rate, area, living_area, 
-            kitchen_area, rooms, floor, total_floor, ceiling_height, 
-            geolocation_id
+                url, avatar, published, price, rate, area, living_area, 
+                kitchen_area, rooms, floor, total_floor, ceiling_height, 
+                geolocation_id, is_visible
             ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
             ) RETURNING id
             ''',
             struct.url, struct.avatar, struct.published, struct.price,
-            struct.rate, struct.area, struct.living_area,
-            struct.kitchen_area, struct.rooms, struct.floor,
-            struct.total_floor, struct.ceiling_height, geolocation['id']
+            struct.rate, struct.area, struct.living_area, struct.kitchen_area,
+            struct.rooms, struct.floor, struct.total_floor,
+            struct.ceiling_height, geolocation['id'], True
         )
 
-    async def _create_estate_details(self, connection, estate, details):
+    async def _create_estate_details(
+        self, connection: Connection, flat: Record, details: List[Record]
+    ):
         await connection.executemany(
             '''
             INSERT INTO flats_details (flat_id, detail_id) VALUES ($1, $2)
             ''',
-            [(estate['id'], d['id']) for d in details]
+            [(flat['id'], d['id']) for d in details]
         )
