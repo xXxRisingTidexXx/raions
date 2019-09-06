@@ -1,3 +1,4 @@
+from typing import Optional, Any
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.contrib.gis.db.models import (
     EmailField, BooleanField, Model, DateField, URLField, CharField, FloatField,
@@ -18,7 +19,7 @@ class Geolocation(Model):
     class Meta:
         db_table = 'geolocations'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.state}, {self.locality}, {self.county}'
 
 
@@ -39,11 +40,14 @@ class Estate(Model):
     price = DecimalField(max_digits=10, decimal_places=2)
     rate = DecimalField(max_digits=10, decimal_places=2)
     area = FloatField()
+    is_visible = BooleanField(default=True)
+    lookups = {}
+    order_by = set()
 
     class Meta:
         abstract = True
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'[{self.url}, {self.area}, {self.rate}]'
 
 
@@ -55,7 +59,6 @@ class Flat(Estate):
     total_floor = SmallIntegerField()
     ceiling_height = FloatField(null=True)
     details = ManyToManyField(Detail, db_table='flats_details')
-    is_visible = BooleanField(default=True)
     saved_field = 'saved_flats'
     lookups = {
         'state': 'geolocation__state',
@@ -89,7 +92,7 @@ class Flat(Estate):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password):
+    def create_user(self, email: Optional[str], password: str) -> 'User':
         if email is None:
             raise TypeError('An email address should be provided.')
         user = self.model(email=self.normalize_email(email))
@@ -97,7 +100,7 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email: str, password: str) -> 'User':
         user = self.model(email=self.normalize_email(email), is_staff=True)
         user.set_password(password)
         user.is_superuser = True
@@ -115,12 +118,12 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'email'
 
     @staticmethod
-    def has_perm(perm, obj=None):
+    def has_perm(perm: Any, obj: Any = None) -> bool:
         return True
 
     @staticmethod
-    def has_module_perms(app_label):
+    def has_module_perms(app_label: Any) -> bool:
         return True
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email

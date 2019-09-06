@@ -1,4 +1,4 @@
-import logging
+from logging import disable, CRITICAL
 from datetime import date
 from decimal import Decimal
 from django.contrib.gis.geos import Point
@@ -7,8 +7,8 @@ from core.models import User, Flat, Geolocation, Detail
 
 
 class SummaryViewTestCase(APITestCase):
-    def setUp(self) -> None:
-        logging.disable(logging.CRITICAL)
+    def setUp(self):
+        disable(CRITICAL)
 
     def test_get(self):
         flats = (
@@ -44,7 +44,7 @@ class AuthorizedView(APITestCase):
             '/auth/', {'email': 'estimo@gmail.com', 'password': 'EstimoTop2019'}
         ).data['token']
         self.client.credentials(HTTP_AUTHORIZATION=f'JWT {jwt}')
-        logging.disable(logging.CRITICAL)
+        disable(CRITICAL)
 
 
 class SavedViewTestCase(AuthorizedView):
@@ -313,6 +313,12 @@ class LookupViewTestCase(AuthorizedView):
                 geolocation=Geolocation.objects.filter(point=Point(44.223, 48.216)).first(),
                 price=Decimal(31200), rate=Decimal(600), area=52, living_area=33, kitchen_area=13.3,
                 rooms=2, floor=12, total_floor=21,
+            ),
+            Flat.objects.create(
+                url='url6', published=date(2019, 1, 14),
+                geolocation=Geolocation.objects.filter(point=Point(44.223, 48.216)).first(),
+                price=Decimal(41600), rate=Decimal(800), area=67, living_area=47, kitchen_area=13.3,
+                rooms=2, floor=8, total_floor=21, is_visible=False
             )
         )
         details = (
@@ -336,6 +342,7 @@ class LookupViewTestCase(AuthorizedView):
         flats[0].details.add(details[0], details[2], details[8], details[14])
         flats[1].details.add(details[1], details[6])
         flats[2].details.add(details[9], details[12], details[15])
+        flats[4].details.add(details[6], details[11], details[13], details[14])
         flats[4].details.add(details[6], details[11], details[13], details[14])
         cases = (
             (
