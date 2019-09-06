@@ -33,7 +33,6 @@ autogenerate-migrations:
 	@( \
 		cd ./agony/; \
 		source ./venv/bin/activate; \
-		printf "\nMigrations are being generated...\n\n"; \
 		./manage.py makemigrations; \
 		deactivate; \
 		cd ../; \
@@ -44,7 +43,6 @@ migrate:
 	@( \
 		cd ./agony/; \
 		source ./venv/bin/activate; \
-		printf "\nDatabases are being migrated...\n"; \
 		printf "\ndefault is being migrated...\n"; \
 		./manage.py migrate; \
 		printf "\n${TESTING_DATABASE} is being migrated...\n"; \
@@ -61,7 +59,6 @@ test-reapy:
 	@( \
 		cd ./reapy/; \
 		source ./venv/bin/activate; \
-		printf "\nreapy's pytest\'s started\n\n"; \
 		pytest -q -x --timeout=5 ./tests/; \
 		deactivate; \
 		cd ../; \
@@ -88,7 +85,6 @@ collect-static:
 	@( \
 		cd ./agony/; \
 		source ./venv/bin/activate; \
-		printf "\nStatic files are being collected...\n"; \
 		./manage.py collectstatic; \
 		deactivate; \
 		cd ../; \
@@ -99,12 +95,35 @@ collect-static:
 
 ## Run single reapy's worker
 run-reapy-manage:
+	@( \
+		cd ./reapy/; \
+		source ./venv/bin/activate; \
+		printf "\nEnter worker name: "; \
+		read WORKER; \
+		./manage.py ${WORKER}; \
+		deactivate; \
+		cd ../; \
+	)
 
 ## Run the whole reapy's schedule
 run-reapy-schedule:
+	@( \
+		cd ./reapy/; \
+		source ./venv/bin/activate; \
+		./schedule.py; \
+		deactivate; \
+		cd ../; \
+	)
 
 ## Run agony's dev server
-run-agony-dev:
+run-agony-dev:  # TODO here we need to explicitly set DEBUG to True
+	@( \
+		cd ./agony/; \
+		source ./venv/bin/activate; \
+		./manage.py runserver; \
+		deactivate; \
+		cd ../; \
+	)
 
 
 # Help
