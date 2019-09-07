@@ -1,31 +1,19 @@
-from datetime import timedelta
-from .scribblers import SweeperScribbler
-from .crawlers import OlxFlatCrawler, DomRiaFlatCrawler
-from .parsers import OlxFlatParser, DomRiaFlatParser
-from .repositories import FlatRepository
-from .workers import Worker
-from .decorators import measurable
+from core.scribblers import SweeperScribbler
+from core.crawlers import OlxFlatCrawler, DomRiaFlatCrawler
+from core.parsers import OlxFlatParser, DomRiaFlatParser
+from core.repositories import FlatRepository
+from core.workers import Worker
+from core.decorators import measurable
 
 
 class Sweeper(Worker):
     _scribbler_class = SweeperScribbler
-    _expiration = timedelta(days=210)
     _url_prefix = None
     _timeout = 10
 
     @measurable('sweep')
     async def _work(self):
-        await self._repository.delete_all_expired(self._expiration)
-        await self._repository.delete_all_junks(self._url_prefix, self.__sieve)
-
-    async def __sieve(self, records):
-        urls = await self._parser.parse_junks(
-            await self._crawler.get_offers(
-                map(lambda r: {'url': r['url']}, records),
-                timeout=self._timeout
-            )
-        )
-        return (r for r in records if r['url'] in urls)
+        pass
 
 
 class OlxFlatSweeper(Sweeper):

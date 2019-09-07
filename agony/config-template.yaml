@@ -1,0 +1,23 @@
+secret-key:
+admins:
+allowed-hosts:
+databases:
+  default:
+    ENGINE: django.contrib.gis.db.backends.postgis
+    NAME:
+    USER:
+    PASSWORD:
+    HOST:
+    PORT: 5432
+  testing:
+    ENGINE: django.contrib.gis.db.backends.postgis
+    NAME:
+    USER:
+    PASSWORD:
+    HOST:
+    PORT: 5432
+email:
+  host-user:
+  host-password:
+sendgrid:
+  api-key:

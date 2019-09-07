@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (
+from core.views import (
     IndexView, SummaryView, LoginView, AuthenticationView, ProfileView, SavedView,
     LookupView, GeolocationAutocompleteView, DetailAutocompleteView
 )
