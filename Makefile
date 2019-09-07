@@ -5,25 +5,9 @@ WHITE = $(shell tput -Txterm setaf 7)
 RESET = $(shell tput -Txterm sgr0)
 GRAY = $(shell tput -Txterm setaf 6)
 TARGET_MAX_CHAR_NUM = 25
-YAMJAM_PATH = "~/.yamjam/config.yaml"
-TESTING_DATABASE = traions
 
-.PHONY: autogenerate-migrations migrate test-reapy test-agony collect-static \
-	run-reapy-manage run-reapy-schedule run-agony-dev help
-
-
-# Configuration
-
-## Edit & lint YamJam configuration
-yamjam:
-	@( \
-		cd ./agony/; \
-		source ./venv/bin/activate; \
-		nano ${YAMJAM_PATH}; \
-		yjlint ${YAMJAM_PATH}; \
-		deactivate; \
-		cd ../; \
-	)
+.PHONY: autogenerate-migrations migrate test-agony test-reapy \
+	run-agony-dev run-reapy-manage run-reapy-schedule help
 
 
 # Migrations
@@ -43,16 +27,27 @@ migrate:
 	@( \
 		cd ./agony/; \
 		source ./venv/bin/activate; \
-		printf "\ndefault is being migrated...\n"; \
 		./manage.py migrate; \
-		printf "\n${TESTING_DATABASE} is being migrated...\n"; \
-		./manage.py migrate --database=${TESTING_DATABASE}; \
+		echo ""; \
+		./manage.py migrate --database=testing; \
 		deactivate; \
 		cd ../; \
 	)
 
 
 # Tests
+
+## Run agony's unittest.
+test-agony:
+	@( \
+		cd ./agony/; \
+		source ./venv/bin/activate; \
+		./manage.py test; \
+		echo ""; \
+		./manage.py test --reverse; \
+		deactivate; \
+		cd ../; \
+	)
 
 ## Run reapy's pytest.
 test-reapy:
@@ -64,43 +59,35 @@ test-reapy:
 		cd ../; \
 	)
 
-## Run agony's unittest.
-test-agony:
-	@( \
-		cd ./agony/; \
-		source ./venv/bin/activate; \
-		printf "\nDirect test chain\'s started\n\n"; \
-		./manage.py test; \
-		printf "\nReverse test chain\'s started\n\n"; \
-		./manage.py test --reverse; \
-		deactivate; \
-		cd ../; \
-	)
-
-
-# Static files
-
-## Collects static files into single directory
-collect-static:
-	@( \
-		cd ./agony/; \
-		source ./venv/bin/activate; \
-		./manage.py collectstatic; \
-		deactivate; \
-		cd ../; \
-	)
-
 
 # Run
 
-## Run single reapy's worker
-run-reapy-manage:
+## Run agony's dev server
+run-agony-dev:
+	@( \
+		cd ./agony/; \
+		source ./venv/bin/activate; \
+		AGONY_DEBUG=True ./manage.py runserver; \
+		deactivate; \
+		cd ../; \
+	)
+
+## Run www.olx.ua flat reaper
+run-olx-flat-reaper:
 	@( \
 		cd ./reapy/; \
 		source ./venv/bin/activate; \
-		printf "\nEnter worker name: "; \
-		read WORKER; \
-		./manage.py ${WORKER}; \
+		./manage.py OlxFlatReaper; \
+		deactivate; \
+		cd ../; \
+	)
+
+## Run dom.ria.com flat reaper
+run-dom-ria-flat-reaper:
+	@( \
+		cd ./reapy/; \
+		source ./venv/bin/activate; \
+		./manage.py DomRiaFlatReaper; \
 		deactivate; \
 		cd ../; \
 	)
@@ -111,16 +98,6 @@ run-reapy-schedule:
 		cd ./reapy/; \
 		source ./venv/bin/activate; \
 		./schedule.py; \
-		deactivate; \
-		cd ../; \
-	)
-
-## Run agony's dev server
-run-agony-dev:  # TODO here we need to explicitly set DEBUG to True
-	@( \
-		cd ./agony/; \
-		source ./venv/bin/activate; \
-		./manage.py runserver; \
 		deactivate; \
 		cd ../; \
 	)
@@ -136,6 +113,7 @@ help:
 	@echo '  ${YELLOW}make${RESET} ${GREEN}<target>${RESET}'
 	@echo ''
 	@echo 'Targets:'
+	@echo ''
 	@awk '/^[a-zA-Z\-]+:/ { \
 		helpMessage = match(lastLine, /^## (.*)/); \
 		if (helpMessage) { \

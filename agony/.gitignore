@@ -116,5 +116,6 @@ dmypy.json
 
 .idea
 __pycache__
-logs/*
-static/*
+logs
+static
+.yamjam

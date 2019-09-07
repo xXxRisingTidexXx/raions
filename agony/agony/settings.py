@@ -1,14 +1,15 @@
-import os
+from os.path import dirname, abspath, join
+from os import environ
 from YamJam import yamjam
 from datetime import timedelta
 
-config = yamjam()['agony']
+BASE_DIR = dirname(dirname(abspath(__file__)))
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+config = yamjam(join(BASE_DIR, '.yamjam/config.yaml'))
+
+DEBUG = environ.get('AGONY_DEBUG') is not None
 
 SECRET_KEY = config['secret-key']
-
-DEBUG = config['debug']
 
 ADMINS = list(map(tuple, config['admins']))
 
@@ -43,7 +44,7 @@ ROOT_URLCONF = 'agony.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'core/templates')],
+        'DIRS': [join(BASE_DIR, 'core/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,11 +92,11 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_ROOT = config['static-root']
+STATIC_ROOT = join(BASE_DIR, 'static')
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'core/static')]
+STATICFILES_DIRS = [join(BASE_DIR, 'core/static')]
 
 
 REST_FRAMEWORK = {
@@ -134,7 +135,32 @@ DEFAULT_FROM_MAIL = EMAIL_HOST_USER
 
 SENDGRID_API_KEY = config['sendgrid']['api-key']
 
-SENDGRID_SANDBOX_MODE_IN_DEBUG = config['sendgrid']['sandbox-mode-in-debug']
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 
-LOGGING = config['logging']
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} '
+                      '{process:d} {thread:d} {message}',
+            'style': '{'
+        }
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': join(BASE_DIR, 'logs/access.log'),
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
