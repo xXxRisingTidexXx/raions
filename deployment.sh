@@ -12,7 +12,7 @@ check () {
 
 # Pull updates
 echo ""
-git pull origin dev
+git pull origin master
 check "Failed to pull the updates"
 
 # Creates the target directory if it's absent
