@@ -4,22 +4,19 @@ This module provides some basic constants
 Generally, the main global constants are collected here.
 """
 from YamJam import yamjam
-from os.path import abspath, dirname
-
-# Basic YAML configuration located at ~/.yamjam/config.yaml
-CONFIG = yamjam()['reapy']
+from os.path import abspath, dirname, join
 
 # Project's root folder
 BASE_DIR = dirname(dirname(abspath(__file__)))
 
-# Python interpreter's path needed by cron schedule
-INTERPRETER_PATH = CONFIG['interpreter-path']
+# Basic YAML configuration located at ./.yamjam/config.yaml
+config = yamjam(join(BASE_DIR, '.yamjam/config.yaml'))
 
 # Linux user who launches the cron schedule
-USER = CONFIG['user']
+USER = config['user']
 
 # Main PostgreSQL database's url
-DEFAULT_DSN = CONFIG['default-dsn']
+DEFAULT_DSN = config['default-dsn']
 
 # Testing PostgreSQL database's url
-TESTING_DSN = CONFIG['testing-dsn']
+TESTING_DSN = config['testing-dsn']
