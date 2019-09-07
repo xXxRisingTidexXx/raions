@@ -72,8 +72,8 @@ class Filters {
         for (let k1 in this.node.numeric) {
             if (this.node.numeric[k1].to.value !== "" && this.node.numeric[k1].from.value !== "") {
                 if ((+this.node.numeric[k1].to.value) < (+this.node.numeric[k1].from.value)) {
-                    WINDOWS.AlertBoxShow(450);
-                    WINDOWS.AlertBoxSetMessage(`Some troubles in filter ${k1}`);
+                    WINDOWS.AlertBoxShow(615);
+                    WINDOWS.AlertBoxSetMessage(`Виникли деякі проблеми з фільтром ${LANGUAGE.item[k1]}`);
                     return false;
                 }
             }
