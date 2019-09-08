@@ -15,14 +15,14 @@ class Map {
         this.searchCircleLayer = L.layerGroup();
 
         let baseLayers = {
-            "Light map": streets,
-            "Dark map": dark,
+            "Світла тема": streets,
+            "Темна тема": dark,
         };
 
         let itemLayer = {
-            "Saves": this.savesLayer,
-            "Lookups": this.searchLayer,
-            "Search circle": this.searchCircleLayer
+            "Збережені": this.savesLayer,
+            "Пошук": this.searchLayer,
+            "Круг пошуку": this.searchCircleLayer
         };
 
         this.myMap = L.map(
@@ -45,7 +45,7 @@ class Map {
             radius: 0
         }).addTo(this.searchCircleLayer);
         this.myMap.on('click', (e) => {
-            if (this.itemsLayers._layerControlInputs[4].checked ) {
+            if (this.itemsLayers._layerControlInputs[4].checked) {
                 if (e.originalEvent.ctrlKey) {
                     let x1 = e.latlng.lat;
                     let y1 = e.latlng.lng;

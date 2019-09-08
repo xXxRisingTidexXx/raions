@@ -20,13 +20,11 @@ class Item {
             this.marker.on('dblclick', (e) => {
                 if (!e.originalEvent.ctrlKey) {
                     WINDOWS.Toggle("saves");
-                    this.node.scrollIntoView({
-                        inline: "center", behavior: "smooth"
-                    });
+                    this.node.scrollIntoView({inline: "center"});
                     if (this.node.style.borderTopWidth !== "10px") {
                         this.node.click();
                     }
-                }else{
+                } else {
                     this.ShowFull();
                 }
             });
@@ -41,13 +39,11 @@ class Item {
             this.marker.on('dblclick', (e) => {
                 if (!e.originalEvent.ctrlKey) {
                     WINDOWS.TargetSearchTypeWindow("items");
-                    this.node.scrollIntoView({
-                        inline: "center", behavior: "smooth"
-                    });
+                    this.node.scrollIntoView({inline: "center"});
                     if (this.node.style.borderTopWidth !== "10px") {
                         this.node.click();
                     }
-                }else{
+                } else {
                     this.ShowFull();
                 }
             });
@@ -71,15 +67,16 @@ class Item {
         };
 
         let geo = [];
-        if (this.json.geolocation.properties.state) {
-            geo.push(this.json.geolocation.properties.state);
-        }
-        if (this.json.geolocation.properties.locality) {
-            geo.push(this.json.geolocation.properties.locality);
-        }
-        if (this.json.geolocation.properties.county) {
-            geo.push(this.json.geolocation.properties.county);
-        }
+        let geoAdd = (p) => {
+            if (!!p) geo.push(p)
+        };
+
+        geoAdd(this.json.geolocation.properties["state"]);
+        geoAdd(this.json.geolocation.properties["locality"]);
+        geoAdd(this.json.geolocation.properties["county"]);
+        geoAdd(this.json.geolocation.properties["neighbourhood"]);
+        geoAdd(this.json.geolocation.properties["road"]);
+        geoAdd(this.json.geolocation.properties["house_number"]);
 
         buildNode.appendChild(this.NewItemExampleParagraph(
             geo.join(", "),
@@ -101,6 +98,12 @@ class Item {
             "rooms",
             buildNode.onclick
         ));
+        if (!!this.json.total_floor)
+            buildNode.appendChild(this.NewItemExampleParagraph(
+                `<b>${LANGUAGE.item.totalFloor}</b><br>${this.json.total_floor}`,
+                "ceiling_height",
+                buildNode.onclick
+            ));
 
         buildNode.appendChild(this.NewItemExampleImage());
 
@@ -274,7 +277,9 @@ class Item {
         this.FullSetButtonsAction(buttonsParams);
 
         let geo = [];
-        let geoAdd = (p) => {if (!!p) geo.push(p)};
+        let geoAdd = (p) => {
+            if (!!p) geo.push(p)
+        };
 
         geoAdd(this.json.geolocation.properties["state"]);
         geoAdd(this.json.geolocation.properties["locality"]);
@@ -406,7 +411,7 @@ class Item {
         for (let i = 0; i < params.length; i++) {
             let paramNode = document.createElement("P");
 
-            paramNode.innerHTML = params[i][1] + params[i][2];
+            paramNode.innerHTML = `<b>${params[i][1]}</b>&nbsp;&nbsp;&nbsp;${params[i][2]}`;
             paramNode.setAttribute("class", params[i][0]);
 
             objectMainParamsContainer.appendChild(paramNode);

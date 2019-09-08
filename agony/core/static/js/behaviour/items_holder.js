@@ -50,7 +50,6 @@ class ItemsHolder {
 
         this.paginationButton = document.createElement("button");
         this.paginationButton.setAttribute("class", "paginationButton");
-        this.paginationButton.innerHTML = "►";
 
         this.paginationButton.onclick = () => action();
         this.holderNode.appendChild(this.paginationButton);

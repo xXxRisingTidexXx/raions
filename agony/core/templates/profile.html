@@ -60,160 +60,161 @@
 <button id="panel_filters_toggle_button" class="panel_filters_toggle_button" type="button">F</button>
 <div id="panel_filters" class="div_panel_filters">
     <div id="div_panel_filters_objects" class="div_panel_filters_objects">
-        <p>Filters</p>
+        <p>Фільтри</p>
         <div>
-            <p>Placement</p>
+            <p>Місцезнаходження</p>
             <div>
-                <pre>State:     </pre>
-                <input id="filters_select_state" type="text" list="filters_select_state_details">
-                <datalist id="filters_select_state_details">
-                    <!-- <option value="asd">asd</option> -->
-                </datalist>
+                <pre style="width: 170px">Область</pre>
+                <input id="filters_select_state" style="width: 250px" type="text" list="filters_select_state_details">
+                <datalist id="filters_select_state_details"></datalist>
             </div>
-
             <div>
-                <pre>Locality:</pre>
-                <input id="filters_select_locality" type="text" list="filters_select_locality_details">
+                <pre style="width: 170px">Населений пункт</pre>
+                <input id="filters_select_locality" style="width: 250px" type="text"
+                       list="filters_select_locality_details">
                 <datalist id="filters_select_locality_details"></datalist>
             </div>
             <div>
-                <pre>County: </pre>
-                <input id="filters_select_county" type="text" list="filters_select_county_details">
+                <pre style="width: 170px">Район</pre>
+                <input id="filters_select_county" style="width: 250px" type="text" list="filters_select_county_details">
                 <datalist id="filters_select_county_details"></datalist>
             </div>
-        </div>
-        <hr>
-        <div>
-            <p>Area</p>
             <div>
-                <pre>From:         </pre>
-                <input id="filters_area_from" style="width: 100px;" class="input" type="number">
+                <pre style="width: 170px">Місцевість</pre>
+                <input id="filters_select_neighbourhood" style="width: 250px" type="text"
+                       list="filters_select_neighbourhood_detail">
+                <datalist id="filters_select_neighbourhood_detail"></datalist>
             </div>
             <div>
-                <pre>To:               </pre>
-                <input id="filters_area_to" style="width: 100px;" class="input" type="number">
-            </div>
-        </div>
-        <hr>
-        <div>
-            <p>Kitchen area</p>
-            <div>
-                <pre>From:         </pre>
-                <input id="filters_kitchen_area_from" style="width: 100px;" class="input" type="number">
+                <pre style="width: 170px">Вулиця</pre>
+                <input id="filters_select_road" style="width: 250px" type="text" list="filters_select_road_detail">
+                <datalist id="filters_select_road_detail"></datalist>
             </div>
             <div>
-                <pre>To:               </pre>
-                <input id="filters_kitchen_area_to" style="width: 100px;" class="input" type="number">
+                <pre style="width: 170px">Номер будинку</pre>
+                <input id="filters_select_house_number" style="width: 250px" type="text"
+                       list="filters_select_house_number_detail">
+                <datalist id="filters_select_house_number_detail"></datalist>
             </div>
         </div>
         <hr>
         <div>
-            <p>Living area</p>
+            <p>Кількість кімнат</p>
             <div>
-                <pre>From:         </pre>
-                <input id="filters_living_area_from" style="width: 100px;" class="input" type="number">
-            </div>
-            <div>
-                <pre>To:               </pre>
-                <input id="filters_living_area_to" style="width: 100px;" class="input" type="number">
-            </div>
-        </div>
-        <hr>
-        <div>
-            <p>Rooms</p>
-            <div>
-                <pre>From:         </pre>
+                <pre>Від              </pre>
                 <input id="filters_rooms_from" style="width: 100px;" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До               </pre>
                 <input id="filters_rooms_to" style="width: 100px;" type="number">
             </div>
         </div>
-        <hr>
         <div>
-            <p>Floor</p>
+            <p>Поверховість</p>
             <div>
-                <pre>From:         </pre>
+                <pre>Від              </pre>
+                <input id="filters_total_floor_from" style="width: 100px;" type="number">
+            </div>
+            <div>
+                <pre>До               </pre>
+                <input id="filters_total_floor_to" style="width: 100px;" type="number">
+            </div>
+        </div>
+        <div>
+            <p>Загальна площа</p>
+            <div>
+                <pre>Від              </pre>
+                <input id="filters_area_from" style="width: 100px;" class="input" type="number">
+            </div>
+            <div>
+                <pre>До               </pre>
+                <input id="filters_area_to" style="width: 100px;" class="input" type="number">
+            </div>
+        </div>
+        <div>
+            <p>Поверх</p>
+            <div>
+                <pre>Від              </pre>
                 <input id="filters_floor_from" style="width: 100px;" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До               </pre>
                 <input id="filters_floor_to" style="width: 100px;" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Total floor</p>
+            <p>Висота стелі</p>
             <div>
-                <pre>From:         </pre>
-                <input id="filters_total_floor_from" style="width: 100px;" type="number">
-            </div>
-            <div>
-                <pre>To:               </pre>
-                <input id="filters_total_floor_to" style="width: 100px;" type="number">
-            </div>
-        </div>
-        <hr>
-        <div>
-            <p>Celling height</p>
-            <div>
-                <pre>From:         </pre>
+                <pre>Від              </pre>
                 <input id="filter_celling_height_from" style="width: 100px;" type="number">
             </div>
             <div>
-                <pre>To:               </pre>
+                <pre>До               </pre>
                 <input id="filter_celling_height_to" style="width: 100px;" type="number">
+            </div>
+        </div>
+        <div>
+            <p>Площа кухні</p>
+            <div>
+                <pre>Від              </pre>
+                <input id="filters_kitchen_area_from" style="width: 100px;" class="input" type="number">
+            </div>
+            <div>
+                <pre>До               </pre>
+                <input id="filters_kitchen_area_to" style="width: 100px;" class="input" type="number">
+            </div>
+        </div>
+        <div>
+            <p>Житлова площа</p>
+            <div>
+                <pre>Від              </pre>
+                <input id="filters_living_area_from" style="width: 100px;" class="input" type="number">
+            </div>
+            <div>
+                <pre>До               </pre>
+                <input id="filters_living_area_to" style="width: 100px;" class="input" type="number">
             </div>
         </div>
         <hr>
         <div>
-            <p>Sort by</p>
+            <p>Сортування за</p>
             <div>
                 <select id="sorting_order_by" style="width: 150px; color: var(--second);">
                     <option value="null">--</option>
-                    <option value="area">Area</option>
-                    <option value="rooms">Rooms</option>
-                    <option value="price">Price</option>
+                    <option value="area">Загальною площею</option>
+                    <option value="rooms">Кількістю кімнат</option>
+                    <option value="price">Ціною</option>
                 </select>
                 <button id="sorting_ordering" style="width: 30px; margin: 0 10px 0 10px;">
                     ⬈
                 </button>
-                <!-- <select id="sorting_ordering" style="width: 40px; margin: 0 10px 0 10px;">-->
-                <!--     <option value="" selected="selected">1 - 9</option>-->
-                <!--     <option value="-">9 - 1</option>-->
-                <!-- </select>-->
             </div>
         </div>
         <hr>
-        <button id="btn_add_detail" class="btn_add_detail">Add detail</button>
+        <button id="btn_add_detail" class="btn_add_detail">Додати деталь</button>
         <hr>
     </div>
-    <button id="btn_search" type="button" class="div_filters_search">Search</button>
+    <button id="btn_search" type="button" class="div_filters_search">Пошук</button>
 </div>
 
 <!-- MAIN DIVS -->
 <div id="window_home" class="div_window div_main_window_home">
-    <div class="userInfo" style="grid-area: userInfo">
-        <div class="div_user_img">
-            <img src="../static/images/bookmark.png" alt="img">
-        </div>
+    <div class="div_user_img">
+        <img src="../static/images/bookmark.png" alt="bookmark">
     </div>
     <div class="div_main_objects_border_left" style="grid-area:userSaves"></div>
     <div class="div_main_objects_border_right" style="grid-area:userSaves"></div>
-    <div id="div_main_objects_saved" class="div_main_objects_objects" style="grid-area: userSaves">
-    </div>
+    <div id="div_main_objects_saved" class="div_main_objects_objects" style="grid-area: userSaves"></div>
 </div>
 <div id="window_search" class="div_window div_main_window_objects">
     <div class="div_main_objects_sort" style="grid-area:selector">
-        <button id="btn_show_items" class="button_main_selector" type="button">Items</button>
-        <button id="btn_show_map" class="button_main_selector" type="button">Map</button>
-        <!-- to avoid map and item moving-->
-        <button class="button_main_selector" style="visibility: hidden"></button>
+        <button id="btn_show_items" class="button_main_selector" type="button">Оголошення</button>
+        <button id="btn_show_map" class="button_main_selector" type="button">Карта</button>
     </div>
     <div id="gradient_overlay_left" class="div_main_objects_border_left" style="grid-area:objects"></div>
     <div id="gradient_overlay_right" class="div_main_objects_border_right" style="grid-area:objects"></div>
-    <div id="div_main_objects_search" class="div_main_objects_objects" style="grid-area:objects"></div>
+    <div id="div_main_objects_search" class="search_objects div_main_objects_objects" style="grid-area:objects"></div>
     <div id="div_main_objects_search_map" class="div_main_objects_objects_map" style="grid-area:objects"></div>
 </div>
 <!--<div id="window_statistics" class="div_window div_main_window_home">-->
@@ -232,19 +233,19 @@
 <!--</div>-->
 <div id="window_settings" class="div_window div_main_window_settings">
     <div style="grid-area: contacts;" class="content contacts">
-        <p class="head">Contact us</p>
+        <p class="head">Зв'яжіться з нами</p>
         <div class="person">
-            <p class="name">Danylo Petrakivskyi</p>
+            <p class="name">Петраківський Данило</p>
             <p class="email">bos.estimo@gmail.com</p>
         </div>
         <hr>
         <div class="person">
-            <p class="name">Andrey Kovyarov</p>
+            <p class="name">Андрій Ковяров</p>
             <p class="email">andrey.kovyarov@gmail.com</p>
         </div>
     </div>
     <div style="grid-area: themes;" class="content">
-        <p class="head">Themes</p>
+        <p class="head">Теми</p>
         <div>
             <button id="btn_theme_white_domria" class="theme_white" style="background: white" type="button">WHITE
             </button>
