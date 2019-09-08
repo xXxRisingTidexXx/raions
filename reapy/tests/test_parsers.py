@@ -287,9 +287,9 @@ def test_parse_offer_olx_flat(olx_flat_parser: OlxFlatParser):
         floor=8,
         total_floor=26,
         details=[
-            'under construction', 'monolith', 'separate planning',
-            'separate bathrooms', 'own boiler room', 'after construction',
-            'no furniture'
+            'На етапі будівництва', 'Моноліт', 'Роздільне планування',
+            'Роздільний санвузол', 'Власна котельня', 'Щойно споруджено',
+            'Меблі відсутні'
         ]
     )
     assert olx_flat_parser.parse_offer({
@@ -310,8 +310,8 @@ def test_parse_offer_olx_flat(olx_flat_parser: OlxFlatParser):
         floor=9,
         total_floor=10,
         details=[
-            'the tsar project', 'brick', 'adjacent through planning',
-            'adjacent bathrooms', 'own boiler room'
+            'Царський будинок', 'Цегла', 'Суміжне, прохідне планування',
+            'Суміжний санвузол', 'Власна котельня'
         ]
     )
     assert olx_flat_parser.parse_offer({
@@ -332,8 +332,8 @@ def test_parse_offer_olx_flat(olx_flat_parser: OlxFlatParser):
         floor=4,
         total_floor=24,
         details=[
-            'under construction', 'free layout', 'separate bathrooms',
-            'own boiler room', 'after construction'
+            'На етапі будівництва', 'Вільне планування', 'Роздільний санвузол',
+            'Власна котельня', 'Щойно споруджено'
         ]
     )
     assert olx_flat_parser.parse_offer({
@@ -354,8 +354,8 @@ def test_parse_offer_olx_flat(olx_flat_parser: OlxFlatParser):
         floor=5,
         total_floor=9,
         details=[
-            'separate planning', 'separate bathrooms',
-            'euro-standard design', 'furniture is present'
+            'Роздільне планування', 'Роздільний санвузол',
+            'Євроремонт', 'Є меблі'
         ]
     )
     assert olx_flat_parser.parse_offer({
@@ -625,9 +625,9 @@ def test_parse_offer_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
         floor=13,
         total_floor=14,
         details=[
-            'brick', 'individual heating', 'separate planning', 'authorial project',
-            'external and internal insulation', 'gas is absent', 'armored door',
-            'adjacent bathrooms', '1 passenger elevator', 'secondary housing'
+            'Цегла', 'Індивідуальне опалення', 'Роздільне планування', 'Авторський проект',
+            'Зовнішнє й внутрішнє утеплення', 'Газ відсутній', 'Броньовані двері',
+            'Суміжний санвузол', '1 пасажирський ліфт', 'Вторинне житло'
         ]
     )
     assert dom_ria_flat_parser.parse_offer({
@@ -657,9 +657,9 @@ def test_parse_offer_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
         total_floor=12,
         ceiling_height=2.71,
         details=[
-            'brick', 'without heating', 'separate planning', 'repair required',
-            'internal insulation', 'gas is present', 'metal-plastic windows',
-            'adjacent bathrooms', '1 passenger elevator', 'secondary housing'
+            'Цегла', 'Опалення відсутнє', 'Роздільне планування', 'Потребує ремонту',
+            'Внутрішнє утеплення', 'Газ є', 'Металопластикові вікна',
+            'Суміжний санвузол', '1 пасажирський ліфт', 'Вторинне житло'
         ]
     )
     assert dom_ria_flat_parser.parse_offer({
@@ -685,9 +685,10 @@ def test_parse_offer_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
         floor=12,
         total_floor=15,
         details=[
-            'brick', 'individual heating', 'separate planning', 'repair required',
-            'gas is absent', 'armored door', 'metal-plastic windows',
-            'separate bathrooms', '1 passenger elevator', 'secondary housing'
+            'Цегла', 'Індивідуальне опалення', 'Роздільне планування',
+            'Потребує ремонту', 'Газ відсутній', 'Броньовані двері',
+            'Металопластикові вікна', 'Роздільний санвузол', '1 пасажирський ліфт',
+            'Вторинне житло'
         ]
     )
     assert dom_ria_flat_parser.parse_offer({
@@ -716,10 +717,10 @@ def test_parse_offer_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
         floor=1,
         total_floor=5,
         details=[
-            'panel', 'centralized heating', 'adjacent-separate planning',
-            'euro-standard design', 'external insulation', 'gas is present',
-            'metal door', 'metal-plastic windows', 'adjacent bathrooms',
-            'secondary housing'
+            'Панель', 'Централізоване опалення', 'Суміжно-роздільне планування',
+            'Євроремонт', 'Зовнішнє утеплення', 'Газ є',
+            'Металеві двері', 'Металопластикові вікна', 'Суміжний санвузол',
+            'Вторинне житло'
         ]
     )
     assert dom_ria_flat_parser.parse_offer({
@@ -747,10 +748,10 @@ def test_parse_offer_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
         total_floor=9,
         ceiling_height=2.7,
         details=[
-            'brick', 'built in 1990-2000', 'centralized heating',
-            'separate planning', 'good state', 'gas is present',
-            'metal-plastic windows', 'adjacent bathrooms',
-            'without passenger elevators', 'secondary housing'
+            'Цегла', 'Побудовано у 1990-2000', 'Централізоване опалення',
+            'Роздільне планування', 'Хороший стан', 'Газ є',
+            'Металопластикові вікна', 'Суміжний санвузол',
+            'Без пасажирських ліфтів', 'Вторинне житло'
         ]
     )
     assert dom_ria_flat_parser.parse_offer({
@@ -779,11 +780,11 @@ def test_parse_offer_dom_ria_flat(dom_ria_flat_parser: DomRiaFlatParser):
         total_floor=12,
         ceiling_height=2.8,
         details=[
-            'brick', 'commissioning in 2019', 'individual heating',
-            'separate planning', 'drilling/construction work',
-            'external insulation', 'gas is present', 'metal door',
-            'metal-plastic windows', 'adjacent bathrooms', '1 passenger elevator',
-            'primary housing'
+            'Цегла', 'Здача у 2019', 'Індивідуальне опалення',
+            'Роздільне планування', 'Чорнові роботи',
+            'Зовнішнє утеплення', 'Газ є', 'Металеві двері',
+            'Металопластикові вікна', 'Суміжний санвузол',
+            '1 пасажирський ліфт', 'Первинне житло'
         ]
     )
 
