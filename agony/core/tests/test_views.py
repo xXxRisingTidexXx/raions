@@ -29,7 +29,7 @@ class SummaryViewTestCase(APITestCase):
                 rooms=1, floor=2, total_floor=5, ceiling_height=2.7
             )
         )
-        flats[1].details.add(Detail.objects.filter(value='1 bedroom')[0])
+        flats[1].details.add(Detail.objects.filter(value='1 спальня')[0])
         self.assertEqual(self.client.get('/summary/porn/').status_code, 404)
         self.assertEqual(self.client.get('/sumary/').status_code, 404)
         self.assertEqual(self.client.get('/summary/').data, {'total_flats': 3})
@@ -67,7 +67,7 @@ class SavedViewTestCase(AuthorizedView):
                 rooms=1, floor=2, total_floor=5, ceiling_height=2.7
             )
         )
-        flats[1].details.add(Detail.objects.filter(value='1 bedroom')[0])
+        flats[1].details.add(Detail.objects.filter(value='1 спальня')[0])
         self._user.saved_flats.add(flats[0])
         self._user.saved_flats.add(flats[1])
         expected = {
@@ -117,7 +117,7 @@ class SavedViewTestCase(AuthorizedView):
                     'total_floor': 16,
                     'ceiling_height': None,
                     'details': [
-                        {'feature': 'bedrooms', 'value': '1 bedroom', 'group': 'interior'}
+                        {'feature': 'bedrooms', 'value': '1 спальня', 'group': 'interior'}
                     ]
                 }
             ]
@@ -225,55 +225,45 @@ class DetailAutocompleteViewTestCase(AuthorizedView):
                 {'value': 'fooo'}, set()
             ),
             (
-                {'value': '15 bedrooms'}, set()
+                {'value': '15 спалень'}, set()
             ),
             (
-                {'value': '1'}, {'1 passenger elevator', '1 bedroom'}
+                {'value': '1'}, {'1 пасажирський ліфт', '1 спальня'}
             ),
             (
-                {'value': 'br'}, {'brick'}
+                {'value': ' цег'}, {'Цегла'}
             ),
             (
-                {'value': 'ink'}, {'inkerman stone'}
+                {'value': ' іНк'}, {'Інкерманський камінь'}
             ),
             (
-                {'value': 'AdJacEnt '},
+                {'value': ' СуміЖн   '},
                 {
-                    'adjacent bathrooms',
-                    'adjacent planning',
-                    'adjacent through planning'
+                    'Суміжний санвузол',
+                    'Суміжне планування',
+                    'Суміжно-роздільне планування',
+                    'Суміжне, прохідне планування'
                 }
             ),
             (
-                {'value': 'adjac'},
+                {'value': ' метал '},
                 {
-                    'adjacent bathrooms',
-                    'adjacent planning',
-                    'adjacent through planning',
-                    'adjacent-separate planning'
+                    'Металеві двері', 'Металеві подвійні двері',
+                    'Металопластикові двері', 'Металопластикові вікна'
                 }
             ),
             (
-                {'value': 'metal'},
-                {
-                    'metal door', 'metal double door', 'metal-plastic door', 'metal-plastic windows'
-                }
+                {'value': ' метАлоПластиКоВі '},
+                {'Металопластикові двері', 'Металопластикові вікна'}
             ),
             (
-                {'value': 'metaL-PlasTic'},
+                {'value': '  Моно '},
                 {
-                    'metal-plastic door',
-                    'metal-plastic windows'
-                }
-            ),
-            (
-                {'value': 'mono'},
-                {
-                    'monolith',
-                    'monolithic frame',
-                    'monolithic reinforced concrete',
-                    'monolithic brick',
-                    'monolithic block'
+                    'Моноліт',
+                    'Монолітно-каркасний',
+                    'Монолітний залізобетон',
+                    'Монолітно-цегляний',
+                    'Монолітно-блоковий'
                 }
             )
         )
@@ -322,22 +312,22 @@ class LookupViewTestCase(AuthorizedView):
             )
         )
         details = (
-            Detail.objects.filter(value='adjacent bathrooms')[0],
-            Detail.objects.filter(value='separate bathrooms')[0],
-            Detail.objects.filter(value='brick')[0],
-            Detail.objects.filter(value='monolith')[0],
-            Detail.objects.filter(value='monolithic frame')[0],
-            Detail.objects.filter(value='monolithic reinforced concrete')[0],
-            Detail.objects.filter(value='inkerman stone')[0],
-            Detail.objects.filter(value='panel')[0],
-            Detail.objects.filter(value='1 passenger elevator')[0],
-            Detail.objects.filter(value='2 bedrooms')[0],
-            Detail.objects.filter(value='metal double door')[0],
-            Detail.objects.filter(value='metal door')[0],
-            Detail.objects.filter(value='metal-plastic door')[0],
-            Detail.objects.filter(value='adjacent planning')[0],
-            Detail.objects.filter(value='metal-plastic windows')[0],
-            Detail.objects.filter(value='internal insulation')[0]
+            Detail.objects.get(value='Суміжний санвузол'),
+            Detail.objects.get(value='Роздільний санвузол'),
+            Detail.objects.get(value='Цегла'),
+            Detail.objects.get(value='Моноліт'),
+            Detail.objects.get(value='Монолітно-каркасний'),
+            Detail.objects.get(value='Монолітний залізобетон'),
+            Detail.objects.get(value='Інкерманський камінь'),
+            Detail.objects.get(value='Панель'),
+            Detail.objects.get(value='1 пасажирський ліфт'),
+            Detail.objects.get(value='2 спальні'),
+            Detail.objects.get(value='Металеві подвійні двері'),
+            Detail.objects.get(value='Металеві двері'),
+            Detail.objects.get(value='Металопластикові двері'),
+            Detail.objects.get(value='Суміжне планування'),
+            Detail.objects.get(value='Металопластикові вікна'),
+            Detail.objects.get(value='Внутрішнє утеплення')
         )
         flats[0].details.add(details[0], details[2], details[8], details[14])
         flats[1].details.add(details[1], details[6])
@@ -370,9 +360,9 @@ class LookupViewTestCase(AuthorizedView):
                         'total_floor': 5,
                         'ceiling_height': 2.7,
                         'details': [
-                            {'feature': 'warming', 'value': 'internal insulation', 'group': 'supplies'},
-                            {'feature': 'door_type', 'value': 'metal-plastic door', 'group': 'interior'},
-                            {'feature': 'bedrooms', 'value': '2 bedrooms', 'group': 'interior'}
+                            {'feature': 'warming', 'value': 'Внутрішнє утеплення', 'group': 'supplies'},
+                            {'feature': 'door_type', 'value': 'Металопластикові двері', 'group': 'interior'},
+                            {'feature': 'bedrooms', 'value': '2 спальні', 'group': 'interior'}
                         ]
                     },
                     {
@@ -397,8 +387,8 @@ class LookupViewTestCase(AuthorizedView):
                         'total_floor': 16,
                         'ceiling_height': None,
                         'details': [
-                            {'feature': 'wall_type', 'value': 'inkerman stone', 'group': 'building'},
-                            {'feature': 'bathrooms', 'value': 'separate bathrooms', 'group': 'supplies'}
+                            {'feature': 'wall_type', 'value': 'Інкерманський камінь', 'group': 'building'},
+                            {'feature': 'bathrooms', 'value': 'Роздільний санвузол', 'group': 'supplies'}
                         ]
                     }
                 ]
@@ -436,22 +426,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'wall_type',
-                                'value': 'brick',
+                                'value': 'Цегла',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'bathrooms',
-                                'value': 'adjacent bathrooms',
+                                'value': 'Суміжний санвузол',
                                 'group': 'supplies'
                             },
                             {
                                 'feature': 'passenger_elevators',
-                                'value': '1 passenger elevator',
+                                'value': '1 пасажирський ліфт',
                                 'group': 'building'
                             }
                         ]
@@ -483,9 +473,9 @@ class LookupViewTestCase(AuthorizedView):
                         'total_floor': 5,
                         'ceiling_height': 2.7,
                         'details': [
-                            {'feature': 'warming', 'value': 'internal insulation', 'group': 'supplies'},
-                            {'feature': 'door_type', 'value': 'metal-plastic door', 'group': 'interior'},
-                            {'feature': 'bedrooms', 'value': '2 bedrooms', 'group': 'interior'}
+                            {'feature': 'warming', 'value': 'Внутрішнє утеплення', 'group': 'supplies'},
+                            {'feature': 'door_type', 'value': 'Металопластикові двері', 'group': 'interior'},
+                            {'feature': 'bedrooms', 'value': '2 спальні', 'group': 'interior'}
                         ]
                     },
                     {
@@ -512,22 +502,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'wall_type',
-                                'value': 'brick',
+                                'value': 'Цегла',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'bathrooms',
-                                'value': 'adjacent bathrooms',
+                                'value': 'Суміжний санвузол',
                                 'group': 'supplies'
                             },
                             {
                                 'feature': 'passenger_elevators',
-                                'value': '1 passenger elevator',
+                                'value': '1 пасажирський ліфт',
                                 'group': 'building'
                             }
                         ]
@@ -554,8 +544,8 @@ class LookupViewTestCase(AuthorizedView):
                         'total_floor': 16,
                         'ceiling_height': None,
                         'details': [
-                            {'feature': 'wall_type', 'value': 'inkerman stone', 'group': 'building'},
-                            {'feature': 'bathrooms', 'value': 'separate bathrooms', 'group': 'supplies'}
+                            {'feature': 'wall_type', 'value': 'Інкерманський камінь', 'group': 'building'},
+                            {'feature': 'bathrooms', 'value': 'Роздільний санвузол', 'group': 'supplies'}
                         ]
                     },
                     {
@@ -582,22 +572,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'planning',
-                                'value': 'adjacent planning',
+                                'value': 'Суміжне планування',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'wall_type',
-                                'value': 'inkerman stone',
+                                'value': 'Інкерманський камінь',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'door_type',
-                                'value': 'metal door',
+                                'value': 'Металеві двері',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             }
                         ]
@@ -628,7 +618,7 @@ class LookupViewTestCase(AuthorizedView):
                 ]
             ),
             (
-                {'details': ['metal-plastic windows', 'adjacent planning']},
+                {'details': ['Металопластикові вікна', 'Суміжне планування']},
                 [
                     {
                         'id': flats[4].id,
@@ -654,22 +644,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'planning',
-                                'value': 'adjacent planning',
+                                'value': 'Суміжне планування',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'wall_type',
-                                'value': 'inkerman stone',
+                                'value': 'Інкерманський камінь',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'door_type',
-                                'value': 'metal door',
+                                'value': 'Металеві двері',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             }
                         ]
@@ -677,16 +667,16 @@ class LookupViewTestCase(AuthorizedView):
                 ]
             ),
             (
-                {'details': ['adjacent planning', 'brick', '1 bedroom']}, []
+                {'details': ['Суміжне планування', 'Цегла', '1 спальня']}, []
             ),
             (
-                {'details': ['aerocrete']}, []
+                {'details': ['Газоблок']}, []
             ),
             (
-                {'ceiling_height_from': 2.8, 'details': ['aerocrete']}, []
+                {'ceiling_height_from': 2.8, 'details': ['Газо']}, []
             ),
             (
-                {'area_from': 50, 'details': ['metal-plastic windows']},
+                {'area_from': 50, 'details': ['Металопластикові вікна']},
                 [
                     {
                         'id': flats[0].id,
@@ -712,22 +702,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'wall_type',
-                                'value': 'brick',
+                                'value': 'Цегла',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'bathrooms',
-                                'value': 'adjacent bathrooms',
+                                'value': 'Суміжний санвузол',
                                 'group': 'supplies'
                             },
                             {
                                 'feature': 'passenger_elevators',
-                                'value': '1 passenger elevator',
+                                'value': '1 пасажирський ліфт',
                                 'group': 'building'
                             }
                         ]
@@ -756,22 +746,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'planning',
-                                'value': 'adjacent planning',
+                                'value': 'Суміжне планування',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'wall_type',
-                                'value': 'inkerman stone',
+                                'value': 'Інкерманський камінь',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'door_type',
-                                'value': 'metal door',
+                                'value': 'Металеві двері',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             }
                         ]
@@ -805,22 +795,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'planning',
-                                'value': 'adjacent planning',
+                                'value': 'Суміжне планування',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'wall_type',
-                                'value': 'inkerman stone',
+                                'value': 'Інкерманський камінь',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'door_type',
-                                'value': 'metal door',
+                                'value': 'Металеві двері',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             }
                         ]
@@ -828,7 +818,7 @@ class LookupViewTestCase(AuthorizedView):
                 ]
             ),
             (
-                {'kitchen_area_to': 17, 'details': ['internal insulation']},
+                {'kitchen_area_to': 17, 'details': ['Внутрішнє утеплення']},
                 [
                     {
                         'id': flats[2].id,
@@ -852,9 +842,9 @@ class LookupViewTestCase(AuthorizedView):
                         'total_floor': 5,
                         'ceiling_height': 2.7,
                         'details': [
-                            {'feature': 'warming', 'value': 'internal insulation', 'group': 'supplies'},
-                            {'feature': 'door_type', 'value': 'metal-plastic door', 'group': 'interior'},
-                            {'feature': 'bedrooms', 'value': '2 bedrooms', 'group': 'interior'}
+                            {'feature': 'warming', 'value': 'Внутрішнє утеплення', 'group': 'supplies'},
+                            {'feature': 'door_type', 'value': 'Металопластикові двері', 'group': 'interior'},
+                            {'feature': 'bedrooms', 'value': '2 спальні', 'group': 'interior'}
                         ]
                     }
                 ]
@@ -886,22 +876,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'planning',
-                                'value': 'adjacent planning',
+                                'value': 'Суміжне планування',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'wall_type',
-                                'value': 'inkerman stone',
+                                'value': 'Інкерманський камінь',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'door_type',
-                                'value': 'metal door',
+                                'value': 'Металеві двері',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             }
                         ]
@@ -958,22 +948,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'wall_type',
-                                'value': 'brick',
+                                'value': 'Цегла',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'bathrooms',
-                                'value': 'adjacent bathrooms',
+                                'value': 'Суміжний санвузол',
                                 'group': 'supplies'
                             },
                             {
                                 'feature': 'passenger_elevators',
-                                'value': '1 passenger elevator',
+                                'value': '1 пасажирський ліфт',
                                 'group': 'building'
                             }
                         ]
@@ -1025,22 +1015,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'planning',
-                                'value': 'adjacent planning',
+                                'value': 'Суміжне планування',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'wall_type',
-                                'value': 'inkerman stone',
+                                'value': 'Інкерманський камінь',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'door_type',
-                                'value': 'metal door',
+                                'value': 'Металеві двері',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             }
                         ]
@@ -1048,7 +1038,7 @@ class LookupViewTestCase(AuthorizedView):
                 ]
             ),
             (
-                {'details': ['metal-plastic windows'], 'order_by': 'fucking shit'},
+                {'details': ['Металопластикові вікна'], 'order_by': 'fucking shit'},
                 [
                     {
                         'id': flats[0].id,
@@ -1074,22 +1064,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'wall_type',
-                                'value': 'brick',
+                                'value': 'Цегла',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'bathrooms',
-                                'value': 'adjacent bathrooms',
+                                'value': 'Суміжний санвузол',
                                 'group': 'supplies'
                             },
                             {
                                 'feature': 'passenger_elevators',
-                                'value': '1 passenger elevator',
+                                'value': '1 пасажирський ліфт',
                                 'group': 'building'
                             }
                         ]
@@ -1118,22 +1108,22 @@ class LookupViewTestCase(AuthorizedView):
                         'details': [
                             {
                                 'feature': 'planning',
-                                'value': 'adjacent planning',
+                                'value': 'Суміжне планування',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'wall_type',
-                                'value': 'inkerman stone',
+                                'value': 'Інкерманський камінь',
                                 'group': 'building'
                             },
                             {
                                 'feature': 'door_type',
-                                'value': 'metal door',
+                                'value': 'Металеві двері',
                                 'group': 'interior'
                             },
                             {
                                 'feature': 'window_type',
-                                'value': 'metal-plastic windows',
+                                'value': 'Металопластикові вікна',
                                 'group': 'interior'
                             }
                         ]
