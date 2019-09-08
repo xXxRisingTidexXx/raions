@@ -55,9 +55,9 @@ class FlatSerializerTestCase(TestCase):
                 rooms=1, floor=2, total_floor=5, ceiling_height=2.7
             )
         )
-        self.__flats[0].details.add(Detail.objects.filter(value='brick')[0])
-        self.__flats[1].details.add(Detail.objects.filter(value='monolith')[0])
-        self.__flats[1].details.add(Detail.objects.filter(value='2 bathrooms')[0])
+        self.__flats[0].details.add(Detail.objects.filter(value='Цегла')[0])
+        self.__flats[1].details.add(Detail.objects.filter(value='Моноліт')[0])
+        self.__flats[1].details.add(Detail.objects.filter(value='2 санвузли')[0])
 
     def test_serialization(self):
         expected = (
@@ -82,7 +82,7 @@ class FlatSerializerTestCase(TestCase):
                 'floor': 5,
                 'total_floor': 9,
                 'ceiling_height': None,
-                'details': [{'feature': 'wall_type', 'value': 'brick', 'group': 'building'}]
+                'details': [{'feature': 'wall_type', 'value': 'Цегла', 'group': 'building'}]
             },
             {
                 'id': self.__flats[1].id,
@@ -106,8 +106,8 @@ class FlatSerializerTestCase(TestCase):
                 'total_floor': 5,
                 'ceiling_height': 2.7,
                 'details': [
-                    {'feature': 'wall_type', 'value': 'monolith', 'group': 'building'},
-                    {'feature': 'bathrooms', 'value': '2 bathrooms', 'group': 'supplies'}
+                    {'feature': 'wall_type', 'value': 'Моноліт', 'group': 'building'},
+                    {'feature': 'bathrooms', 'value': '2 санвузли', 'group': 'supplies'}
                 ]
             }
         )

@@ -31,12 +31,12 @@ def __run_worker(worker: str, **kwargs: Iterable[int]) -> CronItem:
 
 __run_worker(
     'OlxFlatReaper',
-    minutes=[0, 20, 40],
-    hours=[22, 23, 0, 1, 2, 3, 4, 5, 6, 7]
+    minutes=[2, 32],
+    hours=[19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7]
 )
 __run_worker(
     'DomRiaFlatReaper',
-    minutes=[7, 14, 27, 34, 47, 54],
-    hours=[22, 23, 0, 1, 2, 3, 4, 5, 6, 7]
+    minutes=[9, 17, 25, 40, 48, 56],
+    hours=[19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7]
 )
 cron.write()

@@ -2,6 +2,7 @@ from datetime import date
 from decimal import Decimal
 from typing import Callable, List
 from asyncpg import Connection, Record
+from asyncpg.pool import Pool
 from asynctest import CoroutineMock, Mock
 from pytest import fixture, mark
 from core import TESTING_DSN
@@ -16,14 +17,19 @@ async def flat_repository() -> FlatRepository:
         scribbler.add = CoroutineMock()
         repository = FlatRepository(scribbler)
         await repository.prepare(TESTING_DSN)
+        await truncate_tables(repository._pool)  # noqa
         yield repository
     finally:
-        async with repository._pool.acquire() as connection:  # noqa
-            await connection.execute('TRUNCATE TABLE flats_details CASCADE')
-            await connection.execute('TRUNCATE TABLE details CASCADE')
-            await connection.execute('TRUNCATE TABLE flats CASCADE')
-            await connection.execute('TRUNCATE TABLE geolocations CASCADE')
+        await truncate_tables(repository._pool)  # noqa
         await repository.spare()
+
+
+async def truncate_tables(pool: Pool):
+    async with pool.acquire() as connection:
+        await connection.execute('TRUNCATE TABLE flats_details CASCADE')
+        await connection.execute('TRUNCATE TABLE details CASCADE')
+        await connection.execute('TRUNCATE TABLE flats CASCADE')
+        await connection.execute('TRUNCATE TABLE geolocations CASCADE')
 
 
 def find_flat(function: Callable) -> Callable:
