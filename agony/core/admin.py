@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.core.mail import EmailMessage
 from django.forms import ModelForm
 from django.utils.crypto import get_random_string
-from .models import User
+from core.models import User
 
 
 class UserCreationForm(ModelForm):
@@ -13,7 +13,7 @@ class UserCreationForm(ModelForm):
         model = User
         fields = ('email',)
 
-    def save(self, commit=True):
+    def save(self, commit: bool = True) -> User:
         user = super().save(commit=False)
         password = get_random_string()
         user.set_password(password)

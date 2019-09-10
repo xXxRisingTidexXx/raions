@@ -11,7 +11,7 @@ from datetime import datetime
 from asyncio import Lock
 from csv import DictWriter
 from os.path import join, exists
-from . import BASE_DIR
+from core import BASE_DIR
 
 
 class Scribbler:
@@ -25,23 +25,18 @@ class Scribbler:
     contains a few numeric params and the record's date&time.
 
     Class properties:
-        _fields (iterable[str]): a sequence of .csv column names; .csv header
-        _defaults (iterable[Any]): a sequence of a row default values
+        _fields: a sequence of .csv column names; .csv header
+        _defaults: a sequence of a row default values
 
     Instance properties:
-        _scribble_path (str): absolute target file's path
-        _row (dict[str, Any]): another data record to be rewritten
-        _lock (Lock): synchronisation primitive
+        _scribble_path: absolute target file's path
+        _row: another data record to be rewritten
+        _lock: synchronisation primitive
     """
     _fields = None
     _defaults = None
 
-    def __init__(self, scribble_path):
-        """
-        Defines target file's path and fills the default data
-
-        :param scribble_path: scribble file's relative path
-        """
+    def __init__(self, scribble_path: str):
         self._scribble_path = join(BASE_DIR, scribble_path)
         self._row = {
             self._fields[i]: self._defaults[i]
@@ -84,11 +79,8 @@ class ReaperScribbler(Scribbler):
     that's why their reports contain many shapes concernedly
     inserted/duplicated/invalid data.
     """
-    _fields = (
-        'inserted', 'updated', 'duplicated', 'unlocated',
-        'unresponded', 'invalidated', 'unparsed', 'written'
-    )
-    _defaults = (0, 0, 0, 0, 0, 0, 0, None)
+    _fields = ('inserted', 'updated', 'duplicated', 'unlocated', 'written')
+    _defaults = (0, 0, 0, 0, None)
 
 
 class SweeperScribbler(Scribbler):
@@ -97,5 +89,5 @@ class SweeperScribbler(Scribbler):
     statistics. Mainly, sweepers delete junk and expired data so that their
     scribbles contain mainly data concernedly deletions.
     """
-    _fields = ('deleted', 'unresponded', 'written')
+    _fields = ('discarded', 'unresponded', 'written')
     _defaults = (0, 0, None)

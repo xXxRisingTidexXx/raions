@@ -5,14 +5,17 @@
 This simple script runs a set of workers in parallel via *cron*. Configure
 the timings and the worker list if you need.
 """
-from crontab import CronTab
-from core import USER, BASE_DIR, INTERPRETER_PATH
+from typing import Iterable
+from crontab import CronTab, CronItem
+from core import USER, BASE_DIR
 from os.path import join
 
-CRON = CronTab(user=USER)
+cron = CronTab(user=USER)
+interpreter_path = join(BASE_DIR, 'venv/bin/python')
+manage_path = join(BASE_DIR, "manage.py")
 
 
-def __run_worker(worker, **kwargs):
+def __run_worker(worker: str, **kwargs: Iterable[int]) -> CronItem:
     """
     Runs the worker via cron's job
 
@@ -20,14 +23,20 @@ def __run_worker(worker, **kwargs):
     :param kwargs: job's timings
     :return: configured job
     """
-    job = CRON.new(f'{INTERPRETER_PATH} {join(BASE_DIR, "manage.py")} {worker}')
+    job = cron.new(f'{interpreter_path} {manage_path} {worker}')
     job.minute.on(*kwargs['minutes'])
     job.hour.on(*kwargs['hours'])
     return job
 
 
-__run_worker('OlxFlatReaper', minutes=(0, 15, 30, 45), hours=(23, 0, 1, 2, 3, 4))
-__run_worker('DomRiaFlatReaper', minutes=(8, 23, 38, 53), hours=(23, 0, 1, 2, 3, 4))
-__run_worker('OlxFlatSweeper', minutes=(40,), hours=(22,))
-__run_worker('DomRiaFlatSweeper', minutes=(50,), hours=(22,))
-CRON.write()
+__run_worker(
+    'OlxFlatReaper',
+    minutes=[0, 20, 40],
+    hours=[22, 23, 0, 1, 2, 3, 4, 5, 6, 7]
+)
+__run_worker(
+    'DomRiaFlatReaper',
+    minutes=[7, 14, 27, 34, 47, 54],
+    hours=[22, 23, 0, 1, 2, 3, 4, 5, 6, 7]
+)
+cron.write()
