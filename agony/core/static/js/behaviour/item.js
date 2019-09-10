@@ -89,7 +89,7 @@ class Item {
             buildNode.onclick
         ));
         buildNode.appendChild(this.NewItemExampleParagraph(
-            `<b>${LANGUAGE.item.area}</b><br>${this.json.area} m<sup>2</sup>`,
+            `<b>${LANGUAGE.item.area}</b><br>${this.json.area} м<sup>2</sup>`,
             "area",
             buildNode.onclick
         ));
@@ -304,7 +304,7 @@ class Item {
             params.push([
                 "../static/images/area-measure.png",
                 LANGUAGE.item.area + " : ",
-                this.json["area"] + " m<sup>2</sup>"
+                this.json["area"] + " м<sup>2</sup>"
             ]);
         }
 
@@ -312,7 +312,7 @@ class Item {
             params.push([
                 "../static/images/armchair.png",
                 LANGUAGE.item.livingArea + " : ",
-                this.json["living_area"] + " m<sup>2</sup>"
+                this.json["living_area"] + " м<sup>2</sup>"
             ]);
         }
 
@@ -320,7 +320,7 @@ class Item {
             params.push([
                 "../static/images/cooking_pot.png",
                 LANGUAGE.item.kitchenArea + " : ",
-                this.json["kitchen_area"] + " m<sup>2</sup>"
+                this.json["kitchen_area"] + " м<sup>2</sup>"
             ]);
         }
 
