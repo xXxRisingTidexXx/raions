@@ -185,33 +185,107 @@ class GeolocationAutocompleteViewTestCase(AuthorizedView):
             (
                 {'county': 'vin'},
                 [
-                    {'state': 'France', 'locality': 'Bordeaux', 'county': 'Vine'},
-                    {'state': 'Greece', 'locality': None, 'county': 'Vine'}
+                    {
+                        'state': 'France',
+                        'locality': 'Bordeaux',
+                        'county': 'Vine',
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    },
+                    {
+                        'state': 'Greece',
+                        'locality': None,
+                        'county': 'Vine',
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    }
                 ]
             ),
             (
                 {'locality': 'chaR', 'county': 'ze'},
-                [{'state': 'Greece', 'locality': 'Characters', 'county': 'Zeus'}]
+                [
+                    {
+                        'state': 'Greece',
+                        'locality': 'Characters',
+                        'county': 'Zeus',
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    }
+                ]
             ),
             (
                 {'locality': 'leg'},
                 [
-                    {'state': 'Germany', 'locality': 'Leg', 'county': None},
-                    {'state': 'Germany', 'locality': 'Legends', 'county': None},
-                    {'state': 'Greece', 'locality': 'Legends', 'county': None}
+                    {
+                        'state': 'Germany',
+                        'locality': 'Leg',
+                        'county': None,
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    },
+                    {
+                        'state': 'Germany',
+                        'locality': 'Legends',
+                        'county': None,
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    },
+                    {
+                        'state': 'Greece',
+                        'locality': 'Legends',
+                        'county': None,
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    }
                 ]
             ),
             (
                 {'state': 'Gre', 'locality': 'ci'},
                 [
-                    {'state': 'Greece', 'locality': 'Cities', 'county': 'Athens'},
-                    {'state': 'Greece', 'locality': 'Cities', 'county': 'Knossos'},
-                    {'state': 'Greece', 'locality': 'Cities', 'county': 'Sparta'}
+                    {
+                        'state': 'Greece',
+                        'locality': 'Cities',
+                        'county': 'Athens',
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    },
+                    {
+                        'state': 'Greece',
+                        'locality': 'Cities',
+                        'county': 'Knossos',
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    },
+                    {
+                        'state': 'Greece',
+                        'locality': 'Cities',
+                        'county': 'Sparta',
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    }
                 ]
             ),
             (
                 {'state': 'ger', 'locality': 'ci', 'county': 'Mun'},
-                [{'state': 'Germany', 'locality': 'Cities', 'county': 'Munich'}]
+                [
+                    {
+                        'state': 'Germany',
+                        'locality': 'Cities',
+                        'county': 'Munich',
+                        'neighbourhood': None,
+                        'road': None,
+                        'house_number': None
+                    }
+                ]
             )
         )
         for case in cases:

@@ -6,26 +6,21 @@
 
 .div_main_window_home {
     display: grid;
-    grid-template-areas: "userInfo" "userSaves";
+    grid-template-areas: "userImg" "userSaves";
     grid-template-rows: auto 1fr;
 }
 
-.userInfo {
-    margin: 20px;
-    display: grid;
-    justify-content: center;
-}
-
 .div_user_img {
+    grid-area: userImg;
     width: 50px;
     height: 50px;
     padding: 15px;
-    margin: auto;
+    margin: 10px auto;
     border-radius: 50%;
     border: 5px solid var(--object_p_color);
     display: grid;
     background: var(--icons_background);
-    box-shadow: 0 0 15px var(--object_p_color);
+    box-shadow: 0 0 10px var(--object_p_color);
 }
 
 .div_user_img > img {
@@ -123,14 +118,24 @@
 .div_main_objects_objects {
     transition: 0s;
     display: flex;
+    flex-wrap: wrap;
     margin: 10px 30px;
-    overflow-y: scroll;
-    overflow-x: scroll;
+    align-content: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    overflow-x: auto;
     background: var(--background);
 }
 
+.div_main_objects_objects:empty {
+    background-image: url("./../../images/search13.svg");
+    background-size: 200px 200px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
 .div_main_objects_objects::-webkit-scrollbar {
-    height: 5px;
+    width: 5px;
     background-color: var(--background);
 }
 
@@ -152,18 +157,15 @@
     background: var(--object_p_color);
 }
 
-.div_main_objects_objects::after {
-    content: "";
-    min-width: 70px;
-}
-
-.div_main_objects_objects::before {
-    content: "";
-    min-width: 70px;
+.div_main_objects_objects:after {
+    content: '';
+    width: 100%;
+    height: 50px;
 }
 
 .div_main_objects_objects > .message {
-    margin: auto;
+    margin: 30px;
+    width: 100%;
     font-weight: bold;
     font-size: 18px;
     color: var(--object_p_color);
@@ -174,38 +176,55 @@
 }
 
 .div_main_objects_objects > button {
-    transition: background 0.5s, color 0.5s;
-    margin: auto 30px;
-    height: 100px;
-    border-radius: 10px;
-    padding: 5px;
-    border: 3px solid var(--first);
-    background: var(--background);
-    color: var(--first);
+    /*transition: background 0.5s, color 0.5s;*/
+    margin: 30px 20px 0;
+    height: 30px;
+    width: 100%;
+    /*padding: 5px;*/
+    border: none;
+    background: transparent;
     text-align: center;
     outline: none;
     font-size: 24px;
     font-weight: bold;
+    /*background: url("https://image.flaticon.com/icons/svg/25/25629.svg"), var(--first);*/
+    /*background-size: contain;*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: center center;*/
+    display: grid;
+    grid-template-areas: "I";
+    justify-content: center;
+    align-content: center;
+}
+
+.div_main_objects_objects > button:before {
+    content: "";
+    transition: background 0.3s, color 0.3s;
+    grid-area: I;
+    width: 300px;
+    height: 30px;
+    margin: auto;
+    border: 3px solid var(--first);
+    background: transparent;
     box-shadow: 2px 2px 10px black;
+    border-radius: 5px;
+    background: url("https://image.flaticon.com/icons/svg/25/25629.svg"), var(--first);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
-.div_main_objects_objects > button:hover {
-    background: var(--first);
-    color: var(--background);
-}
-
-.div_main_objects_objects > button:active {
+.div_main_objects_objects > button:active:before {
     transition: 0s;
     background: var(--background);
-    color: var(--first);
 }
 
 .div_main_objects_objects_map {
     background: var(--background) !important;
     transition: 0s;
     z-index: 1;
-    margin: 20px 30px;
     border-radius: 10px;
+    margin: 0 40px 30px;
 }
 
 .div_main_objects_objects_map > * {
@@ -216,21 +235,19 @@
     transition: 0s;
     z-index: 3;
     position: relative;
-    margin-left: 30px;
-    height: 100%;
-    width: 40px;
-    background: linear-gradient(90deg, var(--background) 10%, transparent);
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(var(--background) 10%, transparent);
 }
 
 .div_main_objects_border_right {
     transition: 0s;
     z-index: 3;
     position: relative;
-    margin-left: auto;
-    margin-right: 30px;
-    height: 100%;
-    width: 40px;
-    background: linear-gradient(90deg, transparent, var(--background));
+    margin-top: auto;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(transparent, var(--background));
 }
 
 .div_main_window_settings {
@@ -299,21 +316,23 @@
 }
 
 .div_main_window_settings > .content > div {
-    background-color: var(--object);
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px var(--box_shadow);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
 .div_main_window_settings > .content > hr {
-    width: 60%;
+    width: 80%;
     border: 2px solid var(--object_p_color);
     background-color: var(--object_p_color);
     border-radius: 10px;
-    margin: 10px auto;
+    margin: 20px auto;
 }
 
 .div_main_window_settings > .content > div > button {
-    height: 50px;
+    height: 60px;
+    width: 120px;
+    /*margin: 5px auto;*/
     border-radius: 10px;
     border-width: 0;
     font-size: 18px;
@@ -360,26 +379,25 @@
 }
 
 .div_main_window_settings > .content > div > .color_select {
-    float: left;
     margin: 10px;
     padding: 5px;
-    width: 100px;
+    width: 120px;
     height: 100px;
     background-color: var(--object);
     border-radius: 10px;
     display: grid;
-    justify-content: space-between;
     align-content: space-between;
     box-shadow: 2px 2px 10px var(--box_shadow);
 }
 
 .div_main_window_settings > .content > div > .color_select > p {
+    width: 100%;
     text-align: center;
 }
 
 .div_main_window_settings > .content > div > .color_select > input[type="color"] {
     padding: 0;
-    width: auto;
+    width: calc(100% - 6px);
     height: 30px;
     border-radius: 10px;
     outline: none;

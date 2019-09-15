@@ -96,6 +96,32 @@ document
 };
 
 document
+    .getElementById("filters_select_neighbourhood")
+    .oninput = () => {
+    let val = document.getElementById("filters_select_neighbourhood").value;
+    if (val.length % 2 === 0 && val.length !== 0) {
+        FILTERS.RemoveAutocompleteOptions(document.getElementById("filters_select_neighbourhood_detail"));
+        FILTERS.AutocompleteGeolocation(
+            document.getElementById("filters_select_neighbourhood_detail"),
+            "neighbourhood"
+        )
+    }
+};
+
+document
+    .getElementById("filters_select_road")
+    .oninput = () => {
+    let val = document.getElementById("filters_select_road").value;
+    if (val.length % 2 === 0 && val.length !== 0) {
+        FILTERS.RemoveAutocompleteOptions(document.getElementById("filters_select_road_detail"));
+        FILTERS.AutocompleteGeolocation(
+            document.getElementById("filters_select_road_detail"),
+            "road"
+        )
+    }
+};
+
+document
     .getElementById("btn_add_detail")
     .onclick = () => FILTERS.AddDetail();
 
@@ -109,7 +135,7 @@ document
 
 let appActions = (key, altKey) => {
     if (altKey) {
-        if (WINDOWS.isToggledFullItem){
+        if (WINDOWS.isToggledFullItem) {
             WINDOWS.FullItemToggle(false);
         }
     } else if (key === "z" || key === "Z" ||

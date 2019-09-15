@@ -9,6 +9,9 @@ class Filters {
             state: document.getElementById("filters_select_state"),
             locality: document.getElementById("filters_select_locality"),
             county: document.getElementById("filters_select_county"),
+            neighbourhood: document.getElementById("filters_select_neighbourhood"),
+            road: document.getElementById("filters_select_road"),
+            houseNumber: document.getElementById("filters_select_house_number"),
             sorting: {
                 orderBy: document.getElementById("sorting_order_by"),
                 ordering: document.getElementById("sorting_ordering"),
@@ -69,8 +72,8 @@ class Filters {
         for (let k1 in this.node.numeric) {
             if (this.node.numeric[k1].to.value !== "" && this.node.numeric[k1].from.value !== "") {
                 if ((+this.node.numeric[k1].to.value) < (+this.node.numeric[k1].from.value)) {
-                    WINDOWS.AlertBoxShow(450);
-                    WINDOWS.AlertBoxSetMessage(`Some troubles in filter ${k1}`);
+                    WINDOWS.AlertBoxShow(615);
+                    WINDOWS.AlertBoxSetMessage(`Виникли деякі проблеми з фільтром ${LANGUAGE.item[k1]}`);
                     return false;
                 }
             }
@@ -89,6 +92,15 @@ class Filters {
         }
         if (this.node.county.value !== "") {
             dict["county"] = this.node.county.value;
+        }
+        if (this.node.neighbourhood.value !== "") {
+            dict["neighbourhood"] = this.node.neighbourhood.value;
+        }
+        if (this.node.road.value !== "") {
+            dict["road"] = this.node.road.value;
+        }
+        if (this.node.houseNumber.value !== "") {
+            dict["house_number"] = this.node.houseNumber.value;
         }
 
         if (this.node.numeric.area.from.value !== "") {
@@ -150,7 +162,7 @@ class Filters {
                 dict["details"].push(v.children[0].value);
         });
 
-        // console.table(dict);
+        // console.log(dict);
         return dict;
     }
 
@@ -164,6 +176,12 @@ class Filters {
         }
         if (this.node.county.value !== "") {
             params["county"] = this.node.county.value;
+        }
+        if (this.node.neighbourhood.value !== "") {
+            params["neighbourhood"] = this.node.neighbourhood.value;
+        }
+        if (this.node.road.value !== "") {
+            params["road"] = this.node.road.value;
         }
         AJAX.GetGeolocationAutocomplete(nodeToFill, unitName, params);
     }

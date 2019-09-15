@@ -143,11 +143,11 @@
 .div_panel_filters {
     transition: right 0.5s;
     z-index: 5;
-    width: 400px;
+    width: 550px;
     height: 100%;
     position: fixed;
     top: 0;
-    right: -390px;
+    right: -540px;
     background-color: var(--panels);
     border-left: 3px solid var(--second);
     overflow-x: hidden;
@@ -188,7 +188,10 @@
 }
 
 .div_panel_filters_objects {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-content: center;
     justify-content: center;
 }
 
@@ -200,10 +203,11 @@
     font-size: 18px;
     color: var(--object_p_color);
     cursor: default;
+    width: 100%;
 }
 
 .div_panel_filters_objects > hr {
-    width: 50%;
+    width: 70%;
     margin: 10px auto;
     border: 1px solid var(--second);
     background-color: var(--second);
@@ -212,7 +216,7 @@
 
 .div_panel_filters_objects > div {
     padding: 10px 0 10px 10px;
-    margin: auto;
+    margin: 5px;
     border-radius: 10px;
     color: var(--second);
     background-color: var(--object);
@@ -342,19 +346,20 @@ option {
     font-size: 16px;
     padding: 5px 30px;
     align-self: center;
-    margin-bottom: 20px;
+    margin: 20px auto;
     border: 3px solid var(--second);
     border-radius: 50px 0;
-    background: var(--panels);
-    color: var(--object_p_color);
+    background: var(--second);
+    color: var(--panels);
     outline: none;
     font-weight: bold;
+    width: 90%;
 }
 
 .div_filters_search:hover {
     border-radius: 0 50px;
-    background: var(--second);
-    color: var(--background);
+    background: var(--background);
+    color: var(--second);
 }
 
 .div_filters_search:active {
@@ -370,6 +375,8 @@ option {
 }
 
 .btn_add_detail {
+    width: 80%;
+    margin: auto;
     transition: color 0.5s, background 0.5s;
     justify-self: center;
     padding: 5px 20px;

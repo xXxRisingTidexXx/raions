@@ -37,12 +37,9 @@ class Requests {
                         SAVES_HOLDER.AddUniqueItem(v.id);
                         SAVES_HOLDER.AddItem(new Item(v, "save"));
                     });
-                } else {
-                    SAVES_HOLDER.AddAlert(LANGUAGE.itemsMessage.noSaves);
                 }
             })
             .catch(err => {
-                SAVES_HOLDER.AddAlert(LANGUAGE.itemsMessage.noSaves);
                 console.log(err);
             });
     }

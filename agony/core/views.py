@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
 from rest_framework_jwt.views import ObtainJSONWebToken
 from core.parsers import JSONParser
 from core.models import Geolocation, Flat, Detail, Estate
@@ -101,7 +101,7 @@ class GeolocationAutocompleteView(AutocompleteView):
         return list(Geolocation.objects.filter(
             self._reduce_query(data)
         ).distinct().values(
-            'state', 'locality', 'county'
+            'state', 'locality', 'county', 'neighbourhood', 'road', 'house_number'
         ))
 
 
