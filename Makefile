@@ -6,8 +6,8 @@ RESET = $(shell tput -Txterm sgr0)
 GRAY = $(shell tput -Txterm setaf 6)
 TARGET_MAX_CHAR_NUM = 25
 
-.PHONY: autogenerate-migrations migrate test-agony test-reapy \
-	run-agony-dev run-reapy-manage run-reapy-schedule help
+.PHONY: autogenerate-migrations generate-data-migrations migrate test-agony \
+	test-reapy run-agony-dev run-reapy-manage run-reapy-schedule help
 
 
 # Migrations
@@ -18,6 +18,16 @@ autogenerate-migrations:
 		cd ./agony/; \
 		source ./venv/bin/activate; \
 		./manage.py makemigrations; \
+		deactivate; \
+		cd ../; \
+	)
+
+## Generate data migrations
+generate-data-migrations:
+	@( \
+		cd ./agony/; \
+		source ./venv/bin/activate; \
+		./manage.py makemigrations --empty core; \
 		deactivate; \
 		cd ../; \
 	)

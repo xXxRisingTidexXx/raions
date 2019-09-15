@@ -84,14 +84,16 @@ class MapReduceView(APIView):
 class AutocompleteView(MapReduceView):
     def get(self, request: Request) -> Response:
         if request.query_params is None:
-            return Response(status=HTTP_400_BAD_REQUEST)
+            return Response(status=HTTP_404_NOT_FOUND)
         return Response(self._get_completions(request.query_params))
 
     def _get_completions(self, data: Dict[str, Any]) -> List[Dict[str, Any]]:
         pass
 
     def _map_queries(self, *args: Any) -> Generator:
-        return (Q(**{f'{i[0]}__istartswith': i[1]}) for i in args[0].items())
+        return (
+            Q(**{f'{i[0]}__istartswith': i[1].strip()}) for i in args[0].items()
+        )
 
 
 class GeolocationAutocompleteView(AutocompleteView):

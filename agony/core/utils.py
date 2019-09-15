@@ -7,9 +7,14 @@ from os.path import join
 from json import loads
 
 
-# noinspection PyUnusedLocal,PyPep8Naming
-def load_details(apps: Apps, schema_editor: Any):
-    Detail = apps.get_model('core', 'Detail')
+def load_details(apps: Apps, schema_editor: Any):  # noqa
+    """
+    Loads a predefined set of details into the DB.
+
+    :param apps: a set of django apps
+    :param schema_editor: DB schema mutator
+    """
+    Detail = apps.get_model('core', 'Detail')  # noqa
     with open(join(BASE_DIR, 'core/resources/details.json')) as stream:
         details = loads(stream.read())
     for detail in details:
@@ -23,3 +28,40 @@ def load_details(apps: Apps, schema_editor: Any):
                     )
             except IntegrityError:
                 pass
+
+
+def localize_details(apps: Apps, schema_editor: Any):  # noqa
+    """
+    Translates all existing details into Ukrainian.
+
+    :param apps: a set of django apps
+    :param schema_editor: DB schema mutator
+    """
+    Detail = apps.get_model('core', 'Detail')  # noqa
+    with open(join(BASE_DIR, 'core/resources/translations.json')) as stream:
+        translations = loads(stream.read())
+    for en, uk in translations.items():
+        try:
+            with atomic():
+                detail = Detail.objects.get(value=en)
+                detail.value = uk
+                detail.save()
+        except (IntegrityError, Detail.DoesNotExist):
+            pass
+
+
+def fix_typos(apps: Apps, schema_editor: Any):  # noqa
+    """
+    Fixes all details' typos.
+
+    :param apps: a set of django apps
+    :param schema_editor: DB schema mutator
+    """
+    Detail = apps.get_model('core', 'Detail')  # noqa
+    try:
+        with atomic():
+            detail = Detail.objects.get(value='Ксометичний ремонт')
+            detail.value = 'Косметичний ремонт'
+            detail.save()
+    except (IntegrityError, Detail.DoesNotExist):
+        pass
