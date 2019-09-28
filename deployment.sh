@@ -82,9 +82,23 @@ echo ""
 ./manage.py collectstatic
 check "Static files weren't collected"
 
+# Create gunicorn daemon if absent
+set_gunicorn () {
+    SERVICE="/etc/systemd/system/gunicorn.service"
+    if [[ ! -f ${SERVICE} ]]; then
+        sudo cp "./gunicorn-template.ini" ${SERVICE}
+        sudo nano ${SERVICE}
+        sudo systemctl start gunicorn
+        echo ""
+        check "Gunicorn daemon creation failed"
+        sudo systemctl enable gunicorn
+    fi
+}
+
 # Finalize agony's deployment
 deactivate
 cd ../
+set_gunicorn
 echo ""
 echo "Gunicorn & nginx are being restarted..."
 sudo systemctl restart gunicorn
