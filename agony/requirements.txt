@@ -1,5 +1,5 @@
 attrs==19.1.0
-Django==2.2.8
+Django==2.2.18
 django-sendgrid-v5==0.8.0
 djangorestframework==3.10.2
 djangorestframework-gis==0.14
